@@ -681,8 +681,6 @@ function pickVoice(){if(!window.speechSynthesis)return;const vs=speechSynthesis.
  const sel=$("vSel");sel.innerHTML="";vs.sort((a,b)=>score(b)-score(a)).forEach(v=>{const o=document.createElement("option");o.value=v.name;o.textContent=(score(v)>=70?"⭐ ":"")+v.name+" ("+v.lang+")";if(voice&&v.name===voice.name)o.selected=true;sel.appendChild(o);});}
 $("vSel").onchange=e=>{ALL.voice=e.target.value;if(ALL.day)S().voice=ALL.voice;save();pickVoice();speak("Hello! Let's learn English.");};
 if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;warmupTTS();}
-preloadBuiltinAudio();
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)warmupTTS();});
 const BUILTIN_AUDIO=window.BUILTIN_AUDIO||{};
 const _audioPool={};
 function _getAudio(t){
@@ -705,9 +703,35 @@ function speakBuiltin(t,slow){
   try{a.pause();a.currentTime=0;}catch(e){}
   a.playbackRate=slow?0.75:1.0;
   const p=a.play();
-  if(p&&p.catch)p.catch(()=>{});
+  if(p&&p.catch)p.catch(err=>{
+    // Autoplay / not-unlocked: fall back to Web Speech so 🔊 still works
+    try{
+      if(!window.speechSynthesis)return;
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(t);
+      if(voice)u.voice=voice;u.lang=voice?voice.lang:"en-GB";
+      u.rate=slow?0.75:1.0;
+      speechSynthesis.speak(u);
+    }catch(e){}
+  });
   return true;
 }
+preloadBuiltinAudio();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)warmupTTS();});
+// Unlock audio on first user gesture (iOS Safari autoplay policy)
+document.addEventListener("pointerdown",function unlockAudioOnce(){
+  document.removeEventListener("pointerdown",unlockAudioOnce);
+  try{
+    const keys=Object.keys(BUILTIN_AUDIO);
+    if(!keys.length)return;
+    const a=_getAudio(keys[0]);
+    if(!a)return;
+    const prev=a.volume;a.volume=0;
+    const p=a.play();
+    const done=()=>{try{a.pause();a.currentTime=0;a.volume=prev;}catch(e){}};
+    if(p&&p.then)p.then(done).catch(done);else done();
+  }catch(e){}
+},true);
 function warmupTTS(){
   if(!window.speechSynthesis)return;
   try{
