@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="英语1B·四天"/>
@@ -104,6 +104,46 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
 .homebtn{background:#fff;border:1.5px dashed #66bb6a;color:#1b5e20;font-weight:700}
 </style>
 
+
+<style id="desktop-css">
+/* Desktop-first comfort; phone keeps existing full-width feel */
+@media (min-width:900px){
+  body{padding:28px 24px 48px;align-items:center}
+  .wrap{max-width:840px;width:100%;margin:0 auto;min-height:calc(100dvh - 56px)}
+  .wrap>*{width:100%}
+  h1{font-size:1.55rem;margin-top:8px}
+  .sub{font-size:.92rem;max-width:640px;margin-left:auto;margin-right:auto}
+  .card{padding:28px 32px;min-height:240px;border-radius:22px}
+  .zh{font-size:2.75rem}
+  .en{font-size:2.1rem}
+  .phon{font-size:1.05rem}
+  button{padding:12px 20px;font-size:.98rem;min-height:44px}
+  .spk{padding:14px 28px;font-size:1.05rem;min-width:140px}
+  .row.speak-row{gap:14px}
+  .row.actions-main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;width:100%;max-width:640px;margin:0 auto}
+  .row.actions-main button{flex:none;width:100%}
+  .daynav button{padding:14px 22px;font-size:1.05rem;min-width:110px}
+  .tabs{gap:8px}
+  .tabs button{padding:12px 18px;font-size:.95rem}
+  .fs-fixed{top:20px;right:24px;padding:14px 22px!important}
+  input#ans{padding:16px 18px;font-size:1.25rem;max-width:640px;margin:0 auto;display:block}
+  .counts{gap:12px;max-width:640px;margin:0 auto}
+  .box,.g,.intro,.plan,.pc-tip,.chat-tip,.ios-banner{padding:16px 18px}
+  .top{gap:10px;padding:8px 0}
+  .b-next{max-width:640px;margin:0 auto;display:block;padding:14px 20px;font-size:1.05rem}
+  .hint{max-width:640px}
+  .opt{padding:12px 14px;font-size:.98rem}
+  .qin{padding:12px 14px;font-size:1.05rem}
+  #audioStatus{font-size:.82rem;color:#64748b;text-align:center;min-height:1.2em;margin:2px 0}
+}
+@media (min-width:1100px){
+  .wrap{max-width:880px}
+}
+@media (max-width:899px){
+  #audioStatus{font-size:.74rem;color:#64748b;text-align:center;min-height:1.1em;margin:2px 0}
+}
+</style>
+
 </head><body>
 <button type="button" class="fs-fixed" id="btnFs" title="点一下进入全屏，再点退出">⛶ 全屏 Fullscreen</button>
 <div class="wrap">
@@ -139,11 +179,12 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
   <div class="hint" id="hintBox"><p class="sc" id="scene">💭 什么时候用：—</p><p class="tk" id="think">🧠 先想一想：—</p></div>
   <div class="en" id="en"></div><div class="phon" id="phon"></div>
 </div>
-<div class="row"><button class="spk" id="sp">🔊 听发音</button><button class="spk slow" id="spSlow">🐢 慢速</button></div>
+<div class="row speak-row"><button class="spk" id="sp">🔊 听发音</button><button class="spk slow" id="spSlow">🐢 慢速</button></div>
+<div id="audioStatus" aria-live="polite"></div>
 <div class="row"><label class="auto"><input type="checkbox" id="auto"/> 出卡自动播放</label></div>
 <div id="inputArea">
   <input id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="输入英文…"/>
-  <div class="row" style="margin-top:10px"><button class="b-sub" id="bSub">提交</button><button class="b-fuz" id="bFuz">模糊</button><button class="b-no" id="bNo">不会</button></div>
+  <div class="row actions-main" style="margin-top:10px"><button class="b-sub" id="bSub">提交</button><button class="b-fuz" id="bFuz">模糊</button><button class="b-no" id="bNo">不会</button></div>
 </div>
 <div class="fb" id="fb"></div>
 <div class="ex" id="ex">
@@ -161,19 +202,7 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
 <div class="pane" id="p-quiz"></div>
 <div class="pane" id="p-mem"></div>
 </div>
-<script>window.BUILTIN_AUDIO=window.BUILTIN_AUDIO||{};</script>
-<script src="audio-pack-0.js"></script>
-<script src="audio-pack-1.js"></script>
-<script src="audio-pack-2.js"></script>
-<script src="audio-pack-3.js"></script>
-<script src="audio-pack-4.js"></script>
-<script src="audio-pack-5.js"></script>
-<script src="audio-pack-6.js"></script>
-<script src="audio-pack-7.js"></script>
-<script src="audio-pack-8.js"></script>
-<script src="audio-pack-9.js"></script>
-<script src="audio-pack-10.js"></script>
-<script src="audio-pack-11.js"></script>
+<script>window.BUILTIN_AUDIO=window.BUILTIN_AUDIO||{};window.__AUDIO_PACKS_READY=false;window.__AUDIO_PACKS_LOADING=false;</script>
 <script>
 "use strict";
 const KEY="english1b_all_v1";
@@ -681,8 +710,17 @@ function pickVoice(){if(!window.speechSynthesis)return;const vs=speechSynthesis.
  const sel=$("vSel");sel.innerHTML="";vs.sort((a,b)=>score(b)-score(a)).forEach(v=>{const o=document.createElement("option");o.value=v.name;o.textContent=(score(v)>=70?"⭐ ":"")+v.name+" ("+v.lang+")";if(voice&&v.name===voice.name)o.selected=true;sel.appendChild(o);});}
 $("vSel").onchange=e=>{ALL.voice=e.target.value;if(ALL.day)S().voice=ALL.voice;save();pickVoice();speak("Hello! Let's learn English.");};
 if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;warmupTTS();}
-const BUILTIN_AUDIO=window.BUILTIN_AUDIO||{};
+// Always read from window.BUILTIN_AUDIO (packs mutate it via Object.assign)
+const BUILTIN_AUDIO=window.BUILTIN_AUDIO||(window.BUILTIN_AUDIO={});
 const _audioPool={};
+let _audioStatusTimer=null;
+function setAudioStatus(msg){
+  const el=$("audioStatus");
+  if(!el)return;
+  el.textContent=msg||"";
+  if(_audioStatusTimer)clearTimeout(_audioStatusTimer);
+  if(msg)_audioStatusTimer=setTimeout(()=>{el.textContent="";},1800);
+}
 function _getAudio(t){
   let a=_audioPool[t];
   if(!a){
@@ -694,29 +732,86 @@ function _getAudio(t){
   }
   return a;
 }
-function preloadBuiltinAudio(list){
-  (list||Object.keys(BUILTIN_AUDIO)).forEach(t=>{try{_getAudio(t);}catch(e){}});
+/** Prefetch only a few words (current + next 1–2). Never all keys. */
+function prefetchBuiltinAudio(list){
+  (list||[]).slice(0,3).forEach(t=>{
+    try{if(t&&BUILTIN_AUDIO[t]&&!_audioPool[t])_getAudio(t);}catch(e){}
+  });
+}
+function speakFallbackTTS(t,slow){
+  try{
+    if(!window.speechSynthesis)return false;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);
+    if(voice)u.voice=voice;u.lang=voice?voice.lang:"en-GB";
+    u.rate=slow?0.75:1.0;
+    speechSynthesis.speak(u);
+    return true;
+  }catch(e){return false;}
 }
 function speakBuiltin(t,slow){
+  const src=BUILTIN_AUDIO[t];
+  if(!src){
+    if(!window.__AUDIO_PACKS_READY){
+      setAudioStatus("发音包加载中…先用系统语音");
+    }
+    return false;
+  }
   const a=_getAudio(t);
   if(!a)return false;
+  // Decode not ready: warm Audio in background, speak via TTS this click (no double-play)
+  if(a.readyState<2){
+    try{a.load();}catch(e){}
+    setAudioStatus("英式女声准备中…先用系统语音");
+    speakFallbackTTS(t,slow);
+    return true;
+  }
   try{a.pause();a.currentTime=0;}catch(e){}
   a.playbackRate=slow?0.75:1.0;
   const p=a.play();
-  if(p&&p.catch)p.catch(err=>{
-    // Autoplay / not-unlocked: fall back to Web Speech so 🔊 still works
-    try{
-      if(!window.speechSynthesis)return;
-      speechSynthesis.cancel();
-      const u=new SpeechSynthesisUtterance(t);
-      if(voice)u.voice=voice;u.lang=voice?voice.lang:"en-GB";
-      u.rate=slow?0.75:1.0;
-      speechSynthesis.speak(u);
-    }catch(e){}
-  });
+  if(p&&p.catch)p.catch(()=>{speakFallbackTTS(t,slow);});
   return true;
 }
-preloadBuiltinAudio();
+/** Load audio packs after first paint so UI is interactive immediately. */
+function loadAudioPacksDeferred(){
+  if(window.__AUDIO_PACKS_LOADING||window.__AUDIO_PACKS_READY)return;
+  window.__AUDIO_PACKS_LOADING=true;
+  const files=[];
+  for(let i=0;i<=11;i++)files.push("audio-pack-"+i+".js");
+  let left=files.length;
+  const doneOne=()=>{
+    left--;
+    if(left<=0){
+      window.__AUDIO_PACKS_READY=true;
+      window.__AUDIO_PACKS_LOADING=false;
+      setAudioStatus("英式女声已就绪");
+      try{if(typeof cur==="function"&&cur())prefetchBuiltinAudio([cur().en]);}catch(e){}
+    }
+  };
+  files.forEach(src=>{
+    const s=document.createElement("script");
+    s.src=src;
+    s.async=true;
+    s.onload=doneOne;
+    s.onerror=doneOne;
+    document.head.appendChild(s);
+  });
+}
+(function scheduleAudioPacks(){
+  const kick=()=>{
+    if(window.requestIdleCallback)requestIdleCallback(()=>loadAudioPacksDeferred(),{timeout:1200});
+    else setTimeout(loadAudioPacksDeferred,50);
+  };
+  if(document.readyState==="complete")kick();
+  else if(document.readyState==="interactive"){
+    // First paint soon — start packs without blocking UI thread
+    kick();
+    window.addEventListener("load",()=>loadAudioPacksDeferred());
+  }else{
+    document.addEventListener("DOMContentLoaded",kick,{once:true});
+    window.addEventListener("load",()=>loadAudioPacksDeferred());
+  }
+})();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)warmupTTS();});
 // Unlock audio on first user gesture (iOS Safari autoplay policy)
 document.addEventListener("pointerdown",function unlockAudioOnce(){
@@ -807,6 +902,11 @@ function renderWords(){
   const rev=!!ws.revealed;$("card").classList.toggle("rev",rev);$("ex").classList.toggle("show",rev);
   $("hintBox").classList.toggle("dim",rev);
   $("nextArea").style.display=rev?"":"none";$("inputArea").style.display=rev?"none":"";
+  try{
+    const q=ws.queue;const pref=[w.en];
+    for(let i=1;i<=2&&i<q.length;i++){const nw=WW[q[i]];if(nw)pref.push(nw.en);}
+    prefetchBuiltinAudio(pref);
+  }catch(e){}
 }
 function reveal(msg,cls){S().w.revealed=true;$("fb").textContent=msg;$("fb").className="fb "+cls;save();renderWords();$("bNext").focus();}
 function markMiss(id,need){const ws=S().w;ws.reps[id]=Math.max(ws.reps[id]||0,need);if(!ws.missed.includes(id))ws.missed.push(id);ws.known=ws.known.filter(x=>x!==id);ws.pending="later";}
@@ -823,8 +923,14 @@ function next(){const ws=S().w,w=cur();if(!w)return;
  ws.pending=null;ws.revealed=false;if(!ws.queue.length)startFinal();
  $("ans").value="";$("fb").textContent="";save();renderWords();if(S().auto&&cur())speak(cur().en);$("ans").focus();}
 $("bNext").onclick=next;
-$("ans").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("bSub").click();}});
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&ALL.day&&S().tab==="words"&&S().w.revealed&&document.activeElement!==$("ans")){e.preventDefault();next();}});
+$("ans").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){e.preventDefault();$("bSub").click();}
+  else if(e.key==="Escape"){e.preventDefault();$("ans").value="";$("fb").textContent="";$("fb").className="fb";}
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&ALL.day&&S().tab==="words"&&S().w.revealed&&document.activeElement!==$("ans")){e.preventDefault();next();}
+  if(e.key==="Escape"&&document.activeElement===$("ans")){e.preventDefault();$("ans").value="";}
+});
 $("sp").onclick=()=>{const w=cur();if(w)speak(w.en);};$("spSlow").onclick=()=>{const w=cur();if(w)speak(w.en,true);};
 $("spEx").onclick=()=>{const w=cur();if(w)speak(w.exEn);};$("spExS").onclick=()=>{const w=cur();if(w)speak(w.exEn,true);};
 $("auto").onchange=e=>{if(!ALL.day)return;S().auto=e.target.checked;save();};
