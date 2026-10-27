@@ -33,7 +33,7 @@ h1{font-size:1.2rem;margin:4px 0 0;font-weight:750;color:#1b5e20;text-align:cent
 .card{background:var(--card);border-radius:20px;padding:22px 18px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;flex:1;min-height:200px;justify-content:center}
 .tag{font-size:.7rem;padding:3px 9px;border-radius:99px;background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7}
 .tag.rep{background:#fff7ed;color:#c2410c;border-color:#fdba74}
-.pos{font-size:.85rem;color:#7c3aed;font-weight:650}
+.pos{font-size:1.15rem;color:#7c3aed;font-weight:750;letter-spacing:.02em}.pos-tip{width:100%;max-width:520px;margin:2px 0 6px;padding:8px 12px;border-radius:12px;text-align:left;font-size:.88rem;line-height:1.5;border:1px solid #ddd6fe;background:linear-gradient(180deg,#f5f3ff,#ede9fe);color:#5b21b6}
 .zh{font-size:2.4rem;font-weight:800;color:#0f172a;line-height:1.35;margin:4px 0 8px}
 .hint{width:100%;max-width:520px;margin:4px 0 2px;padding:10px 12px;border-radius:12px;text-align:left;font-size:.92rem;line-height:1.55;border:1px solid #a5d6a7;background:linear-gradient(180deg,#f0fdf4,#e8f5e9)}
 .hint .sc{color:#14532d;font-weight:700;margin:0 0 6px}
@@ -117,6 +117,8 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
   .zh{font-size:2.75rem}
   .en{font-size:2.1rem}
   .phon{font-size:1.05rem}
+  .pos{font-size:1.35rem}
+  .pos-tip{font-size:.95rem;max-width:640px;padding:10px 14px}
   button{padding:12px 20px;font-size:.98rem;min-height:44px}
   .spk{padding:14px 28px;font-size:1.05rem;min-width:140px}
   .row.speak-row{gap:14px}
@@ -175,7 +177,7 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
 <div class="phase" id="phase">第一轮</div>
 <div class="card" id="card">
   <div class="row"><span class="tag" id="unit">U1</span><span class="tag rep" id="repTag" style="display:none"></span></div>
-  <div class="pos" id="pos"></div><div class="zh" id="zh">—</div>
+  <div class="pos" id="pos"></div><div class="pos-tip" id="posTip">词性用法：—</div><div class="zh" id="zh">—</div>
   <div class="hint" id="hintBox"><p class="sc" id="scene">💭 什么时候用：—</p><p class="tk" id="think">🧠 先想一想：—</p></div>
   <div class="en" id="en"></div><div class="phon" id="phon"></div>
 </div>
@@ -882,6 +884,43 @@ function renderTabs(){
 }
 
 const norm=s=>(s||"").toLowerCase().replace(/[’']/g,"'").replace(/\s+/g," ").trim();
+function posUsageTip(pos){
+  const raw=String(pos||"").trim();
+  if(!raw)return "💡 词性用法：先看词性，再想它在句子里干什么。";
+  const base=p=>{
+    const s=String(p||"");
+    if(/词组/.test(s)&&/名词/.test(s))return "词组（偏名词）：整组当一个名词用，可作主语/宾语。";
+    if(/词组/.test(s))return "词组：固定搭配，整组一起记、一起用，不要拆开硬译。";
+    if(/名词/.test(s)&&!/动词|形容|副词|介词/.test(s.replace("名词","")))return "名词：多作主语或宾语。例：My name is Ella. / I like music.";
+    if(/^动词$/.test(s)||s==="动词")return "动词：作谓语，表示动作或状态。例：I work here.";
+    if(/^形容词$/.test(s)||s==="形容词")return "形容词：修饰名词。例：an exciting job.";
+    if(/^副词$/.test(s)||s==="副词")return "副词：修饰动词/形容词。例：speak slowly.";
+    if(/^介词$/.test(s)||s==="介词")return "介词：后接名词组成短语。例：from China.";
+    return "";
+  };
+  // Multi-POS like 名词/动词 — explain each side
+  const parts=raw.split(/[\/／、]+/).map(s=>s.trim()).filter(Boolean);
+  const tips=[];
+  const seen={};
+  parts.forEach(p=>{
+    let t=base(p);
+    if(!t){
+      if(/名词/.test(p))t="名词：多作主语或宾语。";
+      else if(/动词/.test(p))t="动词：作谓语，表动作/状态。";
+      else if(/形容/.test(p))t="形容词：修饰名词。";
+      else if(/副词/.test(p))t="副词：修饰动词/形容词。";
+      else if(/介词/.test(p))t="介词：后接名词组成短语。";
+      else if(/词组/.test(p))t="词组：固定搭配，整组使用。";
+      else t="看词性想句子位置。";
+    }
+    if(!seen[t]){seen[t]=1;tips.push(t);}
+  });
+  if(parts.length>1){
+    return "💡 词性用法（"+raw+"）：本词可作多种词性——"+tips.join(" / ");
+  }
+  return "💡 词性用法（"+raw+"）："+(tips[0]||"先看词性，再想句子位置。");
+}
+
 function cur(){return W()[S().w.queue[0]];}
 function insertLater(id){const q=S().w.queue;q.shift();const off=3+Math.floor(Math.random()*6);q.splice(Math.min(q.length,off),0,id);}
 function startFinal(){const ws=S().w;if(ws.final||!ws.missed.length)return false;ws.final=true;ws.queue=shuffle(ws.missed);ws.missed.forEach(i=>{if(!ws.reps[i])ws.reps[i]=1;});return true;}
@@ -893,8 +932,8 @@ function renderWords(){
   $("phase").textContent=ws.final?"🔁 收尾轮：复测所有错过的词":"第一轮";$("phase").classList.toggle("final",ws.final);
   const has=!!w;$("done").classList.toggle("show",!has);["card","inputArea"].forEach(x=>$(x).style.display=has?"":"none");
   $("sp").parentNode.style.display=has?"":"none";
-  if(!has){$("ex").classList.remove("show");$("nextArea").style.display="none";$("fb").textContent="";$("scene").textContent="💭 什么时候用：—";$("think").textContent="🧠 先想一想：—";$("hintBox").classList.remove("dim");return;}
-  $("unit").textContent=w.unit;$("pos").textContent=w.pos;$("zh").textContent=w.zh;$("en").textContent=w.en;$("phon").textContent=w.ph;
+  if(!has){$("ex").classList.remove("show");$("nextArea").style.display="none";$("fb").textContent="";$("pos").textContent="";$("posTip").textContent="词性用法：—";$("scene").textContent="💭 什么时候用：—";$("think").textContent="🧠 先想一想：—";$("hintBox").classList.remove("dim");return;}
+  $("unit").textContent=w.unit;$("pos").textContent="词性 · "+w.pos;$("posTip").textContent=posUsageTip(w.pos);$("zh").textContent=w.zh;$("en").textContent=w.en;$("phon").textContent=w.ph;
   $("scene").textContent="💭 什么时候用："+(w.scene||"—");
   $("think").textContent="🧠 先想一想："+(w.think||"—");
   const n=ws.reps[w.id]||0;$("repTag").style.display=n?"":"none";$("repTag").textContent="还需拼对 "+n+" 次";
