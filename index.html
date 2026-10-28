@@ -79,6 +79,31 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
 .sent-area .s-btns{margin-top:8px;gap:8px;flex-wrap:wrap}.sent-area .s-msg{font-size:.85rem;color:var(--accent2);margin-top:4px}
 .sent-area .s-sec{font-size:.88rem;margin-top:6px}.sent-area ul{margin:4px 0;padding-left:18px}.sent-area .s-corr{color:var(--good);font-weight:600}.sent-area .s-head{text-align:left;margin:6px 0}
 @media(min-width:900px){.sent-area{max-width:640px;margin:12px auto 0}}
+.s-legend{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;font-size:.92rem;font-weight:650;margin:8px 0 6px;color:#1b5e20}
+.s-legend span{display:inline-flex;align-items:center;gap:4px}
+.s-annot-wrap{background:#fff;border:1.5px solid #81c784;border-radius:12px;padding:12px 14px;margin:8px 0}
+.s-annot-label{font-size:.82rem;font-weight:700;color:#2e7d32;margin-bottom:6px}
+.s-annot{font-size:1.12rem;line-height:1.75;word-wrap:break-word;overflow-wrap:anywhere;letter-spacing:.01em}
+.s-ok{background:#bbf7d0;color:#14532d;border-radius:4px;padding:1px 2px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.s-bad{background:#fecaca;color:#7f1d1d;border-radius:4px;padding:1px 2px;text-decoration:underline;text-decoration-color:#dc2626;text-decoration-thickness:2px;text-underline-offset:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone;cursor:pointer}
+.s-warn{background:#fed7aa;color:#9a3412;border-radius:4px;padding:1px 2px;text-decoration:underline;text-decoration-color:#ea580c;text-decoration-thickness:1.5px;text-underline-offset:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone;cursor:pointer}
+.s-target{background:#86efac;color:#14532d;font-weight:800;outline:2px solid #16a34a;outline-offset:1px;border-radius:4px;padding:1px 3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.s-target.s-bad,.s-bad.s-target{background:#fecaca;outline-color:#dc2626;color:#7f1d1d}
+.s-pulse{animation:sPulse .9s ease 1}
+@keyframes sPulse{0%,100%{box-shadow:none}35%{box-shadow:0 0 0 4px #fbbf24}70%{box-shadow:0 0 0 6px #fde68a}}
+.s-diff{font-size:1.05rem;line-height:1.7;word-wrap:break-word;overflow-wrap:anywhere;margin-top:4px}
+.s-ins{background:#bbf7d0;color:#14532d;font-weight:700;border-radius:3px;padding:0 2px}
+.s-del{background:#fecaca;color:#7f1d1d;text-decoration:line-through;border-radius:3px;padding:0 2px}
+.s-chips{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.s-chip{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;padding:8px 10px;border-radius:10px;border:1px solid #fca5a5;background:#fff1f2;cursor:pointer;font-size:.92rem;line-height:1.45;text-align:left}
+.s-chip:active,.s-chip:focus{outline:2px solid #f59e0b}
+.s-chip-warn{border-color:#fdba74;background:#fff7ed}
+.s-chip-badq{background:#fecaca;color:#7f1d1d;font-weight:700;border-radius:6px;padding:1px 6px}
+.s-chip-fix{color:#166534;font-weight:650}
+.s-chip-lab{color:#9f1239;font-size:.82rem;font-weight:650}
+.s-strict{display:flex;align-items:center;gap:6px;font-size:.85rem;color:#1b5e20;margin:6px 0 0;user-select:none}
+.s-strict input{width:16px;height:16px;accent-color:#16a34a}
+@media(max-width:600px){.s-annot{font-size:1.08rem}.s-diff{font-size:1.02rem}.s-chip{font-size:.9rem}}
 </style>
 <style>
 .top{position:sticky;top:0;z-index:50;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:6px 0;background:linear-gradient(180deg,#e8f5e9,#e8f5e9ee)}
@@ -204,6 +229,7 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
   <div class="s-last" id="sentLast"></div>
   <textarea id="sentIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="例如：My family name is Li."></textarea>
   <div class="row s-btns"><button class="b-sub" id="sentChk">检测</button><button class="spk" id="sentMic">🎤 说一句</button><button class="mini" id="sentSay">🔊</button></div>
+  <label class="s-strict"><input type="checkbox" id="sentStrict" checked/> 严格模式（更细的语法/风格提示）</label>
   <div class="s-nomic" id="sentNoMic"></div><div class="s-msg" id="sentMsg" aria-live="polite"></div>
   <div id="sentRes"></div>
   <div class="row s-btns"><button class="b-fuz" id="sentTeach">发给老师精批</button><button class="b-no" id="sentSkip">跳过 →</button></div>
@@ -1110,8 +1136,8 @@ function sFindMainVerb(toks){const aux=new Set(["am","is","are","was","were","do
  for(let i=0;i<toks.length;i++){const t=toks[i];if(S_SUBJ.has(t))continue;if(aux.has(t)){const n=toks[i+1];if(n&&n!=="not"&&n!=="n't")return {tok:n,idx:i+1,aux:t};return {tok:t,idx:i,aux:null};}
   if(S_VERBS.has(t)||/[a-z]{2,}(ed|ing)$/.test(t)||(/[a-z]{3,}s$/.test(t)&&!/(ss|us|is|this|his)$/.test(t)))return {tok:t,idx:i,aux:null};}
  return null;}
-function sTenseCheck(sent,w){const tips=[],fix=[];const time=sDetectTime(sent);if(!time)return {tips,fix,time:null};
- const toks=sTok(sent);const mv=sFindMainVerb(toks);if(!mv)return {tips,fix,time};
+function sTenseCheck(sent,w){const tips=[],fix=[];const time=sDetectTime(sent);if(!time)return {tips,fix,time:null,verbTok:null,verbIdx:-1};
+ const toks=sTok(sent);const mv=sFindMainVerb(toks);if(!mv)return {tips,fix,time,verbTok:null,verbIdx:-1};
  const v=mv.tok,aux=mv.aux;const baseGuess=(()=>{if(/ied$/.test(v))return v.slice(0,-3)+"y";if(/ed$/.test(v)){let b=v.slice(0,-2);if(b.length>=3&&b.slice(-1)===b.slice(-2,-1))b=b.slice(0,-1);return b;}if(/ing$/.test(v))return v.slice(0,-3);if(/ies$/.test(v))return v.slice(0,-3)+"y";if(/es$/.test(v)&&/(s|sh|ch|x|z|o)es$/.test(v))return v.slice(0,-2);if(/s$/.test(v)&&!/ss$/.test(v))return v.slice(0,-1);return v;})();
  const targetParts=sTargetParts(w.en);const targetIsVerb=/^动词/.test(String(w.pos||""))||targetParts.some(p=>S_VERBS.has(p)||IRREG[p]);
  const useBase=targetIsVerb&&targetParts.length===1?targetParts[0]:baseGuess;
@@ -1134,7 +1160,7 @@ function sTenseCheck(sent,w){const tips=[],fix=[];const time=sDetectTime(sent);i
   else if(!need3&&sIsPastForm(v)&&aux!=="did"){tips.push("习惯/频率时间词常用一般现在时（不一定用过去式）。");}
  }
  if(time==="now"){tips.push("有 today/now：一般现在或现在进行时都可以。");}
- return {tips,fix,time};}
+ return {tips,fix,time,verbTok:v,verbIdx:mv.idx,verbNeedsFix:(fix.length>0)};}
 
 function sPosHints(sent,w){const out=[],toks=sTok(sent),hw=sHasWord(sent,w.en);const pos=String(w.pos||"");if(!hw.ok||hw.idx<0||sTargetParts(w.en).length>1)return out;
  const i=hw.idx,prev=toks[i-1]||"",prev2=toks[i-2]||"",nxt=toks[i+1]||"",word=toks[i];
@@ -1164,7 +1190,7 @@ function sNounThin(sent,w){const pos=String(w.pos||"");const isNoun=(/^名词/.t
  return null;}
 
 function localCheck(sent,w){const ok=[],fix=[],tips=[];const s=String(sent||"").trim();const toks=sTok(s);
- if(!s)return {ok,fix:["还没写句子哦。"],tips,level:"bad",corrLocal:null};
+ if(!s)return {ok,fix:["还没写句子哦。"],tips,level:"bad",corrLocal:null,time:null,verbTok:null,verbIdx:-1,verbNeedsFix:false};
  const hw=sHasWord(s,w.en);
  if(hw.ok){ok.push("用上了目标词「"+w.en+"」");
   if(sTargetParts(w.en).length>1&&hw.adj===false)tips.push("「"+w.en+"」是固定词组，尽量连在一起写，不要拆得太开。");}
@@ -1194,11 +1220,16 @@ function localCheck(sent,w){const ok=[],fix=[],tips=[];const s=String(sent||"").
   return m;});
  // fix first token capital if whole first word is nameish all-lower was already uppercased first letter
  const level=fix.length?"bad":(tips.length?"mid":"good");
- return {ok,fix,tips,level,corrLocal,time:tc.time};}
+ return {ok,fix,tips,level,corrLocal,time:tc.time,verbTok:tc.verbTok||null,verbIdx:tc.verbIdx!=null?tc.verbIdx:-1,verbNeedsFix:!!tc.verbNeedsFix};}
 
 const LT_CAT={GRAMMAR:"语法",TYPOS:"拼写",CASING:"大小写",PUNCTUATION:"标点",TYPOGRAPHY:"格式",STYLE:"表达风格",CONFUSED_WORDS:"易混词",REDUNDANCY:"重复啰嗦",COLLOCATIONS:"搭配",MISC:"其他",SEMANTICS:"语义"};
+const LT_SEV={GRAMMAR:"bad",TYPOS:"bad",CASING:"bad",PUNCTUATION:"bad",CONFUSED_WORDS:"bad",COLLOCATIONS:"bad",SEMANTICS:"bad",TYPOGRAPHY:"warn",STYLE:"warn",REDUNDANCY:"warn",MISC:"warn"};
+function ltSev(m){const cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const id=(m.rule&&m.rule.id)||"";const it=(m.rule&&m.rule.issueType)||"";
+ if(/STYLE|TYPOGRAPHY|REDUNDANCY|WHITESPACE|DOUBLE_SPACE|COMMA_PARENTHESIS/.test(id+cat))return "warn";
+ if(it==="style"||it==="typographical")return "warn";
+ return LT_SEV[cat]||"bad";}
 function ltZh(m){const id=(m.rule&&m.rule.id)||"",cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const c=LT_CAT[cat]||"问题";
- if(/AGR|AGREEMENT|SVA|VBZ|NON3PRS/.test(id))return "主谓一致：主语和动词形式不搭（如 he goes / they go）";
+ if(/AGR|AGREEMENT|SVA|VBZ|NON3PRS|HE_VERB/.test(id))return "主谓一致：主语和动词形式不搭（如 he goes / they go）";
  if(/^EN_A_VS_AN|A_VS_AN/.test(id))return "a / an 用错：元音音素前用 an";
  if(/UPPERCASE_SENTENCE_START/.test(id))return "句首要大写";
  if(/MORFOLOGIK|SPELL/.test(id)||cat==="TYPOS")return "拼写可能有错";
@@ -1207,6 +1238,8 @@ function ltZh(m){const id=(m.rule&&m.rule.id)||"",cat=(m.rule&&m.rule.category&&
  if(/WHITESPACE|DOUBLE_SPACE|COMMA_PARENTHESIS/.test(id))return "空格/格式问题";
  if(/DT_|DET|ARTICLE|THE_/.test(id))return "冠词（a/an/the）可能用得不对";
  if(/TENSE|PAST|PRP_VB|MD_BASEFORM|BASE_FORM/.test(id))return "动词形式/时态可能不对";
+ if(cat==="STYLE")return "表达风格："+String(m.shortMessage||m.message||"").slice(0,70);
+ if(cat==="TYPOGRAPHY")return "格式："+String(m.shortMessage||m.message||"").slice(0,70);
  return c+"："+String(m.shortMessage||m.message||"").slice(0,90);}
 
 function sLemmaSet(en){const parts=sTargetParts(en);const set=new Set();parts.forEach(p=>sForms(p).forEach(f=>set.add(f)));parts.forEach(p=>set.add(p));return set;}
@@ -1288,8 +1321,11 @@ function applyLT(text,matches,w){
  });
  return out;}
 
-async function ltCheck(text){if(typeof fetch!=="function")throw new Error("nofetch");const ctl=typeof AbortController!=="undefined"?new AbortController():null;const tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},6000);
- try{const body=new URLSearchParams({language:"en-GB",text:text});const r=await fetch("https://api.languagetool.org/v2/check",{method:"POST",body:body,signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error("http "+r.status);const j=await r.json();return (j.matches||[]);}finally{clearTimeout(tm);}}
+async function ltCheck(text,opts){if(typeof fetch!=="function")throw new Error("nofetch");opts=opts||{};
+ const once=async(extra)=>{const ctl=typeof AbortController!=="undefined"?new AbortController():null;const tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},7000);
+  try{const body=new URLSearchParams(Object.assign({language:"en-GB",text:text,enabledOnly:"false"},extra||{}));const r=await fetch("https://api.languagetool.org/v2/check",{method:"POST",body:body,signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error("http "+r.status);const j=await r.json();return (j.matches||[]);}finally{clearTimeout(tm);}};
+ if(opts.picky){try{return await once({level:"picky"});}catch(e){return await once({});}}
+ return once({});}
 function sEsc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function sCurWord(){try{return ALL.day?cur():null;}catch(e){return null;}}
 function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWord();const ws=ALL.day?S().w:null;
@@ -1312,16 +1348,116 @@ let sRec=null;
    sRec.onend=()=>{listening=false;b.textContent="🎤 说一句";};sRec.start();}catch(err){listening=false;b.textContent="🎤 说一句";sMsg("⚠️ 无法启动语音识别，可直接打字。");}};
   start("en-GB");};})();
 
+const SSTRICT_KEY="english1b_strict_v1";
+function sStrictOn(){try{const el=$("sentStrict");if(el)return !!el.checked;const v=localStorage.getItem(SSTRICT_KEY);return v===null?true:v!=="0";}catch(e){return true;}}
+function sStrictInit(){const el=$("sentStrict");if(!el)return;try{const v=localStorage.getItem(SSTRICT_KEY);el.checked=v===null?true:v!=="0";}catch(e){el.checked=true;}
+ el.addEventListener("change",()=>{try{localStorage.setItem(SSTRICT_KEY,el.checked?"1":"0");}catch(e){}});}
+function sTokenSpans(sent){const out=[];const re=/[A-Za-z]+(?:'[A-Za-z]+)?/g;let m;while((m=re.exec(sent))){out.push({start:m.index,end:m.index+m[0].length,text:m[0],low:m[0].toLowerCase()});}return out;}
+function sMergePaintSpans(spans){if(!spans||!spans.length)return [];
+ const sevRank={bad:2,warn:1,ok:0};const sorted=spans.slice().sort((a,b)=>a.start-b.start||b.end-a.end);
+ const out=[];sorted.forEach(sp=>{if(sp.start>=sp.end||sp.start<0)return;
+  if(!out.length||sp.start>=out[out.length-1].end){out.push(Object.assign({},sp));return;}
+  const last=out[out.length-1];
+  if(sp.start<=last.end){if((sevRank[sp.sev]||0)>=(sevRank[last.sev]||0)){last.sev=sp.sev;if(sp.label)last.label=sp.label;if(sp.fix!=null)last.fix=sp.fix;if(sp.bad!=null)last.bad=sp.bad;if(sp.id)last.id=sp.id;if(sp.kind)last.kind=sp.kind;}
+   last.end=Math.max(last.end,sp.end);last.start=Math.min(last.start,sp.start);}
+ });return out;}
+function sLocalPaintSpans(sent,w,r){const spans=[];const toks=sTokenSpans(sent);
+ if(/^[a-z]/.test(sent)){const t0=toks[0];spans.push({start:0,end:t0?t0.end:1,sev:"bad",kind:"capital",label:"句首要大写",bad:sent.slice(0,t0?t0.end:1),fix:(sent.charAt(0).toUpperCase()+sent.slice(1)).slice(0,t0?t0.end:1),id:"loc-cap"});}
+ if(sent&&!/[.?!]["')]?$/.test(sent)){const end=sent.length;const start=Math.max(0,end-1);spans.push({start:start,end:end,sev:"bad",kind:"punct",label:"末尾要加标点",bad:sent.slice(start,end)||"(末尾)",fix:(sent.slice(start,end)||"")+".",id:"loc-punct"});}
+ if(/(^|\s)i(\s|'|$)/.test(sent)){const re=/(^|\s)(i)(?=\s|'|$)/g;let m;while((m=re.exec(sent))){const st=m.index+m[1].length;spans.push({start:st,end:st+1,sev:"bad",kind:"I",label:"「I」要大写",bad:"i",fix:"I",id:"loc-I-"+st});}}
+ const hw=sHasWord(sent,w.en);
+ if(!hw.ok){/* missing target — no in-sentence span */}
+ if(r&&r.verbNeedsFix&&r.verbTok&&r.verbIdx>=0&&toks[r.verbIdx]){const t=toks[r.verbIdx];
+  let fixHint="";const fm=(r.fix||[]).find(x=>/改成：/.test(x));if(fm){const mm=fm.match(/改成：\s*([A-Za-z']+)/);if(mm)fixHint=mm[1];}
+  spans.push({start:t.start,end:t.end,sev:"bad",kind:"tense",label:"动词形式/时态",bad:t.text,fix:fixHint||"",id:"loc-tense"});}
+ return spans;}
+function sTargetOkSpans(sent,w,errMerged){const parts=sTargetParts(w.en);if(!parts.length)return [];
+ const toks=sTokenSpans(sent);const out=[];const err=errMerged||[];
+ const hit=[];parts.forEach(p=>{const fs=sForms(p);const i=toks.findIndex(t=>fs.includes(t.low));if(i>=0)hit.push(toks[i]);});
+ hit.forEach(t=>{const covered=err.some(e=>!(t.end<=e.start||t.start>=e.end)&&e.sev==="bad");
+  if(!covered)out.push({start:t.start,end:t.end,sev:"target",kind:"target",label:"目标词",id:"tgt-"+t.start});});
+ return out;}
+function sLtPaintSpans(sent,ms){return (ms||[]).map((m,i)=>{
+  const start=m.offset|0,len=m.length|0,end=start+len;if(len<=0)return null;
+  const sev=ltSev(m);const bad=sent.substr(start,len);
+  let fix="";if(m.replacements&&m.replacements[0])fix=m.replacements[0].value;
+  return {start,end,sev,kind:"lt",label:ltZh(m),bad,fix,id:"lt-"+i+"-"+start,raw:m};
+ }).filter(Boolean);}
+function sCollectPaint(sent,w,r,ltMs){const local=sLocalPaintSpans(sent,w,r);const lt=sLtPaintSpans(sent,ltMs);
+ const merged=sMergePaintSpans(local.concat(lt).filter(s=>s.sev==="bad"||s.sev==="warn"));
+ const targets=sTargetOkSpans(sent,w,merged);
+ // keep warn separate for chips; for paint merge warn into intervals too
+ const paint=sMergePaintSpans(merged); // already merged
+ return {paint,targets,chips:local.concat(lt)};}
+
+function sPaintAnnotatedHtml(sent,paint,targets){
+ const marks=[];
+ (paint||[]).forEach(p=>marks.push({start:p.start,end:p.end,cls:p.sev==="warn"?"s-warn":"s-bad",id:p.id,sev:p.sev}));
+ (targets||[]).forEach(t=>{
+  // if overlaps bad, skip pure target; else mark target
+  const hitBad=(paint||[]).some(p=>!(t.end<=p.start||t.start>=p.end)&&p.sev==="bad");
+  if(!hitBad)marks.push({start:t.start,end:t.end,cls:"s-target",id:t.id,sev:"target"});
+ });
+ marks.sort((a,b)=>a.start-b.start||b.end-a.end);
+ // build atomic segments via cut points
+ const cuts=new Set([0,sent.length]);marks.forEach(m=>{cuts.add(m.start);cuts.add(m.end);});
+ const pts=[...cuts].sort((a,b)=>a-b);
+ let html="";
+ for(let i=0;i<pts.length-1;i++){const a=pts[i],b=pts[i+1];if(a>=b)continue;const chunk=sent.slice(a,b);
+  const covering=marks.filter(m=>m.start<=a&&m.end>=b);
+  let cls="";let id="";
+  const bad=covering.find(m=>m.cls==="s-bad");const warn=covering.find(m=>m.cls==="s-warn");const tgt=covering.find(m=>m.cls==="s-target");
+  if(bad){cls="s-bad";id=bad.id;}else if(warn){cls="s-warn";id=warn.id;}else if(tgt){cls="s-target";id=tgt.id;}else{cls="s-ok";}
+  const idAttr=id?' data-sid="'+sEsc(id)+'" id="sid-'+sEsc(id)+'"':"";
+  html+='<span class="'+cls+'"'+idAttr+'>'+sEsc(chunk)+'</span>';}
+ return html;}
+
+function sWordPieces(s){const out=[];const re=/[A-Za-z]+(?:'[A-Za-z]+)?|[^A-Za-z\s]+|\s+/g;let m;while((m=re.exec(s)))out.push(m[0]);return out;}
+function sWordDiffHtml(a,b){const A=sWordPieces(a),B=sWordPieces(b);const n=A.length,m=B.length;
+ const dp=Array.from({length:n+1},()=>new Uint16Array(m+1));
+ for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+ const ops=[];let i=0,j=0;while(i<n&&j<m){if(A[i]===B[j]){ops.push({t:"eq",v:A[i]});i++;j++;}
+  else if(dp[i+1][j]>=dp[i][j+1]){ops.push({t:"del",v:A[i++]});}else{ops.push({t:"ins",v:B[j++]});}}
+ while(i<n)ops.push({t:"del",v:A[i++]});while(j<m)ops.push({t:"ins",v:B[j++]});
+ return ops.map(o=>{if(o.t==="eq")return sEsc(o.v);if(o.t==="ins")return '<span class="s-ins">'+sEsc(o.v)+'</span>';return '<span class="s-del">'+sEsc(o.v)+'</span>';}).join("");}
+
+function sChipHtml(chips,sent){const seen=new Set();const items=[];
+ (chips||[]).forEach(c=>{if(!c||c.start==null)return;if(c.sev!=="bad"&&c.sev!=="warn")return;
+  const bad=(c.bad!=null?c.bad:sent.slice(c.start,c.end))||"";const key=(c.label||"")+"|"+bad+"|"+c.start;
+  if(seen.has(key))return;seen.add(key);
+  items.push(c);});
+ if(!items.length)return "";
+ return '<div class="s-sec"><b>错误标注：</b><div class="s-chips">'+items.map(c=>{
+  const bad=(c.bad!=null?c.bad:sent.slice(c.start,c.end))||"(空)";
+  const fix=c.fix?('<span class="s-chip-fix">「改成：'+sEsc(c.fix)+'」</span>'):"";
+  const lab=c.label?('<span class="s-chip-lab">'+sEsc(c.label)+'</span>'):"";
+  const cls=c.sev==="warn"?"s-chip s-chip-warn":"s-chip";
+  return '<button type="button" class="'+cls+'" data-goto="'+sEsc(c.id||(""))+'"><span class="s-chip-badq">'+sEsc(bad)+'</span>'+fix+" "+lab+"</button>";
+ }).join("")+"</div></div>";}
+
+function sBindChipClicks(root){if(!root)return;root.querySelectorAll("[data-goto]").forEach(btn=>{
+  btn.addEventListener("click",()=>{const id=btn.getAttribute("data-goto");if(!id)return;
+   const el=root.querySelector('[data-sid="'+id+'"]')||document.getElementById("sid-"+id);
+   if(el){try{el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.remove("s-pulse");void el.offsetWidth;el.classList.add("s-pulse");}catch(e){}}
+  });});}
+
 function sDedupLines(arr){const seen=new Set(),out=[];arr.forEach(x=>{const k=String(x).replace(/\s+/g," ").trim();const key=k.slice(0,40);if(!k||seen.has(key))return;seen.add(key);out.push(x);});return out;}
-function sRenderRes(r,lt,ltState,corr,sent){const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
+function sRenderRes(r,lt,ltState,corr,sent,paintInfo){const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
+ paintInfo=paintInfo||{paint:[],targets:[],chips:[]};
+ const annot=sPaintAnnotatedHtml(sent,paintInfo.paint,paintInfo.targets);
  let h='<div class="s-head fb '+cls+'">'+head+'</div>';
+ h+='<div class="s-legend"><span>🟢 对的部分</span><span>🔴 要改的部分</span><span>🟢粗框 = 目标词用上了</span></div>';
+ h+='<div class="s-annot-wrap"><div class="s-annot-label">标注句</div><div class="s-annot" id="sAnnot">'+annot+'</div></div>';
+ if(corr&&corr!==sent){h+='<div class="s-annot-wrap"><div class="s-annot-label">对照改法</div><div class="s-diff" id="sDiff">'+sWordDiffHtml(sent,corr)+'</div><div style="margin-top:6px"><span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorr">用参考改法</button></div></div>';}
+ else if(corr){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';}
+ h+=sChipHtml(paintInfo.chips,sent);
  if(r.ok.length)h+='<div class="s-sec"><b>做对了：</b><ul>'+r.ok.map(x=>"<li>✔ "+sEsc(x)+"</li>").join("")+"</ul></div>";
  const fixes=sDedupLines(r.fix.concat(lt||[]));
- if(fixes.length)h+='<div class="s-sec"><b>要改：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
+ if(fixes.length)h+='<div class="s-sec"><b>要改（说明）：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
  if(r.tips.length)h+='<div class="s-sec"><b>小提示：</b><ul>'+sDedupLines(r.tips).map(x=>"<li>💡 "+sEsc(x)+"</li>").join("")+"</ul></div>";
- if(corr&&corr!==sent){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorr">用参考改法</button></div>';}
  h+='<div class="s-note">'+sEsc(ltState)+' · 机器初检，不是100%准，也看不出全部意思；要精批点发给老师</div>';
  $("sentRes").innerHTML=h;
+ sBindChipClicks($("sentRes"));
  const use=$("sUseCorr");
  if(use&&corr){use.onclick=()=>{$("sentIn").value=corr;$("sentIn").focus();sMsg("已填入参考改法，可再改一改再检测。");};}
  if(r.level==="bad"||r.level==="mid"){try{$("sentIn").focus();}catch(e){}}}
@@ -1349,31 +1485,33 @@ function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
 
 async function sDoCheck(){const w=sCurWord();if(!w)return;let s=$("sentIn").value.trim().replace(/\s+/g," ");$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
  sSave(w.en,s);$("sentLast").textContent="已保存：" + s;
- // attach example from card if present
- if(!w.ex&&typeof W==="function"){/* keep */}
  const r=localCheck(s,w);
  const btn=$("sentChk");const oldLabel=btn.textContent;btn.disabled=true;btn.textContent="检测中…";
- sRenderRes(r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s);
- let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s;
- try{const ms0=await ltCheck(s);const ms=filterLTMatches(s,ms0,w);
+ const localPaint=sCollectPaint(s,w,r,[]);
+ sRenderRes(r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint);
+ let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s,ms=[];
+ const picky=sStrictOn();
+ try{const ms0=await ltCheck(s,{picky:picky});ms=filterLTMatches(s,ms0,w);
+  // in non-strict, drop warn-level style/typography from chips/level (still may show if local)
+  if(!picky){ms=ms.filter(m=>ltSev(m)!=="warn");}
   lt=sMergeLtMessages(ms,s,w,r);
   const ltCorr=applyLT(s,ms0,w);
-  // prefer local tense correction if we rewrote verb via tip; merge gently
   corr=ltCorr||corr;
-  // never allow LI-style allcaps names in final corr
   corr=corr.replace(/\b([A-Z]{2,12})\b/g,(m)=>{const low=m.toLowerCase();return S_NAMEISH.has(low)?m.charAt(0)+m.slice(1).toLowerCase():m;});
   if(lt.length&&r.level==="good")r.level="mid";
-  if(ms.some(m=>m.rule&&(m.rule.issueType==="grammar"||/AGR|SVA|VBZ|TENSE/.test((m.rule.id)||"")))){if(r.level==="good")r.level="mid";}
-  // hard grammar without local already bad → bad
-  if(ms.some(m=>m.rule&&m.rule.issueType==="grammar")&&r.level!=="bad"){/* keep mid unless local fix */}
-  if(!lt.length)state="语法检查：没发现明显语法错误";
-  else state="语法检查：LanguageTool";}
- catch(e){state="⚠️ 在线语法检查没连上（可能断网或太频繁），只做了本地检查";}
+  if(ms.some(m=>m.rule&&(m.rule.issueType==="grammar"||/AGR|SVA|VBZ|TENSE|HE_VERB/.test((m.rule.id)||"")))){if(r.level==="good")r.level="mid";}
+  if(!lt.length)state="语法检查：没发现明显语法错误"+(picky?"（严格）":"");
+  else state="语法检查：LanguageTool"+(picky?" · 严格模式":"");}
+ catch(e){state="⚠️ 在线语法检查没连上（可能断网或太频繁），只做了本地检查";ms=[];}
  finally{btn.disabled=false;btn.textContent=oldLabel||"检测";}
- if(sCurWord()!==w)return;sRenderRes(r,lt,state,corr,s);}
+ if(sCurWord()!==w)return;
+ const paintInfo=sCollectPaint(s,w,r,ms);
+ sRenderRes(r,lt,state,corr,s,paintInfo);}
+
 function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘贴发送");const fb=()=>{try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);const ok=document.execCommand("copy");document.body.removeChild(ta);ok?done():sMsg("复制失败，请长按下面的文字手动复制："+t);}catch(e){sMsg("复制失败，请手动复制："+t);}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();}
 if($("sentArea")){
+ sStrictInit();
  $("sentChk").onclick=sDoCheck;
  $("sentIn").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheck();}});
  $("sentSay").onclick=()=>{const t=$("sentIn").value.trim();if(t)speak(t);else sMsg("先写一个句子再听。");};
