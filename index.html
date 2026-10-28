@@ -1062,11 +1062,12 @@ function renderAll(){
   if(S().tab==="quiz")renderQuiz();
   if(S().tab==="mem")renderMem();
 }
-/* ===== 造句检测 Sentence check ===== */
+/* ===== 造句检测 Sentence check (smarter) ===== */
 const SKEY="english1b_sentences_v1";
 function sLoad(){try{return JSON.parse(localStorage.getItem(SKEY)||"{}")||{};}catch(e){return {};}}
 function sSave(word,s){try{const o=sLoad();o[word]={s:s,t:Date.now()};localStorage.setItem(SKEY,JSON.stringify(o));}catch(e){}}
-const IRREG={be:["am","is","are","was","were","been","being"],go:["goes","went","gone"],have:["has","had"],do:["does","did","done"],make:["made"],take:["took","taken"],get:["got","gotten"],come:["came"],see:["saw","seen"],eat:["ate","eaten"],buy:["bought"],teach:["taught"],speak:["spoke","spoken"],write:["wrote","written"],run:["ran"],swim:["swam","swum"],sing:["sang","sung"],meet:["met"],tell:["told"],say:["said"],know:["knew","known"],think:["thought"],give:["gave","given"],find:["found"],leave:["left"],feel:["felt"],read:["read"],sleep:["slept"],drive:["drove","driven"],ride:["rode","ridden"],fly:["flew","flown","flies"],begin:["began","begun"],sit:["sat"],stand:["stood"],grow:["grew","grown"],draw:["drew","drawn"],choose:["chose","chosen"],forget:["forgot","forgotten"],spend:["spent"],send:["sent"],bring:["brought"],catch:["caught"],keep:["kept"],lose:["lost"],win:["won"],put:["put"],cut:["cut"],let:["let"],child:["children"],man:["men"],woman:["women"],person:["people"],foot:["feet"],tooth:["teeth"],good:["better","best"],bad:["worse","worst"],well:["better","best"]};
+const IRREG={be:["am","is","are","was","were","been","being"],go:["goes","went","gone"],have:["has","had"],do:["does","did","done"],make:["made"],take:["took","taken"],get:["got","gotten"],come:["came"],see:["saw","seen"],eat:["ate","eaten"],buy:["bought"],teach:["taught"],speak:["spoke","spoken"],write:["wrote","written"],run:["ran"],swim:["swam","swum"],sing:["sang","sung"],meet:["met"],tell:["told"],say:["said"],know:["knew","known"],think:["thought"],give:["gave","given"],find:["found"],leave:["left"],feel:["felt"],read:["read"],sleep:["slept"],drive:["drove","driven"],ride:["rode","ridden"],fly:["flew","flown","flies"],begin:["began","begun"],sit:["sat"],stand:["stood"],grow:["grew","grown"],draw:["drew","drawn"],choose:["chose","chosen"],forget:["forgot","forgotten"],spend:["spent"],send:["sent"],bring:["brought"],catch:["caught"],keep:["kept"],lose:["lost"],win:["won"],put:["put"],cut:["cut"],let:["let"],visit:["visits","visited","visiting"],play:["plays","played","playing"],work:["works","worked","working"],live:["lives","lived","living"],study:["studies","studied","studying"],watch:["watches","watched","watching"],help:["helps","helped","helping"],need:["needs","needed","needing"],want:["wants","wanted","wanting"],like:["likes","liked","liking"],love:["loves","loved","loving"],call:["calls","called","calling"],clean:["cleans","cleaned","cleaning"],cook:["cooks","cooked","cooking"],stay:["stays","stayed","staying"],finish:["finishes","finished","finishing"],start:["starts","started","starting"],open:["opens","opened","opening"],close:["closes","closed","closing"],enjoy:["enjoys","enjoyed","enjoying"],child:["children"],man:["men"],woman:["women"],person:["people"],foot:["feet"],tooth:["teeth"],good:["better","best"],bad:["worse","worst"],well:["better","best"]};
+const IRREG_PAST={am:"was",is:"was",are:"were",go:"went",goes:"went",have:"had",has:"had",do:"did",does:"did",make:"made",makes:"made",take:"took",takes:"took",get:"got",gets:"got",come:"came",comes:"came",see:"saw",sees:"saw",eat:"ate",eats:"ate",buy:"bought",buys:"bought",teach:"taught",teaches:"taught",speak:"spoke",speaks:"spoke",write:"wrote",writes:"wrote",run:"ran",runs:"ran",swim:"swam",swims:"swam",sing:"sang",sings:"sang",meet:"met",meets:"met",tell:"told",tells:"told",say:"said",says:"said",know:"knew",knows:"knew",think:"thought",thinks:"thought",give:"gave",gives:"gave",find:"found",finds:"found",leave:"left",leaves:"left",feel:"felt",feels:"felt",sleep:"slept",sleeps:"slept",drive:"drove",drives:"drove",ride:"rode",rides:"rode",fly:"flew",flies:"flew",begin:"began",begins:"began",sit:"sat",sits:"sat",stand:"stood",stands:"stood",grow:"grew",grows:"grew",draw:"drew",draws:"drew",choose:"chose",chooses:"chose",forget:"forgot",forgets:"forgot",spend:"spent",spends:"spent",send:"sent",sends:"sent",bring:"brought",brings:"brought",catch:"caught",catches:"caught",keep:"kept",keeps:"kept",lose:"lost",loses:"lost",win:"won",wins:"won",visit:"visited",visits:"visited",play:"played",plays:"played",work:"worked",works:"worked",live:"lived",lives:"lived",study:"studied",studies:"studied",watch:"watched",watches:"watched",help:"helped",helps:"helped",need:"needed",needs:"needed",want:"wanted",wants:"wanted",like:"liked",likes:"liked",love:"loved",loves:"loved",call:"called",calls:"called",clean:"cleaned",cleans:"cleaned",cook:"cooked",cooks:"cooked",stay:"stayed",stays:"stayed",finish:"finished",finishes:"finished",start:"started",starts:"started",open:"opened",opens:"opened",close:"closed",closes:"closed",enjoy:"enjoyed",enjoys:"enjoyed"};
 function sForms(t){t=t.toLowerCase().replace(/[^a-z']/g,"");if(!t)return [];const f=new Set([t,t+"s",t+"es",t+"ed",t+"d",t+"ing",t+"er",t+"est",t+"ly"]);
  if(/y$/.test(t)){const b=t.slice(0,-1);["ies","ied","ier","iest","ily"].forEach(x=>f.add(b+x));}
  if(/e$/.test(t)){const b=t.slice(0,-1);f.add(b+"ing");f.add(b+"er");f.add(b+"est");}
@@ -1074,37 +1075,127 @@ function sForms(t){t=t.toLowerCase().replace(/[^a-z']/g,"");if(!t)return [];cons
  if(/f$/.test(t))f.add(t.slice(0,-1)+"ves");if(/fe$/.test(t))f.add(t.slice(0,-2)+"ves");
  (IRREG[t]||[]).forEach(x=>f.add(x));return [...f];}
 function sTok(s){return (s.toLowerCase().match(/[a-z]+(?:'[a-z]+)?/g)||[]);}
+function sTokRaw(s){return (String(s).match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]);}
 const S_SKIP=new Set(["a","an","the","sb","sth","one's","someone","something","sb's","...","etc"]);
 function sTargetParts(en){return sTok(String(en).replace(/\(.*?\)|（.*?）/g," ").split(/[\/;,]/)[0]).filter(x=>!S_SKIP.has(x)&&x!=="sb"&&x!=="sth");}
-function sHasWord(sent,en){const toks=sTok(sent),parts=sTargetParts(en);if(!parts.length)return {ok:true,miss:[]};
- const tk=toks.map(x=>x.replace(/'s$/,""));const miss=parts.filter(p=>{const fs=sForms(p);return !tk.some(x=>fs.includes(x))&&!toks.some(x=>fs.includes(x));});return {ok:!miss.length,miss:miss,idx:tk.findIndex(x=>sForms(parts[0]).includes(x))};}
-const S_VERBS=new Set("am is are was were be been being 'm 're 's do does did have has had can could will would shall should may might must like likes liked love loves want wants go goes went come comes came get gets got make makes made take takes took play plays played live lives lived work works study studies watch watches see sees saw eat eats ate drink help helps need needs know think feel look looks looked visit visits enjoy enjoys speak speaks read reads write writes buy bought meet met swim run runs ride rides sing dance clean cleans cook cooks call called use uses tell told say says said give gives open close start finish stay leave left become became".split(" "));
+function sHasWord(sent,en){const toks=sTok(sent),parts=sTargetParts(en);if(!parts.length)return {ok:true,miss:[],idx:-1,adj:true};
+ const tk=toks.map(x=>x.replace(/'s$/,""));const miss=parts.filter(p=>{const fs=sForms(p);return !tk.some(x=>fs.includes(x))&&!toks.some(x=>fs.includes(x));});
+ let idx=-1,adj=true;
+ if(!miss.length&&parts.length){const idxs=parts.map(p=>{const fs=sForms(p);return tk.findIndex(x=>fs.includes(x));});
+  idx=idxs[0];adj=idxs.every((v,i)=>v>=0)&&(idxs.length===1||idxs.every((v,i)=>i===0||v===idxs[i-1]+1));}
+ return {ok:!miss.length,miss:miss,idx:idx,adj:adj};}
+const S_VERBS=new Set("am is are was were be been being 'm 're 's do does did have has had can could will would shall should may might must like likes liked love loves want wants go goes went come comes came get gets got make makes made take takes took play plays played live lives lived work works study studies watch watches see sees saw eat eats ate drink help helps need needs know think feel look looks looked visit visits visited enjoy enjoys speak speaks read reads write writes buy bought meet met swim run runs ride rides sing dance clean cleans cook cooks call called use uses tell told say says said give gives open close start finish stay leave left become became".split(" "));
 function sHasVerb(toks){return toks.some(t=>S_VERBS.has(t)||/^(.*'(m|re|s|ve|ll|d)|.*n't)$/.test(t)||/[a-z]{2,}(ed|ing)$/.test(t)||/[a-z]{3,}s$/.test(t)&&!/(ss|us|is)$/.test(t));}
 const S_DET=new Set(["a","an","the","my","your","his","her","our","their","its","this","that","these","those","some","any","many","much","every","no","one","two","three"]);
 const S_BE=new Set(["am","is","are","was","were","be","been","being","look","looks","feel","feels","seem","seems","become","becomes","get","gets","very","so","too","really","quite"]);
 const S_SUBJ=new Set(["i","you","he","she","it","we","they"]);
+const S_STOP=new Set(["a","an","the","to","of","in","on","at","for","with","and","or","but","is","am","are","was","were","be","been","do","does","did","have","has","had","i","you","he","she","it","we","they","my","your","his","her","our","their","this","that","these","those","not","no","yes","very","so","too","as","by","from","into","about","up","out","off","over","after","before","than","then","there","here","also","just","only","can","will","would","should","could","may","might","must"]);
+const S_NAMEISH=new Set(["li","wang","zhang","liu","chen","yang","huang","zhao","wu","zhou","xu","zhu","hu","guo","gao","lin","luo","zheng","liang","xie","song","tang","deng","han","cao","peng","zeng","xiao","cai","pan","tian","dong","yu","jiang","cheng","wei","su","ding","yao","shen","cui","tan","qiu","bai","qin","meng","wan","hou","duan","kong","qian","yan","xiong","gong","lily","tom","jack","mary","john","anna","emma","ella","lucy","amy","mike","david","peter","paul","kate","jane","bob","sam","ben","max","alex","leo","ryan","eric","kevin","jason","andy","tony","helen","susan","sarah","lisa","jenny","cindy","alice","grace","rose","ivy","nina","zoe","baker","anderson","smith","brown","jones","wilson","taylor","clark","hall","young","king","wright","scott","green","adams","nelson","hill","campbell","mitchell","roberts","carter","phillips","evans","turner","parker","edwards","collins","stewart","morris","murphy","rogers","morgan","peterson","cooper","reed","bailey","bell","gomez","murray","freeman","wells","fox","bryant","alexander"]);
+
+function sPastOf(base){base=base.toLowerCase();if(IRREG_PAST[base])return IRREG_PAST[base];
+ if(/e$/.test(base))return base+"d";if(/[^aeiou]y$/.test(base))return base.slice(0,-1)+"ied";
+ if(/[^aeiou][aeiou][bdgmnprt]$/.test(base))return base+base.slice(-1)+"ed";return base+"ed";}
+function s3sgOf(base){base=base.toLowerCase();if(base==="have")return "has";if(base==="do")return "does";if(base==="go")return "goes";if(base==="be")return "is";
+ if(/(s|sh|ch|x|z|o)$/.test(base))return base+"es";if(/[^aeiou]y$/.test(base))return base.slice(0,-1)+"ies";return base+"s";}
+function sIsPastForm(tok){if(/ed$/.test(tok))return true;const pasts=new Set(Object.values(IRREG_PAST));return pasts.has(tok)||["was","were","been","did","had","went","came","saw","got","made","took","said","told"].includes(tok);}
+function sIsIng(tok){return /ing$/.test(tok);}
+function sIs3sg(tok,base){return tok===s3sgOf(base)||(tok.endsWith("s")&&!tok.endsWith("ss")&&tok!==base);}
+function sDetectTime(sent){const s=sent.toLowerCase();
+ if(/\b(yesterday|last\s+(night|week|month|year|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|(\d+|a|an|one|two|three|few|several)\s+\w+\s+ago|just\s+now)\b/.test(s))return "past";
+ if(/\b(tomorrow|next\s+(week|month|year|monday|tuesday|wednesday|thursday|friday|saturday|sunday)|in\s+the\s+future|\bsoon\b)\b/.test(s))return "future";
+ if(/\b(every\s+(day|week|month|year|morning|evening|night)|usually|always|often|sometimes|seldom|rarely)\b/.test(s))return "habit";
+ if(/\b(today|now|at\s+the\s+moment|right\s+now|currently)\b/.test(s))return "now";
+ return null;}
+function sFindMainVerb(toks){const aux=new Set(["am","is","are","was","were","do","does","did","have","has","had","will","would","can","could","shall","should","may","might","must"]);
+ for(let i=0;i<toks.length;i++){const t=toks[i];if(S_SUBJ.has(t))continue;if(aux.has(t)){const n=toks[i+1];if(n&&n!=="not"&&n!=="n't")return {tok:n,idx:i+1,aux:t};return {tok:t,idx:i,aux:null};}
+  if(S_VERBS.has(t)||/[a-z]{2,}(ed|ing)$/.test(t)||(/[a-z]{3,}s$/.test(t)&&!/(ss|us|is|this|his)$/.test(t)))return {tok:t,idx:i,aux:null};}
+ return null;}
+function sTenseCheck(sent,w){const tips=[],fix=[];const time=sDetectTime(sent);if(!time)return {tips,fix,time:null};
+ const toks=sTok(sent);const mv=sFindMainVerb(toks);if(!mv)return {tips,fix,time};
+ const v=mv.tok,aux=mv.aux;const baseGuess=(()=>{if(/ied$/.test(v))return v.slice(0,-3)+"y";if(/ed$/.test(v)){let b=v.slice(0,-2);if(b.length>=3&&b.slice(-1)===b.slice(-2,-1))b=b.slice(0,-1);return b;}if(/ing$/.test(v))return v.slice(0,-3);if(/ies$/.test(v))return v.slice(0,-3)+"y";if(/es$/.test(v)&&/(s|sh|ch|x|z|o)es$/.test(v))return v.slice(0,-2);if(/s$/.test(v)&&!/ss$/.test(v))return v.slice(0,-1);return v;})();
+ const targetParts=sTargetParts(w.en);const targetIsVerb=/^动词/.test(String(w.pos||""))||targetParts.some(p=>S_VERBS.has(p)||IRREG[p]);
+ const useBase=targetIsVerb&&targetParts.length===1?targetParts[0]:baseGuess;
+ if(time==="past"){
+  const okPast=sIsPastForm(v)||aux==="did"||aux==="was"||aux==="were"||aux==="had";
+  if(!okPast&&!/will|would|can|could|shall|should|may|might|must/.test(aux||"")){
+   const past=sPastOf(useBase);const ex=sent.replace(new RegExp("\\b"+v+"\\b","i"),past);
+   fix.push("有过去时间词（如 yesterday / last… / …ago），动词多用过去式。改成："+past+" —— 例："+(ex!==sent?ex:"She "+past+" … yesterday."));}
+ }
+ if(time==="future"){
+  const okFut=/^(will|'ll|shall)$/.test(aux||"")||/\b(am|is|are)\s+going\s+to\b/i.test(sent)||(aux&&S_BE.has(aux)&&sIsIng(v));
+  if(!okFut){fix.push("有将来时间词（如 tomorrow / next…），多用 will / be going to / 现在进行表将来。改成：will "+useBase+" —— 例：I will "+useBase+" tomorrow.");}
+ }
+ if(time==="habit"){
+  const subj=toks.find(t=>S_SUBJ.has(t));
+  const need3=/^(he|she|it)$/.test(subj||"");
+  const okHab=!(aux==="will"||aux==="would")&&!sIsPastForm(v)&&(need3?(sIs3sg(v,useBase)||aux==="does"):(!sIsPastForm(v)));
+  if(need3&&!sIs3sg(v,useBase)&&aux!=="does"&&!sIsIng(v)){
+   const sg=s3sgOf(useBase);fix.push("有 every day / usually / always 等，一般现在时：he/she/it 后动词加 -s。改成："+sg+" —— 例：He "+sg+" … every day.");}
+  else if(!need3&&sIsPastForm(v)&&aux!=="did"){tips.push("习惯/频率时间词常用一般现在时（不一定用过去式）。");}
+ }
+ if(time==="now"){tips.push("有 today/now：一般现在或现在进行时都可以。");}
+ return {tips,fix,time};}
+
 function sPosHints(sent,w){const out=[],toks=sTok(sent),hw=sHasWord(sent,w.en);const pos=String(w.pos||"");if(!hw.ok||hw.idx<0||sTargetParts(w.en).length>1)return out;
  const i=hw.idx,prev=toks[i-1]||"",prev2=toks[i-2]||"",nxt=toks[i+1]||"",word=toks[i];
  if(/^名词/.test(pos)&&!/动词/.test(pos)){if(S_SUBJ.has(prev)&&!/s$/.test(word))out.push("「"+w.en+"」是名词，一般不直接放在 I/he/they 后面当动作；名词前常用 a/the/my 或形容词。");
-  else if(S_DET.has(prev)||S_DET.has(prev2))out.push("✔ 名词前有 "+(S_DET.has(prev)?prev:prev2)+"，用法像名词，很好。");
-  else if(prev==="a"||prev==="an")out.push("");}
+  else if(S_DET.has(prev)||S_DET.has(prev2))out.push("✔ 名词前有 "+(S_DET.has(prev)?prev:prev2)+"，用法像名词，很好。");}
  if(/^形容词/.test(pos)){if(S_BE.has(prev))out.push("✔ 形容词放在 be/look/very 后面，用法对。");else if(nxt&&!S_VERBS.has(nxt)&&i>0)out.push("✔ 形容词放在名词前面修饰它，也可以。");else if(!S_BE.has(prev)&&i>0&&S_SUBJ.has(prev))out.push("形容词前常要 be 动词，例如：I am "+w.en+"。");}
  if(/^副词/.test(pos)){if(S_DET.has(prev))out.push("「"+w.en+"」是副词，一般不放在 a/the/my 后面；副词常放句末或动词前后。");}
- if(/^动词/.test(pos)){if(["he","she","it"].includes(prev)&&word===w.en.toLowerCase()&&!/^(can|will)$/.test(prev))out.push("主语是 he/she/it 时，一般现在时动词要加 -s/-es（或用过去式）。");
+ if(/^动词/.test(pos)){if(["he","she","it"].includes(prev)&&word===w.en.toLowerCase()&&!/^(can|will|could|would|should|may|might|must|did|does|do)$/.test(toks[i-1]||"")){
+   const sg=s3sgOf(w.en.toLowerCase());out.push("主语是 he/she/it 时，一般现在时动词要加 -s。改成："+sg+" —— 例：She "+sg+" …");}
   if(S_DET.has(prev)&&!/ing$/.test(word))out.push("「"+w.en+"」是动词，a/the/my 后面一般接名词，不接动词原形。");
   if(prev==="to"&&word!==w.en.toLowerCase()&&!/ing$/.test(word))out.push("to 后面的动词一般用原形："+w.en+"。");}
  return out.filter(Boolean);}
+
+function sNormSent(s){return String(s||"").toLowerCase().replace(/[’']/g,"'").replace(/[^a-z0-9\s']/g," ").replace(/\s+/g," ").trim();}
+function sNearCopy(sent,ex){if(!ex)return false;const a=sNormSent(sent),b=sNormSent(ex);if(!a||!b)return false;if(a===b)return true;
+ const ta=a.split(" "),tb=b.split(" ");if(ta.length<3||tb.length<3)return a===b;
+ let same=0;const setB=new Set(tb);ta.forEach(t=>{if(setB.has(t))same++;});
+ const ratio=same/Math.max(ta.length,tb.length);const lenClose=Math.abs(ta.length-tb.length)<=2;
+ return ratio>=0.85&&lenClose;}
+function sContentWords(toks,targetParts){const tp=new Set(targetParts);return toks.filter(t=>!S_STOP.has(t)&&!tp.has(t)&&t.length>1);}
+function sNounThin(sent,w){const pos=String(w.pos||"");const isNoun=(/^名词/.test(pos)||/词组/.test(pos))&&!/^动词/.test(pos);
+ if(!isNoun)return null;const parts=sTargetParts(w.en);const toks=sTok(sent);const hw=sHasWord(sent,w.en);if(!hw.ok||hw.idx<0)return null;
+ const i=hw.idx,prev=toks[i-1]||"";const content=sContentWords(toks,parts);
+ const hasDet=S_DET.has(prev)||(i>=2&&S_DET.has(toks[i-2])&&!S_VERBS.has(prev));
+ if(!hasDet&&content.length<=1){return "名词前常加 a/the/my，并说明是什么。改成：My "+w.en+" is … / I have a "+w.en+".";}
+ if(hasDet&&content.length===0&&toks.length<=4){return "句子几乎只有目标词，再加点具体内容（是谁的、做什么）。改成：My "+w.en+" is Li. / He is a "+w.en+".";}
+ return null;}
+
 function localCheck(sent,w){const ok=[],fix=[],tips=[];const s=String(sent||"").trim();const toks=sTok(s);
- if(!s)return {ok,fix:["还没写句子哦。"],tips,level:"bad"};
- const hw=sHasWord(s,w.en);if(hw.ok)ok.push("用到了目标词「"+w.en+"」");else fix.push("句子里没找到「"+hw.miss.join(" / ")+"」，要把这个词用进去。");
- if(toks.length>=3)ok.push("长度可以（"+toks.length+" 个词）");else fix.push("太短了，至少写 3 个词，例如：I like "+w.en+".");
- if(/^[A-Z]/.test(s))ok.push("开头大写");else if(/^[a-z]/.test(s))fix.push("句子开头字母要大写："+s.charAt(0).toUpperCase()+s.slice(1));
- if(/[.?!]["')]?$/.test(s))ok.push("结尾有标点");else fix.push("句子末尾要加 . ? 或 !");
+ if(!s)return {ok,fix:["还没写句子哦。"],tips,level:"bad",corrLocal:null};
+ const hw=sHasWord(s,w.en);
+ if(hw.ok){ok.push("用上了目标词「"+w.en+"」");
+  if(sTargetParts(w.en).length>1&&hw.adj===false)tips.push("「"+w.en+"」是固定词组，尽量连在一起写，不要拆得太开。");}
+ else fix.push("句子里没找到「"+hw.miss.join(" / ")+"」，要把这个词用进去。改成：…… "+w.en+" ……");
+ if(toks.length>=3)ok.push("句子长度可以");else fix.push("太短了，至少写 3 个词。改成：I like "+w.en+".");
+ if(/^[A-Z]/.test(s))ok.push("开头大写对了");else if(/^[a-z]/.test(s))fix.push("句子开头字母要大写。改成："+s.charAt(0).toUpperCase()+s.slice(1));
+ if(/[.?!]["')]?$/.test(s))ok.push("结尾标点对了");else fix.push("句子末尾要加 . ? 或 !");
  if(/[\u4e00-\u9fff]/.test(s))fix.push("句子里有中文，请全部用英文。");
  if(/(^|\s)i(\s|'|$)/.test(s))fix.push("「I」（我）永远大写。");
- if(toks.length>=3&&!sHasVerb(toks)&&!/^(please|let|don't)/i.test(s))tips.push("好像没看到动词（如 is/am/are/like/have）——英语句子一般要有动词。（机器猜测，可能不准）");
+ if(toks.length>=3&&!sHasVerb(toks)&&!/^(please|let|don't)/i.test(s))tips.push("好像没看到动词（如 is/am/are/like/have）——英语句子一般要有动词。（机器猜测）");
  sPosHints(s,w).forEach(h=>(h[0]==="✔"?ok:tips).push(h.replace(/^✔ /,"")));
- const level=fix.length?"bad":(tips.length?"mid":"good");return {ok,fix,tips,level};}
+ const tc=sTenseCheck(s,w);tc.fix.forEach(x=>fix.push(x));tc.tips.forEach(x=>tips.push(x));if(tc.time==="past"&&!tc.fix.length)ok.push("时态（过去）对上了时间词");
+ if(tc.time==="habit"&&!tc.fix.length)ok.push("时态（习惯/一般现在）对上了");
+ if(tc.time==="future"&&!tc.fix.length)ok.push("时态（将来）对上了");
+ const thin=sNounThin(s,w);if(thin){if(/改成：/.test(thin))fix.push(thin);else tips.push(thin);}
+ if(w.exEn&&sNearCopy(s,w.exEn))tips.push("尽量自己造，别照抄例句");
+ // local soft correction seed
+ let corrLocal=s;
+ if(/^[a-z]/.test(corrLocal))corrLocal=corrLocal.charAt(0).toUpperCase()+corrLocal.slice(1);
+ corrLocal=corrLocal.replace(/(^|\s)i(\s|'|$)/g,(m,a,b)=>a+"I"+b);
+ if(!/[.?!]["')]?$/.test(corrLocal))corrLocal=corrLocal.replace(/[,;:\s]*$/,"")+".";
+ // title-case short name-like tokens that are fully lowercase (not sentence-initial handled above)
+ corrLocal=corrLocal.replace(/\b([a-z]{1,12})\b/g,(m,w0,off)=>{
+  if(off===0)return m; // already handled first char maybe
+  const low=w0.toLowerCase();
+  if(S_NAMEISH.has(low)&&w0===low)return w0.charAt(0).toUpperCase()+w0.slice(1);
+  return m;});
+ // fix first token capital if whole first word is nameish all-lower was already uppercased first letter
+ const level=fix.length?"bad":(tips.length?"mid":"good");
+ return {ok,fix,tips,level,corrLocal,time:tc.time};}
+
 const LT_CAT={GRAMMAR:"语法",TYPOS:"拼写",CASING:"大小写",PUNCTUATION:"标点",TYPOGRAPHY:"格式",STYLE:"表达风格",CONFUSED_WORDS:"易混词",REDUNDANCY:"重复啰嗦",COLLOCATIONS:"搭配",MISC:"其他",SEMANTICS:"语义"};
 function ltZh(m){const id=(m.rule&&m.rule.id)||"",cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const c=LT_CAT[cat]||"问题";
  if(/AGR|AGREEMENT|SVA|VBZ|NON3PRS/.test(id))return "主谓一致：主语和动词形式不搭（如 he goes / they go）";
@@ -1117,7 +1208,86 @@ function ltZh(m){const id=(m.rule&&m.rule.id)||"",cat=(m.rule&&m.rule.category&&
  if(/DT_|DET|ARTICLE|THE_/.test(id))return "冠词（a/an/the）可能用得不对";
  if(/TENSE|PAST|PRP_VB|MD_BASEFORM|BASE_FORM/.test(id))return "动词形式/时态可能不对";
  return c+"："+String(m.shortMessage||m.message||"").slice(0,90);}
-function applyLT(text,matches){let out=text;const ms=matches.filter(m=>m.replacements&&m.replacements.length).filter(m=>!(/MORFOLOGIK/.test((m.rule&&m.rule.id)||"")&&/^[A-Z]/.test(text.substr(m.offset,1)))).sort((a,b)=>b.offset-a.offset);ms.forEach(m=>{out=out.slice(0,m.offset)+m.replacements[0].value+out.slice(m.offset+m.length);});return out;}
+
+function sLemmaSet(en){const parts=sTargetParts(en);const set=new Set();parts.forEach(p=>sForms(p).forEach(f=>set.add(f)));parts.forEach(p=>set.add(p));return set;}
+function sLooksNameToken(tok){const t=String(tok||"");if(t.length<1||t.length>14)return false;const low=t.toLowerCase();return S_NAMEISH.has(low)||(/^[A-Z][a-z]+$/.test(t)&&t.length<=12)||(/^[a-z]{1,3}$/.test(low)&&S_NAMEISH.has(low));}
+function sIsUpperOnlyFix(orig,repl){return orig&&repl&&orig.toLowerCase()===repl.toLowerCase()&&orig!==repl&&repl===repl.toUpperCase()&&orig.length<=14;}
+function sIsTitleCase(s){return /^[A-Z][a-z]*$/.test(s);}
+function sPreferredRepl(orig,repl,m,text,targetLemma){
+ const id=(m.rule&&m.rule.id)||"",cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";
+ const oLow=(orig||"").toLowerCase(),rLow=(repl||"").toLowerCase();
+ // never mangle target lemma into something outside its forms
+ if(targetLemma.has(oLow)&&!targetLemma.has(rLow)&&oLow!==rLow)return null;
+ // spelling/casing that changes target word → skip
+ if((/MORFOLOGIK|SPELL|CASING|UPPERCASE|LOWERCASE/.test(id)||cat==="TYPOS"||cat==="CASING")&&targetLemma.has(oLow)&&oLow!==rLow&&!targetLemma.has(rLow))return null;
+ // UPPERCASE-only on short name-like token: use Title Case instead of LI
+ if(sIsUpperOnlyFix(orig,repl)&&sLooksNameToken(orig)){
+  // if this match is not at sentence start, or even if it is — prefer Title Case for names
+  const title=orig.charAt(0).toUpperCase()+orig.slice(1).toLowerCase();
+  // sentence-start capital is handled separately; for mid-sentence names, title case
+  if(m.offset>0||sLooksNameToken(orig))return title;
+ }
+ // LT suggests full UPPER for a name while sentence-start rule also fires — still prefer Title Case
+ if(sLooksNameToken(orig)&&repl===repl.toUpperCase()&&repl.length<=14&&orig.toLowerCase()===repl.toLowerCase()){
+  return orig.charAt(0).toUpperCase()+orig.slice(1).toLowerCase();
+ }
+ return repl;}
+
+function filterLTMatches(text,matches,w){const targetLemma=sLemmaSet(w?w.en:"");
+ const hasSentCap=matches.some(m=>/UPPERCASE_SENTENCE_START/.test((m.rule&&m.rule.id)||""));
+ return matches.filter(m=>{
+  const id=(m.rule&&m.rule.id)||"",cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";
+  const orig=text.substr(m.offset,m.length);
+  const reps=(m.replacements||[]).map(r=>r.value).filter(Boolean);
+  if(!reps.length)return true; // keep message-only
+  // drop spelling/casing matches that only UPPERCASE a short name-like token when sentence capital is the real issue or always for names
+  const best=sPreferredRepl(orig,reps[0],m,text,targetLemma);
+  if(best===null)return false;
+  if((/MORFOLOGIK|SPELL/.test(id)||cat==="TYPOS"||cat==="CASING")&&sIsUpperOnlyFix(orig,reps[0])&&sLooksNameToken(orig)){
+   // keep as a soft casing tip only if token is mid-sentence lowercase name — we'll fix via title case in apply
+   // still include in messages but mark — actually keep for tip but apply will title-case
+   return true;
+  }
+  return true;
+ }).map(m=>{
+  const orig=text.substr(m.offset,m.length);
+  const reps=(m.replacements||[]).slice();
+  if(reps.length){
+   const pref=sPreferredRepl(orig,reps[0].value,m,text,targetLemma);
+   if(pref===null)return null;
+   if(pref!==reps[0].value){reps[0]={value:pref};m={...m,replacements:reps};}
+   else if(sIsUpperOnlyFix(orig,reps[0].value)&&sLooksNameToken(orig)){
+    reps[0]={value:orig.charAt(0).toUpperCase()+orig.slice(1).toLowerCase()};
+    m={...m,replacements:reps};
+   }
+  }
+  return m;
+ }).filter(Boolean);}
+
+function applyLT(text,matches,w){
+ const filtered=filterLTMatches(text,matches,w);
+ let out=text;
+ const ms=filtered.filter(m=>m.replacements&&m.replacements.length).sort((a,b)=>b.offset-a.offset);
+ const targetLemma=sLemmaSet(w?w.en:"");
+ ms.forEach(m=>{
+  const orig=out.substr(m.offset,m.length);
+  let rep=m.replacements[0].value;
+  const pref=sPreferredRepl(orig,rep,m,out,targetLemma);
+  if(pref===null)return;
+  rep=pref;
+  out=out.slice(0,m.offset)+rep+out.slice(m.offset+m.length);
+ });
+ // post: ensure sentence capital + final punct; title-case leftover lowercase nameish if needed
+ if(/^[a-z]/.test(out))out=out.charAt(0).toUpperCase()+out.slice(1);
+ if(!/[.?!]["')]?$/.test(out.trim()))out=out.replace(/\s*$/,"")+".";
+ // fix any remaining ALLCAPS short name tokens wrongly introduced — turn LI → Li if nameish
+ out=out.replace(/\b([A-Z]{2,12})\b/g,(m)=>{
+  const low=m.toLowerCase();
+  if(S_NAMEISH.has(low))return m.charAt(0)+m.slice(1).toLowerCase();
+  return m;
+ });
+ return out;}
+
 async function ltCheck(text){if(typeof fetch!=="function")throw new Error("nofetch");const ctl=typeof AbortController!=="undefined"?new AbortController():null;const tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},6000);
  try{const body=new URLSearchParams({language:"en-GB",text:text});const r=await fetch("https://api.languagetool.org/v2/check",{method:"POST",body:body,signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error("http "+r.status);const j=await r.json();return (j.matches||[]);}finally{clearTimeout(tm);}}
 function sEsc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
@@ -1126,7 +1296,8 @@ function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWor
  const show=!!(w&&ws&&ws.revealed&&ws.sentOn);box.style.display=show?"":"none";if(!show)return;
  if(box.dataset.word===w.en)return;box.dataset.word=w.en;
  $("sentTitle").textContent="🗣️ 现在用「"+w.en+"」自己说/写一个英文例句";
- const last=sLoad()[w.en];$("sentIn").value=last?last.s:"";$("sentLast").textContent=last?"上次保存："+last.s:"";$("sentRes").innerHTML="";$("sentMsg").textContent="";}
+ const last=sLoad()[w.en];$("sentIn").value=last?last.s:"";$("sentLast").textContent=last?"上次保存："+last.s:"";$("sentRes").innerHTML="";$("sentMsg").textContent="";
+ const chk=$("sentChk");if(chk){chk.disabled=false;chk.textContent="检测";}}
 function sMsg(t){$("sentMsg").textContent=t;}
 let sRec=null;
 (function initMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("sentMic");if(!b)return;
@@ -1140,20 +1311,65 @@ let sRec=null;
     sMsg(er==="not-allowed"||er==="service-not-allowed"?"⚠️ 没有麦克风权限：请在浏览器设置里允许麦克风，或直接打字。":er==="no-speech"?"⚠️ 没听到声音，靠近一点再说一次，慢慢说。":er==="audio-capture"?"⚠️ 找不到麦克风，可直接打字。":er==="network"?"⚠️ 语音识别需要联网，可直接打字。":"⚠️ 语音识别出错（"+er+"），可直接打字。");};
    sRec.onend=()=>{listening=false;b.textContent="🎤 说一句";};sRec.start();}catch(err){listening=false;b.textContent="🎤 说一句";sMsg("⚠️ 无法启动语音识别，可直接打字。");}};
   start("en-GB");};})();
+
+function sDedupLines(arr){const seen=new Set(),out=[];arr.forEach(x=>{const k=String(x).replace(/\s+/g," ").trim();const key=k.slice(0,40);if(!k||seen.has(key))return;seen.add(key);out.push(x);});return out;}
 function sRenderRes(r,lt,ltState,corr,sent){const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
  let h='<div class="s-head fb '+cls+'">'+head+'</div>';
- if(r.ok.length)h+='<div class="s-sec"><b>做对的：</b><ul>'+r.ok.map(x=>"<li>✔ "+sEsc(x)+"</li>").join("")+"</ul></div>";
- const fixes=r.fix.concat(lt.map(x=>x));if(fixes.length)h+='<div class="s-sec"><b>要改的：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
- if(r.tips.length)h+='<div class="s-sec"><b>小提示：</b><ul>'+r.tips.map(x=>"<li>💡 "+sEsc(x)+"</li>").join("")+"</ul></div>";
- if(corr&&corr!==sent)h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';
- h+='<div class="s-note">'+sEsc(ltState)+' · 机器初检，不是100%准，也看不出意思对不对；想要真正批改请点「发给老师精批」。</div>';$("sentRes").innerHTML=h;}
+ if(r.ok.length)h+='<div class="s-sec"><b>做对了：</b><ul>'+r.ok.map(x=>"<li>✔ "+sEsc(x)+"</li>").join("")+"</ul></div>";
+ const fixes=sDedupLines(r.fix.concat(lt||[]));
+ if(fixes.length)h+='<div class="s-sec"><b>要改：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
+ if(r.tips.length)h+='<div class="s-sec"><b>小提示：</b><ul>'+sDedupLines(r.tips).map(x=>"<li>💡 "+sEsc(x)+"</li>").join("")+"</ul></div>";
+ if(corr&&corr!==sent){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorr">用参考改法</button></div>';}
+ h+='<div class="s-note">'+sEsc(ltState)+' · 机器初检，不是100%准，也看不出全部意思；要精批点发给老师</div>';
+ $("sentRes").innerHTML=h;
+ const use=$("sUseCorr");
+ if(use&&corr){use.onclick=()=>{$("sentIn").value=corr;$("sentIn").focus();sMsg("已填入参考改法，可再改一改再检测。");};}
+ if(r.level==="bad"||r.level==="mid"){try{$("sentIn").focus();}catch(e){}}}
+
+function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
+ const localTense=r.time==="past"||r.time==="future"||r.time==="habit";
+ ms.forEach(m=>{
+  const id=(m.rule&&m.rule.id)||"";
+  const z=ltZh(m);const bad=sent.substr(m.offset,m.length);
+  let rep="";
+  if(m.replacements&&m.replacements[0]){
+   const pref=sPreferredRepl(bad,m.replacements[0].value,m,sent,sLemmaSet(w.en));
+   if(pref===null)return;
+   const alts=m.replacements.slice(0,2).map((x,i)=>i===0?pref:x.value).filter((v,i,a)=>a.indexOf(v)===i);
+   rep=" → 建议："+alts.join(" / ");
+  }
+  // if local tense rule already fired and LT talks tense, soften
+  let line=z+(bad?"（「"+bad+"」）":"")+rep;
+  if(localTense&&/时态|TENSE|PAST|VBZ|AGR/.test(z+id)){line="（在线语法也提到）"+line;tipsSoft(r,line);return;}
+  if(!seen.has(line.slice(0,48))){seen.add(line.slice(0,48));lt.push(line);}
+ });
+ return lt;
+ function tipsSoft(r,line){if(!r.tips.includes(line))r.tips.push(line);}
+}
+
 async function sDoCheck(){const w=sCurWord();if(!w)return;let s=$("sentIn").value.trim().replace(/\s+/g," ");$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
- sSave(w.en,s);$("sentLast").textContent="已保存：" + s;const r=localCheck(s,w);sRenderRes(r,[],"⏳ 正在做语法检查…",null,s);const btn=$("sentChk");btn.disabled=true;
- let lt=[],state="语法检查：LanguageTool",corr=null;
- try{const ms=await ltCheck(s);const seen=new Set();ms.forEach(m=>{const z=ltZh(m);const rep=m.replacements&&m.replacements[0]?" → 建议："+m.replacements.slice(0,2).map(x=>x.value).join(" / "):"";const bad=s.substr(m.offset,m.length);const line=z+(bad?"（「"+bad+"」）":"")+rep;if(!seen.has(line)){seen.add(line);lt.push(line);}});
-  corr=applyLT(s,ms);if(lt.length&&r.level==="good")r.level="mid";if(ms.some(m=>m.rule&&m.rule.issueType==="grammar"))r.level="bad";if(!lt.length)state="语法检查：没发现明显语法错误";}
+ sSave(w.en,s);$("sentLast").textContent="已保存：" + s;
+ // attach example from card if present
+ if(!w.ex&&typeof W==="function"){/* keep */}
+ const r=localCheck(s,w);
+ const btn=$("sentChk");const oldLabel=btn.textContent;btn.disabled=true;btn.textContent="检测中…";
+ sRenderRes(r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s);
+ let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s;
+ try{const ms0=await ltCheck(s);const ms=filterLTMatches(s,ms0,w);
+  lt=sMergeLtMessages(ms,s,w,r);
+  const ltCorr=applyLT(s,ms0,w);
+  // prefer local tense correction if we rewrote verb via tip; merge gently
+  corr=ltCorr||corr;
+  // never allow LI-style allcaps names in final corr
+  corr=corr.replace(/\b([A-Z]{2,12})\b/g,(m)=>{const low=m.toLowerCase();return S_NAMEISH.has(low)?m.charAt(0)+m.slice(1).toLowerCase():m;});
+  if(lt.length&&r.level==="good")r.level="mid";
+  if(ms.some(m=>m.rule&&(m.rule.issueType==="grammar"||/AGR|SVA|VBZ|TENSE/.test((m.rule.id)||"")))){if(r.level==="good")r.level="mid";}
+  // hard grammar without local already bad → bad
+  if(ms.some(m=>m.rule&&m.rule.issueType==="grammar")&&r.level!=="bad"){/* keep mid unless local fix */}
+  if(!lt.length)state="语法检查：没发现明显语法错误";
+  else state="语法检查：LanguageTool";}
  catch(e){state="⚠️ 在线语法检查没连上（可能断网或太频繁），只做了本地检查";}
- finally{btn.disabled=false;}
+ finally{btn.disabled=false;btn.textContent=oldLabel||"检测";}
  if(sCurWord()!==w)return;sRenderRes(r,lt,state,corr,s);}
 function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘贴发送");const fb=()=>{try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);const ok=document.execCommand("copy");document.body.removeChild(ta);ok?done():sMsg("复制失败，请长按下面的文字手动复制："+t);}catch(e){sMsg("复制失败，请手动复制："+t);}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();}
@@ -1164,6 +1380,7 @@ if($("sentArea")){
  $("sentTeach").onclick=()=>{const w=sCurWord();if(!w)return;const s=$("sentIn").value.trim();if(!s){sMsg("先写一个句子哦。");return;}sSave(w.en,s);sCopy("【造句批改】单词："+w.en+"（"+w.pos+"）\n我的句子："+s+"\n请判断对不对、哪里错、给我改正后的句子并教我读。");};
  $("sentSkip").onclick=()=>{next();};
 }
+
 load();renderAll();save();
 window.addEventListener("pagehide",save);document.addEventListener("visibilitychange",()=>{if(document.hidden)save();});
 
