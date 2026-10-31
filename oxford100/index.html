@@ -5,7 +5,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="牛津100词"/>
 <meta name="theme-color" content="#f7f4ef"/>
-<!-- oxford100 autosave v=fix5 -->
+<!-- oxford100 autosave v=beats2 · 第2/3拍输出 2026-10-31 -->
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="application-name" content="牛津100词"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%235f7a5a'/%3E%3Ctext x='50' y='66' font-size='46' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EAa%3C/text%3E%3C/svg%3E"/>
@@ -129,6 +129,18 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
 .s-chip-lab{color:#9f1239;font-size:.82rem;font-weight:650}
 .s-strict{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--accent2);margin:6px 0 0;user-select:none}
 .s-strict input{width:16px;height:16px;accent-color:var(--accent)}
+
+/* 三拍输出：第2/3拍（第1拍=拼写，不在此区） */
+.beat-banner{font-size:.82rem;color:var(--muted);margin:0 0 10px;line-height:1.45}
+.beat-step{margin:0 0 12px;padding:12px 12px 10px;border-radius:12px;border:1px solid var(--border);background:#fff}
+.beat-step .s-title{margin-bottom:4px}
+.beat-hint{font-size:.8rem;color:var(--muted);line-height:1.5;margin:0 0 8px}
+.beat-step.beat-locked{opacity:.55;filter:saturate(.75);pointer-events:none;position:relative}
+.beat-step.beat-locked::after{content:"先完成第2拍再解锁";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.86rem;font-weight:650;color:var(--accent2);background:rgba(250,248,243,.72);border-radius:12px;pointer-events:none;padding:12px;text-align:center}
+.beat-step.beat-open{opacity:1;filter:none;pointer-events:auto}
+.beat-step.beat-open::after{display:none}
+.beat-done{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--accent-soft);border:1px solid #d5e0d2;color:var(--accent2);font-weight:650;font-size:.9rem;line-height:1.45;text-align:center}
+.beat-go{flex:1.2;font-weight:700}
 @media(max-width:600px){.s-annot{font-size:1.08rem}.s-diff{font-size:1.02rem}.s-chip{font-size:.9rem}}
 </style>
 <style>
@@ -259,15 +271,30 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
   <div class="sent"><span class="e" id="exEn"></span><button type="button" class="mini" id="spEx">🔊</button><button type="button" class="mini" id="spExS">🐢</button></div>
   <div class="c" id="exZh"></div>
 </div>
-<div id="sentArea" class="sent-area" style="display:none">
-  <div class="s-title" id="sentTitle"></div>
-  <div class="s-last" id="sentLast"></div>
-  <textarea id="sentIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="自己造一句，例如换个人、换地点、换时间…"></textarea>
-  <div class="row s-btns"><button type="button" class="b-sub" id="sentChk">检测</button><button type="button" class="spk" id="sentMic">🎤 说一句</button><button type="button" class="mini" id="sentSay">🔊</button></div>
-  <label class="s-strict"><input type="checkbox" id="sentStrict" checked/> 严格模式（更细的语法/风格提示）</label>
-  <div class="s-nomic" id="sentNoMic"></div><div class="s-msg" id="sentMsg" aria-live="polite"></div>
-  <div id="sentRes"></div>
-  <div class="row s-btns"><button type="button" class="b-fuz" id="sentTeach">发给老师精批</button><button type="button" class="b-no" id="sentSkip">跳过 →</button></div>
+<div id="sentArea" class="sent-area" style="display:none" data-beat="2">
+  <div class="beat-banner">✅ 第1拍拼写过关啦 · 下面再做两拍主动输出（可跳过）</div>
+  <div id="beat2" class="beat-step beat-open">
+    <div class="s-title" id="sentTitle">第2拍 · 情景一句</div>
+    <div class="beat-hint" id="beat2Hint">用上目标词，自己编一句真事（换人/地点/时间都行），别抄上面例句。</div>
+    <div class="s-last" id="sentLast"></div>
+    <textarea id="sentIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="自己造一句，例如换个人、换地点、换时间…"></textarea>
+    <div class="row s-btns"><button type="button" class="b-sub" id="sentChk">检测</button><button type="button" class="spk" id="sentMic">🎤 说一句</button><button type="button" class="mini" id="sentSay">🔊</button><button type="button" class="b-fuz beat-go" id="beat2Go">我写好了，去第3拍 →</button></div>
+    <label class="s-strict"><input type="checkbox" id="sentStrict" checked/> 严格模式（更细的语法/风格提示）</label>
+    <div class="s-nomic" id="sentNoMic"></div><div class="s-msg" id="sentMsg" aria-live="polite"></div>
+    <div id="sentRes"></div>
+  </div>
+  <div id="beat3" class="beat-step beat-locked">
+    <div class="s-title" id="beat3Title">第3拍 · 口述加戏</div>
+    <div class="beat-hint" id="beat3Hint">① 把第2拍那句大声说一遍（可用 🔊 读自己的句 / 🎤 再录一次）<br>② 再写/说一句「加戏」：反着来、换结果、问对方……必须还用上目标词。</div>
+    <div class="row s-btns" style="margin-top:0"><button type="button" class="mini" id="beat2Replay">🔊 读第2拍那句</button><button type="button" class="spk" id="sentMicReplay" style="display:none">🎤</button></div>
+    <div class="s-last" id="twistLast"></div>
+    <textarea id="twistIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="加戏一句：反着来 / 换结果 / 问对方…"></textarea>
+    <div class="row s-btns"><button type="button" class="b-sub" id="twistChk">检测加戏</button><button type="button" class="spk" id="twistMic">🎤 说加戏</button><button type="button" class="mini" id="twistSay">🔊</button></div>
+    <div class="s-msg" id="twistMsg" aria-live="polite"></div>
+    <div id="twistRes"></div>
+    <div class="beat-done" id="beatDone" style="display:none">🎉 两拍输出都完成啦！可以点下面「下一词 →」继续</div>
+  </div>
+  <div class="row s-btns"><button type="button" class="b-fuz" id="sentTeach">发给老师精批</button><button type="button" class="b-no" id="sentSkip">跳过输出 →</button></div>
 </div>
 <div id="nextArea" style="display:none"><button type="button" class="b-next" id="bNext">下一词 →</button></div>
 <div class="box done" id="done"><h2 style="margin:6px 0" id="doneTitle">本组全部拼对 🎉</h2><p class="sub" id="doneSub"></p>
@@ -276,7 +303,7 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
   <div class="line">🔊 发音：<b id="vName">Jessica · 内置真人女声</b> <button type="button" class="mini" id="bTest">试听</button></div>
 </div>
 <div class="row"><label class="auto"><input type="checkbox" id="auto"/> 出新卡自动读单词</label></div>
-<p class="method">记忆方法：同一场景的词一起练；点「模糊」之后要再拼对 1 次、「不会/拼错」要再拼对 2 次，隔 3–7 个词重现；一组拼完可「复测错过的词」。</p>
+<p class="method">记忆方法：第1拍遮眼拼出 → 第2拍情景一句 → 第3拍口述加戏；同一场景的词一起练；「模糊」后再拼对 1 次、「不会/拼错」再拼对 2 次；一组拼完可「复测错过的词」。</p>
 </div>
 
 <div class="pane" id="p-list"></div>
@@ -514,7 +541,7 @@ const REP_FUZZY=1,REP_NO=2; /* 模糊：之后再拼对 1 次；不会/拼错：
 const TABS=[["words","① 单词拼写"],["list","② 词表"],["mem","③ 进度"]];
 const $=id=>document.getElementById(id);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function sEscH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function sEscH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&","<":"<",">":">",'"':"""}[c]));}
 
 /* ---------- 状态 ---------- */
 function defState(){return {v:1,theme:ALLTH,tab:"words",introHidden:false,voice:"",auto:false,
@@ -668,7 +695,7 @@ function doSubmit(){const w=cur();if(!w||ST.revealed)return;const raw=$("ans").v
 function next(){const w=cur();if(!w)return;
  try{dClear();}catch(e){}
  if(ST.pending==="later")insertLater(w.id);else{ST.queue.shift();if(!ST.known.includes(w.id))ST.known.push(w.id);ST.queue=ST.queue.filter(x=>x!==w.id||(ST.reps[x]||0)>0);}
- ST.pending=null;ST.revealed=false;ST.sentOn=false;ST.hint=false;ST.lastFb=null;if($("sentArea"))$("sentArea").dataset.word="";
+ ST.pending=null;ST.revealed=false;ST.sentOn=false;ST.hint=false;ST.lastFb=null;if($("sentArea")){const sa=$("sentArea");sa.dataset.word="";sa.dataset.beat="2";sa.dataset.beat2Level="";sa.dataset.beat3Level="";}
  $("ans").value="";$("fb").textContent="";save();renderAll();if(ST.auto&&cur())speak(cur().en);
  if(cur()){try{$("ans").focus({preventScroll:true});}catch(e){}}}
 
@@ -945,18 +972,45 @@ async function ltCheck(text,opts){if(typeof fetch!=="function")throw new Error("
   try{const body=new URLSearchParams(Object.assign({language:"en-GB",text:text,enabledOnly:"false"},extra||{}));const r=await fetch("https://api.languagetool.org/v2/check",{method:"POST",body:body,signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error("http "+r.status);const j=await r.json();return (j.matches||[]);}finally{clearTimeout(tm);}};
  if(opts.picky){try{return await once({level:"picky"});}catch(e){return await once({});}}
  return once({});}
-function sEsc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function sEsc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&","<":"<",">":">",'"':"""}[c]));}
 function sCurWord(){try{return cur()||null;}catch(e){return null;}}
+function beatTwistKey(en){return String(en||"")+"__twist";}
+function beatSet(n){const box=$("sentArea");if(!box)return;box.dataset.beat=String(n);const b3=$("beat3");const done=$("beatDone");
+ if(n==="3"||n==="done"){if(b3){b3.classList.remove("beat-locked");b3.classList.add("beat-open");}
+  if(n==="done"&&done)done.style.display="";}
+ else{if(b3){b3.classList.add("beat-locked");b3.classList.remove("beat-open");}if(done)done.style.display="none";}}
+function beatUnlock3(opt){opt=opt||{};const box=$("sentArea");if(!box)return;if(box.dataset.beat==="done")return;
+ beatSet("3");if(opt.focus){try{$("twistIn").focus({preventScroll:true});}catch(e){}}
+ try{$("beat3").scrollIntoView({behavior:"smooth",block:"nearest"});}catch(e){}}
+function beatTryUnlockFrom(level,sent,w){const hw=sHasWord(sent,w.en);const ok=level==="good"||(level!=="bad"&&hw.ok);
+ if(!ok)return false;const box=$("sentArea");const was=box&&box.dataset.beat;
+ if(was!=="3"&&was!=="done"){beatUnlock3({focus:true});sMsg(level==="good"?"✅ 第2拍不错！打开第3拍：口述加戏。":"✅ 已用上「"+w.en+"」，进入第3拍。想再改也可继续检测。");}
+ else if(was==="3"&&level==="good")sMsg("✅ 第2拍很好，继续第3拍加戏吧。");
+ return true;}
 function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWord();const ws=ST;
  const show=!!(w&&ws&&ws.revealed&&ws.sentOn);box.style.display=show?"":"none";if(!show)return;
- if(box.dataset.word===w.en)return;box.dataset.word=w.en;
- $("sentTitle").textContent="🗣️ 拼对啦！现在用「"+w.en+"」自己说/写一个英文句子";$("sentIn").placeholder="例句是："+w.exEn+"  →  试试换个人、地点或时间";
+ if(box.dataset.word===w.en)return;box.dataset.word=w.en;box.dataset.beat2Level="";box.dataset.beat3Level="";
+ $("sentTitle").textContent="第2拍 · 情景一句 · 用「"+w.en+"」";
+ const hint=$("beat2Hint");if(hint)hint.textContent="用上「"+w.en+"」，自己编一句真事（换人/地点/时间都行），别抄上面例句。";
+ $("sentIn").placeholder="例句是："+w.exEn+"  →  试试换个人、地点或时间";
  const last=sLoad()[w.en];const draft=dLoad();
  const useDraft=draft&&draft.word===w.en&&typeof draft.text==="string";
  $("sentIn").value=useDraft?draft.text:(last?last.s:"");
  $("sentLast").textContent=last?"上次保存："+last.s:(useDraft&&draft.text.trim()?"（草稿未检测，已恢复）":"");
  $("sentRes").innerHTML="";$("sentMsg").textContent="";
- const chk=$("sentChk");if(chk){chk.disabled=false;chk.textContent="检测";}}
+ const chk=$("sentChk");if(chk){chk.disabled=false;chk.textContent="检测";}
+ const twKey=beatTwistKey(w.en);const twLast=sLoad()[twKey];const tw=$("twistIn");
+ if(tw){tw.value=twLast?twLast.s:"";tw.placeholder="加戏一句（还要用上「"+w.en+"」）：反着来 / 换结果 / 问对方…";}
+ const tl=$("twistLast");if(tl)tl.textContent=twLast?"上次加戏："+twLast.s:"";
+ const tm=$("twistMsg");if(tm)tm.textContent="";const tr=$("twistRes");if(tr)tr.innerHTML="";
+ const tc=$("twistChk");if(tc){tc.disabled=false;tc.textContent="检测加戏";}
+ const b3h=$("beat3Hint");if(b3h)b3h.innerHTML="① 把第2拍那句大声说一遍（可用 🔊 读自己的句 / 🎤 再录一次）<br>② 再写/说一句「加戏」：反着来、换结果、问对方……必须还用上「"+sEsc(w.en)+"」。";
+ const done=$("beatDone");if(done)done.style.display="none";
+ // 若本词已有第2拍记录且用上目标词，直接解锁第3拍；两拍都有则标完成
+ let startBeat="2";
+ if(last&&last.s&&sHasWord(last.s,w.en).ok){startBeat=twLast&&twLast.s&&sHasWord(twLast.s,w.en).ok?"done":"3";}
+ beatSet(startBeat);
+ if(startBeat==="done"&&done)done.style.display="";}
 function sMsg(t){$("sentMsg").textContent=t;}
 let sRec=null;
 (function initMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("sentMic");if(!b)return;
@@ -1263,7 +1317,9 @@ async function sDoCheck(){const w=sCurWord();if(!w)return;let s=$("sentIn").valu
  finally{btn.disabled=false;btn.textContent=oldLabel||"检测";}
  if(sCurWord()!==w)return;corr=sPolish(corr,r);
  const paintInfo=sCollectPaint(s,w,r,ms);
- sRenderRes(r,lt,state,corr,s,paintInfo,tr);}
+ sRenderRes(r,lt,state,corr,s,paintInfo,tr);
+ const box=$("sentArea");if(box)box.dataset.beat2Level=r.level||"";
+ beatTryUnlockFrom(r.level,s,w);}
 
 function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘贴发送");const fb=()=>{try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);const ok=document.execCommand("copy");document.body.removeChild(ta);ok?done():sMsg("复制失败，请长按下面的文字手动复制："+t);}catch(e){sMsg("复制失败，请手动复制："+t);}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();}
@@ -1295,7 +1351,7 @@ $("bNo").onclick=()=>{const w=cur();if(!w||ST.revealed)return;markMiss(w.id,REP_
 $("bHint").onclick=()=>{ST.hint=true;save();renderWords();try{$("ans").focus({preventScroll:true});}catch(e){}};
 $("bNext").onclick=next;
 $("ans").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();doSubmit();}else if(e.key==="Escape"){e.preventDefault();$("ans").value="";}});
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&ST.tab==="words"&&ST.revealed&&document.activeElement!==$("ans")&&document.activeElement!==$("sentIn")&&!(document.activeElement&&document.activeElement.tagName==="BUTTON"&&document.activeElement!==$("bNext"))){e.preventDefault();next();}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&ST.tab==="words"&&ST.revealed&&document.activeElement!==$("ans")&&document.activeElement!==$("sentIn")&&document.activeElement!==$("twistIn")&&!(document.activeElement&&document.activeElement.tagName==="BUTTON"&&document.activeElement!==$("bNext"))){e.preventDefault();next();}});
 $("sp").onclick=()=>{const w=cur();if(w)speak(w.en);};$("spSlow").onclick=()=>{const w=cur();if(w)speak(w.en,true);};
 $("spEx").onclick=()=>{const w=cur();if(w)speak(w.exEn);};$("spExS").onclick=()=>{const w=cur();if(w)speak(w.exEn,true);};
 $("auto").onchange=e=>{ST.auto=e.target.checked;save();};
@@ -1313,12 +1369,87 @@ if(window.speechSynthesis){pickVoice();try{speechSynthesis.addEventListener?spee
 else{try{pickVoice();}catch(e){}}
 try{pickVoice();}catch(e){}
 if(location.protocol==="file:")$("envTip").textContent="📁 你是直接打开的本地文件：拼写、发音、红绿标注都能用；🎤 说一句 在部分浏览器里需要用网址（https / localhost）打开才行。";
-/* 造句检测绑定（同英语1B） */
+/* 造句检测绑定（同英语1B）+ 第2/3拍 */
 sStrictInit();
 $("sentChk").onclick=sDoCheck;
 $("sentIn").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheck();}});
 $("sentSay").onclick=()=>{const t=$("sentIn").value.trim();if(t)speak(t);else sMsg("先写一个句子再听。");};
-$("sentTeach").onclick=()=>{const w=sCurWord();if(!w)return;const s=$("sentIn").value.trim();if(!s){sMsg("先写一个句子哦。");return;}sSave(w.en,s);sCopy("【造句批改】单词："+w.en+" "+w.ph+"（"+w.pos+"，"+w.zh+"）\n场景："+w.theme+"\n我的句子："+s+"\n请判断对不对、哪里错、给我改正后的句子并教我读。");};
+function beat2GoNext(){const w=sCurWord();if(!w)return;let s=($("sentIn").value||"").trim().replace(/[’‘]/g,"'").replace(/\s+/g," ");
+ if(!s){sMsg("先写或说一句再进第3拍。");$("sentIn").focus();return;}
+ $("sentIn").value=s;sSave(w.en,s);$("sentLast").textContent="已保存："+s;
+ const box=$("sentArea");const lvl=(box&&box.dataset.beat2Level)||"";
+ const r=localCheck(s,w);const level=lvl||r.level;if(box)box.dataset.beat2Level=level;
+ if(level==="bad"||!sHasWord(s,w.en).ok){sMsg("这句还不太行：请先用上「"+w.en+"」并改掉明显错误，再进第3拍。（也可先点「检测」）");try{$("sentIn").focus();}catch(e){}return;}
+ beatUnlock3({focus:true});sMsg("✅ 进入第3拍 · 口述加戏");}
+const b2go=$("beat2Go");if(b2go)b2go.onclick=beat2GoNext;
+function sMsgTwist(t){const el=$("twistMsg");if(el)el.textContent=t;}
+function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(resId);if(!host)return;const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
+ paintInfo=paintInfo||{paint:[],targets:[],chips:[]};tr=tr||sTranslateLocal(sent);
+ const annot=sPaintAnnotatedHtml(sent,paintInfo.paint,paintInfo.targets);
+ let h='<div class="s-head fb '+cls+'">'+head+'</div>';
+ h+=sZhBlock(tr);
+ h+='<div class="s-legend"><span>🟢 对的部分</span><span>🔴 要改的部分</span><span>🟢粗框 = 目标词用上了</span></div>';
+ h+='<div class="s-annot-wrap"><div class="s-annot-label">标注句</div><div class="s-annot">'+annot+'</div></div>';
+ if(corr&&corr!==sent){h+='<div class="s-annot-wrap"><div class="s-annot-label">对照改法</div><div class="s-diff">'+sWordDiffHtml(sent,corr)+'</div><div style="margin-top:6px"><span class="s-corr" id="sCorrTextTwist">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorrTwist">用参考改法</button></div></div>';}
+ else if(corr){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';}
+ h+=sChipHtml(paintInfo.chips,sent);
+ if(r.ok.length)h+='<div class="s-sec"><b>做对了：</b><ul>'+r.ok.map(x=>"<li>✔ "+sEsc(x)+"</li>").join("")+"</ul></div>";
+ const fixes=sDedupLines(r.fix.concat(lt||[]));
+ if(fixes.length)h+='<div class="s-sec"><b>要改（详细原因）：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
+ if(r.tips.length)h+='<div class="s-sec"><b>小提示：</b><ul>'+sDedupLines(r.tips).map(x=>"<li>💡 "+sEsc(x)+"</li>").join("")+"</ul></div>";
+ h+='<div class="s-note">'+sEsc(ltState)+' · 加戏句也要带目标词</div>';
+ host.innerHTML=h;sBindChipClicks(host);
+ const use=$("sUseCorrTwist");if(use&&corr){use.onclick=()=>{$("twistIn").value=corr;$("twistIn").focus();sMsgTwist("已填入参考改法，可再改一改再检测。");};}}
+async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sentArea");
+ if(box&&box.dataset.beat!=="3"&&box.dataset.beat!=="done"){sMsgTwist("请先完成第2拍（或点「我写好了，去第3拍」）。");return;}
+ let s=$("twistIn").value.trim().replace(/[’‘]/g,"'").replace(/\s+/g," ");$("twistIn").value=s;if(!s){sMsgTwist("先写或说一句加戏哦。");$("twistIn").focus();return;}
+ const key=beatTwistKey(w.en);sSave(key,s);const tl=$("twistLast");if(tl)tl.textContent="已保存："+s;
+ const r=localCheck(s,w);const btn=$("twistChk");const oldLabel=btn?btn.textContent:"检测加戏";if(btn){btn.disabled=true;btn.textContent="检测中…";}
+ const localPaint=sCollectPaint(s,w,r,[]);let tr=sTranslateLocal(s);
+ sRenderResInto("twistRes",r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,tr);
+ let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s,ms=[];const picky=sStrictOn();
+ try{const ms0=await ltCheck(s,{picky:picky});ms=filterLTMatches(s,ms0,w);if(!picky)ms=ms.filter(m=>ltSev(m)!=="warn");
+  lt=sMergeLtMessages(ms,s,w,r);const ltCorr=applyLT(s,ms0,w);corr=ltCorr||corr;
+  corr=corr.replace(/\b([A-Z]{2,12})\b/g,(m)=>{const low=m.toLowerCase();return S_NAMEISH.has(low)?m.charAt(0)+m.slice(1).toLowerCase():m;});
+  if(lt.length&&r.level==="good")r.level="mid";
+  if(ms.some(m=>m.rule&&(m.rule.issueType==="grammar"||/AGR|SVA|VBZ|TENSE|HE_VERB/.test((m.rule.id)||"")))){if(r.level==="good")r.level="mid";}
+  if(!lt.length)state="语法检查：没发现明显语法错误"+(picky?"（严格）":"");else state="语法检查：LanguageTool"+(picky?" · 严格模式":"");}
+ catch(e){state="⚠️ 在线语法检查没连上，只做了本地检查";ms=[];}
+ try{const online=await sTranslateOnline(s);if(online&&online.zh)tr=online;}catch(e){}
+ finally{if(btn){btn.disabled=false;btn.textContent=oldLabel||"检测加戏";}}
+ if(sCurWord()!==w)return;corr=sPolish(corr,r);const paintInfo=sCollectPaint(s,w,r,ms);
+ sRenderResInto("twistRes",r,lt,state,corr,s,paintInfo,tr);
+ if(box)box.dataset.beat3Level=r.level||"";
+ if(r.level!=="bad"&&sHasWord(s,w.en).ok){beatSet("done");const done=$("beatDone");if(done)done.style.display="";sMsgTwist("🎉 加戏完成！可以点「下一词 →」");}
+ else sMsgTwist("加戏句也要用上「"+w.en+"」，再改一改吧。");}
+(function initTwistMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("twistMic");if(!b)return;
+ if(!SR){b.style.display="none";return;}
+ let listening=false,baseText="",committed="",interim="",wantStop=false,sRecT=null;
+ const normQ=s=>String(s||"").replace(/[\u2018\u2019\u201A\u201B]/g,"'").replace(/[\u201C\u201D\u201E\u201F]/g,'"').replace(/\u2026/g,"...").replace(/\s+/g," ").trim();
+ const pickAlt=res=>{if(!res||!res.length)return"";let best="",bestC=-1;for(let i=0;i<Math.min(res.length,3);i++){const a=res[i];if(!a)continue;const t=normQ(a.transcript);if(!t)continue;const c=typeof a.confidence==="number"?a.confidence:-1;if(c>bestC||(c===bestC&&t.length>best.length)||(bestC<0&&t.length>best.length)){best=t;bestC=c;}}return best;};
+ const joinAppend=(prev,chunk)=>{chunk=normQ(chunk);if(!chunk)return prev||"";if(!prev||!String(prev).trim()){let s=chunk;return s.charAt(0).toUpperCase()+s.slice(1);}
+  const p=String(prev).replace(/\s+$/,"");const needsNL=/[.!?]"?$/.test(p);const sep=needsNL?"\n":(/[\s([{]$/.test(p)?"":" ");
+  let c=chunk;if(needsNL||!p)c=c.charAt(0).toUpperCase()+c.slice(1);else if(/^[A-Z]/.test(c)&&!/^(I|I'm|I've|I'd|I'll|OK|USA|UK)\b/.test(c))c=c.charAt(0).toLowerCase()+c.slice(1);
+  return p+sep+c;};
+ const paint=()=>{const ta=$("twistIn");if(!ta)return;const full=joinAppend(baseText,committed);const show=interim?joinAppend(full,interim):full;ta.value=show;try{ta.selectionStart=ta.selectionEnd=show.length;}catch(e){}};
+ b.onclick=()=>{if(listening){wantStop=true;try{sRecT&&sRecT.stop();}catch(e){}return;}
+  let tried=false;wantStop=false;baseText=($("twistIn")&&$("twistIn").value)||"";committed="";interim="";
+  const start=(lang)=>{try{sRecT=new SR();sRecT.lang=lang;sRecT.interimResults=true;sRecT.maxAlternatives=3;sRecT.continuous=false;
+   sRecT.onstart=()=>{listening=true;b.textContent="⏹️ 停止";sMsgTwist("🎙️ 正在听加戏句…");};
+   sRecT.onresult=e=>{let finals="",inter="";for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];const t=pickAlt(r);if(!t)continue;if(r.isFinal)finals+=(finals?" ":"")+t;else inter+=(inter?" ":"")+t;}
+    if(finals){committed=committed?normQ(committed+" "+finals):finals;interim="";}else interim=inter;paint();};
+   sRecT.onerror=e=>{const er=e.error||"";if(er==="language-not-supported"&&!tried){tried=true;listening=false;start("en-US");return;}if(er==="aborted")return;sMsgTwist("⚠️ 语音识别出错，可直接打字。");};
+   sRecT.onend=()=>{listening=false;b.textContent="🎤 说加戏";if(interim&&!committed){committed=interim;interim="";paint();}
+    if(committed){const ta=$("twistIn");if(ta)ta.value=joinAppend(baseText,committed);sMsgTwist("✅ 听到了，可改一改再点「检测加戏」。");}
+    wantStop=false;};sRecT.start();}catch(err){listening=false;b.textContent="🎤 说加戏";sMsgTwist("⚠️ 无法启动语音识别，可直接打字。");}};
+  start("en-GB");};})();
+const twChk=$("twistChk");if(twChk)twChk.onclick=sDoCheckTwist;
+const twIn=$("twistIn");if(twIn)twIn.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheckTwist();}});
+const twSay=$("twistSay");if(twSay)twSay.onclick=()=>{const t=($("twistIn").value||"").trim();if(t)speak(t);else sMsgTwist("先写加戏句再听。");};
+const b2re=$("beat2Replay");if(b2re)b2re.onclick=()=>{const t=($("sentIn").value||"").trim();if(t)speak(t);else sMsgTwist("第2拍还没有句子可朗读。");};
+$("sentTeach").onclick=()=>{const w=sCurWord();if(!w)return;const s=$("sentIn").value.trim();const tw=($("twistIn")&&$("twistIn").value||"").trim();if(!s&&!tw){sMsg("先写一个句子哦。");return;}
+ if(s)sSave(w.en,s);if(tw)sSave(beatTwistKey(w.en),tw);
+ sCopy("【造句批改】单词："+w.en+" "+w.ph+"（"+w.pos+"，"+w.zh+"）\n场景："+w.theme+"\n第2拍情景一句："+(s||"（无）")+"\n第3拍口述加戏："+(tw||"（无）")+"\n请判断对不对、哪里错、给我改正后的句子并教我读。");};
 $("sentSkip").onclick=()=>{next();};
 
 const _restored=load();renderAll();save({silent:true});
