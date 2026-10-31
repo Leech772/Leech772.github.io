@@ -5,6 +5,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="牛津100词"/>
 <meta name="theme-color" content="#f7f4ef"/>
+<!-- oxford100 autosave v=fix5 -->
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="application-name" content="牛津100词"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%235f7a5a'/%3E%3Ctext x='50' y='66' font-size='46' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EAa%3C/text%3E%3C/svg%3E"/>
@@ -32,7 +33,7 @@ body{
 .wrap>*{width:100%}
 h1{font-size:1.22rem;margin:6px 0 0;font-weight:650;color:var(--ink);text-align:center;letter-spacing:-.02em;line-height:1.35}
 .sub{color:var(--muted);font-size:.84rem;margin:2px 0 0;text-align:center;line-height:1.55;font-weight:450}
-.save{font-size:.72rem;color:var(--good);opacity:0;transition:opacity .3s}.save.show{opacity:1}
+.save{font-size:.78rem;font-weight:650;color:var(--good);opacity:0;transition:opacity .25s;white-space:nowrap;pointer-events:none}.save.show{opacity:1}
 .box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--sm)}
 .pc-tip{background:#f3f0ea;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--sm);color:var(--ink);font-size:.9rem;line-height:1.55;font-weight:600;text-align:center}
 .chat-tip{background:#f3f0ea;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--sm);color:var(--ink);font-size:.9rem;line-height:1.55;text-align:center}
@@ -228,7 +229,7 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
 <div class="top">
   <div class="tabs" id="tabs"></div>
   <button type="button" class="homebtn" id="bIntro" style="display:none">📖 说明</button>
-  <span class="save" id="save">✓ 已保存</span>
+  <span class="save" id="save">✓ 已自动保存</span>
 </div>
 <div class="phase" id="restore" style="color:#3d6b4f"></div>
 <div class="envtip" id="envTip"></div>
@@ -534,11 +535,12 @@ function mergeState(o){const d=defState();if(!o||typeof o!=="object")return d;co
  if(!TABS.some(t=>t[0]===r.tab))r.tab="words";
  if(!Array.isArray(r.log))r.log=[];if(r.log.length>500)r.log=r.log.slice(-500);
  return r;}
-function save(){ST.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}
- const el=$("save");if(el){el.classList.add("show");clearTimeout(save.t);save.t=setTimeout(()=>el.classList.remove("show"),900);}}
+function flashSaved(){const el=$("save");if(!el)return;el.textContent="✓ 已自动保存";el.classList.add("show");clearTimeout(flashSaved.t);flashSaved.t=setTimeout(()=>el.classList.remove("show"),1400);}
+function save(opt){opt=opt||{};ST.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}
+ if(!opt.silent)flashSaved();}
 function load(){let o=null;try{const a=localStorage.getItem(KEY);if(a)o=JSON.parse(a);}catch(e){}
- ST=mergeState(o);if(o)$("restore").textContent="✅ 已恢复上次进度";
- if(!ST.queue.length&&themeIds(ST.theme).some(i=>!ST.known.includes(i)))buildQueue();}
+ ST=mergeState(o);if(o){const r=$("restore");if(r){r.textContent="已恢复上次进度";clearTimeout(load._rt);load._rt=setTimeout(()=>{if(r.textContent==="已恢复上次进度")r.textContent="";},4500);}}
+ if(!ST.queue.length&&themeIds(ST.theme).some(i=>!ST.known.includes(i)))buildQueue();return !!o;}
 
 /* ---------- 语音：仅 Jessica 内置真人女声包 ---------- */
 let voice=null; /* soft fallback voice for free-sentence read-aloud only; UI never offers switching */
@@ -664,6 +666,7 @@ function doSubmit(){const w=cur();if(!w||ST.revealed)return;const raw=$("ans").v
  else{markMiss(w.id,REP_NO);logIt(w.en,"wrong");reveal("❌ 拼错了，正确是 "+w.en+"（你写的："+raw+"），稍后要再拼对 "+REP_NO+" 次","bad");speak(w.en);}
  save();}
 function next(){const w=cur();if(!w)return;
+ try{dClear();}catch(e){}
  if(ST.pending==="later")insertLater(w.id);else{ST.queue.shift();if(!ST.known.includes(w.id))ST.known.push(w.id);ST.queue=ST.queue.filter(x=>x!==w.id||(ST.reps[x]||0)>0);}
  ST.pending=null;ST.revealed=false;ST.sentOn=false;ST.hint=false;ST.lastFb=null;if($("sentArea"))$("sentArea").dataset.word="";
  $("ans").value="";$("fb").textContent="";save();renderAll();if(ST.auto&&cur())speak(cur().en);
@@ -683,7 +686,7 @@ function renderMem(){const miss=ST.missed.map(i=>W[i]);let sents={};try{sents=JS
   '<div class="g"><h3>🧠 错过/模糊过的词</h3>'+(miss.length?miss.map(w=>'<div class="sent">'+(ST.known.includes(w.id)?"✅":"⏳")+" <b>"+sEscH(w.en)+"</b> "+sEscH(w.ph)+" "+sEscH(w.pos)+" "+sEscH(w.zh)+spkBtns(w.en)+"</div>").join(""):"还没有错过的词 👍")+"</div>"+
   (sc?'<div class="g"><h3>✍️ 我造过的句子</h3>'+Object.keys(sents).map(k=>'<div class="sent"><b>'+sEscH(k)+"</b>："+sEscH(sents[k].s)+spkBtns(sents[k].s)+"</div>").join("")+"</div>":"")+
   '<div class="g"><h3>💾 备份 / 重置</h3>进度只存在这台设备这个浏览器里（key：<code>'+KEY+'</code>）。换手机/电脑可以先「导出」，再在新设备「导入」。<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-pc" id="mExport">💾 导出进度</button><button type="button" class="b-pc2" id="mImport">📂 导入进度</button><button type="button" class="danger" id="mReset">⚠ 清空全部进度</button></div></div>';
- $("mReset").onclick=()=>{if(!confirm("确定清空全部 100 词的进度吗？（造句记录也会清空）此操作不能撤销。"))return;const v=ST.voice,a=ST.auto;ST=defState();ST.voice=v;ST.auto=a;ST.tab="mem";ST.introHidden=true;buildQueue();try{localStorage.removeItem(SKEY);}catch(e){}save();renderAll();$("restore").textContent="已清空，重新开始 💪";};
+ $("mReset").onclick=()=>{if(!confirm("确定清空全部 100 词的进度吗？（造句记录也会清空）此操作不能撤销。"))return;const v=ST.voice,a=ST.auto;ST=defState();ST.voice=v;ST.auto=a;ST.tab="mem";ST.introHidden=true;buildQueue();try{localStorage.removeItem(SKEY);dClear();}catch(e){}save();renderAll();$("restore").textContent="已清空，重新开始 💪";};
  $("mExport").onclick=()=>{save();let s={};try{s=JSON.parse(localStorage.getItem(SKEY)||"{}");}catch(e){}const b=new Blob([JSON.stringify({app:KEY,state:ST,sentences:s},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);const d=new Date();a.download="oxford100_进度_"+d.getFullYear()+(d.getMonth()+1)+d.getDate()+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);};
  $("mImport").onclick=()=>$("fileIn").click();}
 $("fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);ST=mergeState(o.state||o);if(o.sentences)try{localStorage.setItem(SKEY,JSON.stringify(o.sentences));}catch(_){}if(!ST.queue.length)buildQueue();save();renderAll();$("restore").textContent="✅ 已导入进度";}catch(err){alert("文件格式不对，导入失败");}e.target.value="";};r.readAsText(f);};
@@ -695,8 +698,16 @@ function renderAll(){renderIntro();renderTabs();$("auto").checked=!!ST.auto;
 
 /* ===== 造句检测 Sentence check (smarter) ===== */
 const SKEY="oxford100_sentences_v1";
+const DRAFT_KEY="oxford100_sent_draft_v1";
 function sLoad(){try{return JSON.parse(localStorage.getItem(SKEY)||"{}")||{};}catch(e){return {};}}
-function sSave(word,s){try{const o=sLoad();o[word]={s:s,t:Date.now()};localStorage.setItem(SKEY,JSON.stringify(o));}catch(e){}}
+function sSave(word,s){try{const o=sLoad();o[word]={s:s,t:Date.now()};localStorage.setItem(SKEY,JSON.stringify(o));}catch(e){}
+ flashSaved();}
+function dLoad(){try{const o=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null");return o&&typeof o==="object"?o:null;}catch(e){return null;}}
+function dSave(word,text,opt){opt=opt||{};try{if(!word){localStorage.removeItem(DRAFT_KEY);return;}localStorage.setItem(DRAFT_KEY,JSON.stringify({word:word,text:String(text||""),t:Date.now()}));}catch(e){}
+ if(opt.flash)flashSaved();}
+function dClear(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
+function dFlushFromInput(opt){const w=sCurWord();const ta=$("sentIn");if(!w||!ta)return;const t=ta.value;if(t&&t.trim())dSave(w.en,t,opt);else if(t==="")dSave(w.en,"",opt);}
+let _dDeb=null;function dSaveDebounced(){clearTimeout(_dDeb);_dDeb=setTimeout(()=>dFlushFromInput({flash:false}),280);}
 const IRREG={be:["am","is","are","was","were","been","being"],go:["goes","went","gone"],have:["has","had"],do:["does","did","done"],make:["made"],take:["took","taken"],get:["got","gotten"],come:["came"],see:["saw","seen"],eat:["ate","eaten"],buy:["bought"],teach:["taught"],speak:["spoke","spoken"],write:["wrote","written"],run:["ran"],swim:["swam","swum"],sing:["sang","sung"],meet:["met"],tell:["told"],say:["said"],know:["knew","known"],think:["thought"],give:["gave","given"],find:["found"],leave:["left"],feel:["felt"],read:["read"],sleep:["slept"],drive:["drove","driven"],ride:["rode","ridden"],fly:["flew","flown","flies"],begin:["began","begun"],sit:["sat"],stand:["stood"],grow:["grew","grown"],draw:["drew","drawn"],choose:["chose","chosen"],forget:["forgot","forgotten"],spend:["spent"],send:["sent"],bring:["brought"],catch:["caught"],keep:["kept"],lose:["lost"],win:["won"],put:["put"],cut:["cut"],let:["let"],visit:["visits","visited","visiting"],play:["plays","played","playing"],work:["works","worked","working"],live:["lives","lived","living"],study:["studies","studied","studying"],watch:["watches","watched","watching"],help:["helps","helped","helping"],need:["needs","needed","needing"],want:["wants","wanted","wanting"],like:["likes","liked","liking"],love:["loves","loved","loving"],call:["calls","called","calling"],clean:["cleans","cleaned","cleaning"],cook:["cooks","cooked","cooking"],stay:["stays","stayed","staying"],finish:["finishes","finished","finishing"],start:["starts","started","starting"],open:["opens","opened","opening"],close:["closes","closed","closing"],enjoy:["enjoys","enjoyed","enjoying"],child:["children"],man:["men"],woman:["women"],person:["people"],foot:["feet"],tooth:["teeth"],good:["better","best"],bad:["worse","worst"],well:["better","best"]};
 const IRREG_PAST={am:"was",is:"was",are:"were",go:"went",goes:"went",have:"had",has:"had",do:"did",does:"did",make:"made",makes:"made",take:"took",takes:"took",get:"got",gets:"got",come:"came",comes:"came",see:"saw",sees:"saw",eat:"ate",eats:"ate",buy:"bought",buys:"bought",teach:"taught",teaches:"taught",speak:"spoke",speaks:"spoke",write:"wrote",writes:"wrote",run:"ran",runs:"ran",swim:"swam",swims:"swam",sing:"sang",sings:"sang",meet:"met",meets:"met",tell:"told",tells:"told",say:"said",says:"said",know:"knew",knows:"knew",think:"thought",thinks:"thought",give:"gave",gives:"gave",find:"found",finds:"found",leave:"left",leaves:"left",feel:"felt",feels:"felt",sleep:"slept",sleeps:"slept",drive:"drove",drives:"drove",ride:"rode",rides:"rode",fly:"flew",flies:"flew",begin:"began",begins:"began",sit:"sat",sits:"sat",stand:"stood",stands:"stood",grow:"grew",grows:"grew",draw:"drew",draws:"drew",choose:"chose",chooses:"chose",forget:"forgot",forgets:"forgot",spend:"spent",spends:"spent",send:"sent",sends:"sent",bring:"brought",brings:"brought",catch:"caught",catches:"caught",keep:"kept",keeps:"kept",lose:"lost",loses:"lost",win:"won",wins:"won",visit:"visited",visits:"visited",play:"played",plays:"played",work:"worked",works:"worked",live:"lived",lives:"lived",study:"studied",studies:"studied",watch:"watched",watches:"watched",help:"helped",helps:"helped",need:"needed",needs:"needed",want:"wanted",wants:"wanted",like:"liked",likes:"liked",love:"loved",loves:"loved",call:"called",calls:"called",clean:"cleaned",cleans:"cleaned",cook:"cooked",cooks:"cooked",stay:"stayed",stays:"stayed",finish:"finished",finishes:"finished",start:"started",starts:"started",open:"opened",opens:"opened",close:"closed",closes:"closed",enjoy:"enjoyed",enjoys:"enjoyed"};
 function sForms(t){t=t.toLowerCase().replace(/[^a-z']/g,"");if(!t)return [];const f=new Set([t,t+"s",t+"es",t+"ed",t+"d",t+"ing",t+"er",t+"est",t+"ly"]);
@@ -940,7 +951,11 @@ function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWor
  const show=!!(w&&ws&&ws.revealed&&ws.sentOn);box.style.display=show?"":"none";if(!show)return;
  if(box.dataset.word===w.en)return;box.dataset.word=w.en;
  $("sentTitle").textContent="🗣️ 拼对啦！现在用「"+w.en+"」自己说/写一个英文句子";$("sentIn").placeholder="例句是："+w.exEn+"  →  试试换个人、地点或时间";
- const last=sLoad()[w.en];$("sentIn").value=last?last.s:"";$("sentLast").textContent=last?"上次保存："+last.s:"";$("sentRes").innerHTML="";$("sentMsg").textContent="";
+ const last=sLoad()[w.en];const draft=dLoad();
+ const useDraft=draft&&draft.word===w.en&&typeof draft.text==="string";
+ $("sentIn").value=useDraft?draft.text:(last?last.s:"");
+ $("sentLast").textContent=last?"上次保存："+last.s:(useDraft&&draft.text.trim()?"（草稿未检测，已恢复）":"");
+ $("sentRes").innerHTML="";$("sentMsg").textContent="";
  const chk=$("sentChk");if(chk){chk.disabled=false;chk.textContent="检测";}}
 function sMsg(t){$("sentMsg").textContent=t;}
 let sRec=null;
@@ -953,7 +968,7 @@ let sRec=null;
   const p=String(prev).replace(/\s+$/,"");const needsNL=/[.!?]"?$/.test(p);const sep=needsNL?"\n":(/[\s([{]$/.test(p)?"":" ");
   let c=chunk;if(needsNL||!p)c=c.charAt(0).toUpperCase()+c.slice(1);else if(/^[A-Z]/.test(c)&&!/^(I|I'm|I've|I'd|I'll|OK|USA|UK)\b/.test(c))c=c.charAt(0).toLowerCase()+c.slice(1);
   return p+sep+c;};
- const paint=()=>{const ta=$("sentIn");if(!ta)return;const full=joinAppend(baseText,committed);const show=interim?joinAppend(full,interim):full;ta.value=show;try{ta.selectionStart=ta.selectionEnd=show.length;}catch(e){}};
+ const paint=()=>{const ta=$("sentIn");if(!ta)return;const full=joinAppend(baseText,committed);const show=interim?joinAppend(full,interim):full;ta.value=show;try{ta.selectionStart=ta.selectionEnd=show.length;}catch(e){}try{dSaveDebounced();}catch(e){}};
  b.onclick=()=>{if(listening){wantStop=true;try{sRec&&sRec.stop();}catch(e){}return;}
   let tried=false;wantStop=false;baseText=($("sentIn")&&$("sentIn").value)||"";committed="";interim="";
   const start=(lang)=>{try{sRec=new SR();sRec.lang=lang;sRec.interimResults=true;sRec.maxAlternatives=3;sRec.continuous=false;
@@ -965,7 +980,7 @@ let sRec=null;
     if(er==="aborted")return;
     sMsg(er==="not-allowed"||er==="service-not-allowed"?"⚠️ 没有麦克风权限：请在浏览器设置里允许麦克风，或直接打字。":er==="no-speech"?"⚠️ 没听到声音，靠近一点再说一次，慢慢说。":er==="audio-capture"?"⚠️ 找不到麦克风，可直接打字。":er==="network"?"⚠️ 语音识别需要联网，可直接打字。":"⚠️ 语音识别出错（"+er+"），可直接打字。");};
    sRec.onend=()=>{listening=false;b.textContent="🎤 说一句";if(interim&&!committed){committed=interim;interim="";paint();}
-    if(committed){const ta=$("sentIn");if(ta)ta.value=joinAppend(baseText,committed);sMsg("✅ 听到了，可改一改再点「检测」。再点🎤会追加下一句，不会清空。");}
+    if(committed){const ta=$("sentIn");if(ta)ta.value=joinAppend(baseText,committed);try{dFlushFromInput({flash:true});}catch(e){}sMsg("✅ 听到了，可改一改再点「检测」。再点🎤会追加下一句，不会清空。");}
     wantStop=false;};sRec.start();}catch(err){listening=false;b.textContent="🎤 说一句";sMsg("⚠️ 无法启动语音识别，可直接打字。");}};
   start("en-GB");};})();
 
@@ -1201,7 +1216,7 @@ function sRenderRes(r,lt,ltState,corr,sent,paintInfo,tr){const head=r.level==="g
  $("sentRes").innerHTML=h;
  sBindChipClicks($("sentRes"));
  const use=$("sUseCorr");
- if(use&&corr){use.onclick=()=>{$("sentIn").value=corr;$("sentIn").focus();sMsg("已填入参考改法，可再改一改再检测。");};}
+ if(use&&corr){use.onclick=()=>{$("sentIn").value=corr;$("sentIn").focus();try{dFlushFromInput({flash:true});}catch(e){}sMsg("已填入参考改法，可再改一改再检测。");};}
  if(r.level==="bad"||r.level==="mid"){try{$("sentIn").focus();}catch(e){}}}
 
 function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
@@ -1225,7 +1240,7 @@ function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
 }
 
 async function sDoCheck(){const w=sCurWord();if(!w)return;let s=$("sentIn").value.trim().replace(/[’‘]/g,"'").replace(/\s+/g," ");$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
- sSave(w.en,s);$("sentLast").textContent="已保存：" + s;
+ sSave(w.en,s);try{dClear();}catch(e){}$("sentLast").textContent="已保存：" + s;
  const r=localCheck(s,w);
  const btn=$("sentChk");const oldLabel=btn.textContent;btn.disabled=true;btn.textContent="检测中…";
  const localPaint=sCollectPaint(s,w,r,[]);
@@ -1306,7 +1321,9 @@ $("sentSay").onclick=()=>{const t=$("sentIn").value.trim();if(t)speak(t);else sM
 $("sentTeach").onclick=()=>{const w=sCurWord();if(!w)return;const s=$("sentIn").value.trim();if(!s){sMsg("先写一个句子哦。");return;}sSave(w.en,s);sCopy("【造句批改】单词："+w.en+" "+w.ph+"（"+w.pos+"，"+w.zh+"）\n场景："+w.theme+"\n我的句子："+s+"\n请判断对不对、哪里错、给我改正后的句子并教我读。");};
 $("sentSkip").onclick=()=>{next();};
 
-load();renderAll();save();
-window.addEventListener("pagehide",save);document.addEventListener("visibilitychange",()=>{if(document.hidden)save();});
+const _restored=load();renderAll();save({silent:true});
+try{const ta=$("sentIn");if(ta){ta.addEventListener("input",()=>dSaveDebounced());ta.addEventListener("change",()=>dFlushFromInput({flash:true}));}}catch(e){}
+window.addEventListener("pagehide",()=>{try{dFlushFromInput();}catch(e){}save({silent:true});});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){try{dFlushFromInput();}catch(e){}save({silent:true});}});
 </script>
 </body></html>
