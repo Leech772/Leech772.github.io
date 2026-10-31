@@ -541,7 +541,7 @@ const REP_FUZZY=1,REP_NO=2; /* 模糊：之后再拼对 1 次；不会/拼错：
 const TABS=[["words","① 单词拼写"],["list","② 词表"],["mem","③ 进度"]];
 const $=id=>document.getElementById(id);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function sEscH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"""}[c]));}
+function sEscH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&"+"amp;","<":"&"+"lt;",">":"&"+"gt;",'"':"&"+"quot;"}[c]));}
 
 /* ---------- 状态 ---------- */
 function defState(){return {v:1,theme:ALLTH,tab:"words",introHidden:false,voice:"",auto:false,
@@ -972,7 +972,7 @@ async function ltCheck(text,opts){if(typeof fetch!=="function")throw new Error("
   try{const body=new URLSearchParams(Object.assign({language:"en-GB",text:text,enabledOnly:"false"},extra||{}));const r=await fetch("https://api.languagetool.org/v2/check",{method:"POST",body:body,signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error("http "+r.status);const j=await r.json();return (j.matches||[]);}finally{clearTimeout(tm);}};
  if(opts.picky){try{return await once({level:"picky"});}catch(e){return await once({});}}
  return once({});}
-function sEsc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"""}[c]));}
+function sEsc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&"+"amp;","<":"&"+"lt;",">":"&"+"gt;",'"':"&"+"quot;"}[c]));}
 function sCurWord(){try{return cur()||null;}catch(e){return null;}}
 function beatTwistKey(en){return String(en||"")+"__twist";}
 function beatSet(n){const box=$("sentArea");if(!box)return;box.dataset.beat=String(n);const b3=$("beat3");const done=$("beatDone");
