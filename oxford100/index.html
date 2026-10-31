@@ -5,7 +5,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
 <meta name="apple-mobile-web-app-title" content="牛津100词"/>
 <meta name="theme-color" content="#f7f4ef"/>
-<!-- oxford100 autosave v=beats2 · 第2/3拍输出 2026-10-31 -->
+<!-- oxford100 autosave v=fs3 · 沉浸全屏+手机说明默认收起 2026-10-31 -->
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="application-name" content="牛津100词"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%235f7a5a'/%3E%3Ctext x='50' y='66' font-size='46' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EAa%3C/text%3E%3C/svg%3E"/>
@@ -217,14 +219,38 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
   #audioStatus{font-size:.74rem;color:#7a6f64;text-align:center;min-height:1.1em;margin:2px 0}
 }
 
+
+/* ---- fs3: 沉浸模式（任何手机都能用的“全屏”）+ 吸顶标签栏 ---- */
+html.immersive h1,html.immersive .sub,html.immersive #introPane,html.immersive #envTip,html.immersive .method,html.immersive #bIntro{display:none!important}
+html.immersive body{padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px)}
+html.immersive .top{top:0;padding-top:calc(env(safe-area-inset-top,0px) + 4px);padding-right:84px}
+html.immersive .card{min-height:150px;padding:16px 14px}
+html.immersive .top{flex-wrap:nowrap;justify-content:flex-start;gap:6px}html.immersive .tabs{flex-wrap:nowrap;gap:6px}html.immersive .tabs button{padding:9px 12px;font-size:.84rem;white-space:nowrap}html.immersive .save,html.immersive #restore{display:none}
+.fs-fixed{top:calc(env(safe-area-inset-top,0px) + 10px)!important;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.top{touch-action:manipulation}
+#fsTip{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:10000;background:#2a241c;color:#fff;border-radius:14px;padding:12px 14px;font-size:.84rem;line-height:1.55;box-shadow:0 8px 24px rgba(0,0,0,.25);display:none}
+#fsTip.show{display:block}
+#fsTip button{margin-top:8px;border:0;border-radius:999px;background:#fff;color:#2a241c;font-weight:700;padding:7px 16px;font-size:.84rem}
+@media(max-width:600px){
+ body{padding-top:10px;gap:10px}
+ h1{font-size:1rem;text-align:left;margin:2px 0 0;padding-right:96px}
+ .sub{display:none}
+ .chips{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+ .chips .chip{flex:none}
+ .counts{gap:6px}.counts div{padding:6px 4px}
+ .card{min-height:0}
+}
+.intro-start{position:sticky;top:0;z-index:5}
 </style>
 </head><body>
 <button type="button" class="fs-fixed" id="btnFs" title="点一下进入全屏，再点退出">⛶ 全屏</button>
+<div id="fsTip" role="status"><span id="fsTipTxt"></span><br><button type="button" id="fsTipOk">知道了</button></div>
 <div class="wrap">
 <h1 id="mainTitle">Oxford 3000 · 中职基础 100 词（A1→B1）</h1>
 <p class="sub">8 个生活/学校场景 · 看中文拼英文 · Jessica 真人女声 · 造句红绿标注</p>
 
 <div id="introPane" class="intro">
+  <div class="row" style="margin:0 0 10px"><button type="button" class="b-sub" id="bHideIntro0">直接开始练 →</button></div>
   <h2>📗 Oxford 3000 · 中职基础 100 词（A1→B1）</h2>
   <ul>
     <li>🌱 这 100 个词都来自牛津 <b>Oxford 3000</b> 核心词表，帮你从 <b>A1</b> 一步步往 <b>B1</b> 打好底子。</li>
@@ -544,7 +570,7 @@ function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor
 function sEscH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&"+"amp;","<":"&"+"lt;",">":"&"+"gt;",'"':"&"+"quot;"}[c]));}
 
 /* ---------- 状态 ---------- */
-function defState(){return {v:1,theme:ALLTH,tab:"words",introHidden:false,voice:"",auto:false,
+function defState(){return {v:1,theme:ALLTH,tab:"words",introHidden:true,voice:"",auto:false,
  reps:{},known:[],missed:[],queue:[],round:"first",revealed:false,pending:null,sentOn:false,hint:false,lastFb:null,log:[],updated:0};}
 let ST=defState();
 function themeIds(th){return W.filter(w=>th===ALLTH||w.theme===th).map(w=>w.id);}
@@ -566,7 +592,7 @@ function flashSaved(){const el=$("save");if(!el)return;el.textContent="✓ 已�
 function save(opt){opt=opt||{};ST.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}
  if(!opt.silent)flashSaved();}
 function load(){let o=null;try{const a=localStorage.getItem(KEY);if(a)o=JSON.parse(a);}catch(e){}
- ST=mergeState(o);if(o){const r=$("restore");if(r){r.textContent="已恢复上次进度";clearTimeout(load._rt);load._rt=setTimeout(()=>{if(r.textContent==="已恢复上次进度")r.textContent="";},4500);}}
+ ST=mergeState(o);if(ST.introV!==2){ST.introHidden=true;ST.introV=2;}if(o){const r=$("restore");if(r){r.textContent="已恢复上次进度";clearTimeout(load._rt);load._rt=setTimeout(()=>{if(r.textContent==="已恢复上次进度")r.textContent="";},4500);}}
  if(!ST.queue.length&&themeIds(ST.theme).some(i=>!ST.known.includes(i)))buildQueue();return !!o;}
 
 /* ---------- 语音：仅 Jessica 内置真人女声包 ---------- */
@@ -1357,14 +1383,34 @@ $("spEx").onclick=()=>{const w=cur();if(w)speak(w.exEn);};$("spExS").onclick=()=
 $("auto").onchange=e=>{ST.auto=e.target.checked;save();};
 $("bTest").onclick=()=>{const w=cur();speak(w?w.en:"beautiful");};
 $("bHideIntro").onclick=()=>{ST.introHidden=true;save();renderIntro();};
+{const b0=$("bHideIntro0");if(b0)b0.onclick=()=>{ST.introHidden=true;save();renderIntro();window.scrollTo(0,0);};}
 $("bIntro").onclick=()=>{ST.introHidden=false;save();renderIntro();window.scrollTo({top:0,behavior:"smooth"});};
 $("bRetest").onclick=()=>{const ids=themeIds(ST.theme);const m=ST.missed.filter(i=>ids.includes(i));if(!m.length)return;ST.queue=shuffle(m);ST.round="final";ST.revealed=false;ST.pending=null;save();renderAll();};
 $("bNextTheme").onclick=()=>{const th=$("bNextTheme").dataset.th;if(!th)return;ST.theme=th;buildQueue();save();renderAll();window.scrollTo(0,0);};
 $("bRestart").onclick=()=>{if(!confirm("把「"+(ST.theme===ALLTH?"全部 100 词":ST.theme)+"」重新练一遍？（这组的已掌握会清零）"))return;const ids=themeIds(ST.theme);ST.known=ST.known.filter(i=>!ids.includes(i));ids.forEach(i=>delete ST.reps[i]);buildQueue();save();renderAll();};
-$("btnFs").onclick=()=>{const d=document,el=d.documentElement;const isFs=d.fullscreenElement||d.webkitFullscreenElement;
- try{if(isFs){(d.exitFullscreen||d.webkitExitFullscreen).call(d);}else{const fn=el.requestFullscreen||el.webkitRequestFullscreen;if(!fn)throw 0;const p=fn.call(el);if(p&&p.catch)p.catch(()=>alert("全屏没反应？请按键盘 F11（Mac：Ctrl+Cmd+F）"));}}catch(e){alert("全屏没反应？请按键盘 F11（Mac：Ctrl+Cmd+F）");}};
-function fsLabel(){$("btnFs").textContent=(document.fullscreenElement||document.webkitFullscreenElement)?"⛶ 退出全屏":"⛶ 全屏";}
-document.addEventListener("fullscreenchange",fsLabel);document.addEventListener("webkitfullscreenchange",fsLabel);
+/* ---- fs3 全屏：真全屏（能用就用）+ 沉浸模式（iPhone/微信等不支持时也有效） ---- */
+const FS_IMM_KEY="oxford100_imm_v1";
+function realFs(){const d=document;return !!(d.fullscreenElement||d.webkitFullscreenElement);}
+function immOn(){return document.documentElement.classList.contains("immersive");}
+function fsLabel(){const b=$("btnFs");if(!b)return;b.textContent=(realFs()||immOn())?"⛶ 退出全屏":"⛶ 全屏";}
+function fsTip(t){const el=$("fsTip");if(!el)return;$("fsTipTxt").textContent=t;el.classList.add("show");clearTimeout(fsTip._t);fsTip._t=setTimeout(()=>el.classList.remove("show"),9000);}
+function setImm(on){document.documentElement.classList.toggle("immersive",!!on);try{sessionStorage.setItem(FS_IMM_KEY,on?"1":"0");}catch(e){}fsLabel();try{window.scrollTo(0,on?1:0);}catch(e){}}
+function toggleFs(){const d=document,el=d.documentElement;
+ if(realFs()||immOn()){try{if(realFs())(d.exitFullscreen||d.webkitExitFullscreen).call(d);}catch(e){}setImm(false);return;}
+ setImm(true);
+ const fn=el.requestFullscreen||el.webkitRequestFullscreen;
+ const ua=navigator.userAgent||"";const ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1);
+ const standalone=window.navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches);
+ if(standalone){return;}
+ let ok=false;
+ if(fn&&!ios){try{const p=fn.call(el);if(p&&p.then){p.then(()=>{},()=>{fsTip("这个浏览器不让网页进入真全屏，已切到「沉浸模式」（隐藏标题和说明，多出一大截练习空间）。想去掉地址栏：用 Chrome/Safari 打开，或「添加到主屏幕」后从桌面图标打开。");});}ok=true;}catch(e){}}
+ if(!ok){fsTip(ios?"iPhone 的 Safari 不允许网页真全屏，已切到「沉浸模式」。想彻底没有地址栏：点分享按钮 → 添加到主屏幕，以后从桌面图标打开就是全屏。":"这个浏览器不支持网页真全屏，已切到「沉浸模式」。想更全屏：用 Chrome 打开，或「添加到主屏幕」后从桌面图标打开。");}}
+$("btnFs").onclick=toggleFs;
+$("fsTipOk").onclick=()=>$("fsTip").classList.remove("show");
+document.addEventListener("fullscreenchange",()=>{if(!realFs()&&immOn()){/* 用户按返回退出真全屏：同时退出沉浸 */setImm(false);}fsLabel();});
+document.addEventListener("webkitfullscreenchange",()=>{if(!realFs()&&immOn()){setImm(false);}fsLabel();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&immOn()&&!realFs()){setImm(false);}});
+try{if(sessionStorage.getItem(FS_IMM_KEY)==="1")setImm(true);}catch(e){}
 if(window.speechSynthesis){pickVoice();try{speechSynthesis.addEventListener?speechSynthesis.addEventListener("voiceschanged",pickVoice):(speechSynthesis.onvoiceschanged=pickVoice);}catch(e){speechSynthesis.onvoiceschanged=pickVoice;}}
 else{try{pickVoice();}catch(e){}}
 try{pickVoice();}catch(e){}
