@@ -130,6 +130,7 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
 .s-chip-fix{color:#166534;font-weight:650}
 .s-chip-lab{color:#9f1239;font-size:.82rem;font-weight:650}
 .s-strict{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--accent2);margin:6px 0 0;user-select:none}
+.s-punct-rule{font-size:.78rem;color:var(--accent2);line-height:1.45;margin:6px 0 0;padding:6px 10px;background:rgba(59,130,246,.08);border:1px dashed rgba(59,130,246,.35);border-radius:10px}
 .s-strict input{width:16px;height:16px;accent-color:var(--accent)}
 
 /* 三拍输出：第2/3拍（第1拍=拼写，不在此区） */
@@ -304,23 +305,25 @@ html.immersive .top{flex-wrap:nowrap;justify-content:flex-start;gap:6px}html.imm
     <div class="beat-hint" id="beat2Hint">用上目标词，自己编一句真事（换人/地点/时间都行），别抄上面例句。</div>
     <div class="s-last" id="sentLast"></div>
     <textarea id="sentIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="自己造一句，例如换个人、换地点、换时间…"></textarea>
+    <div class="s-punct-rule" id="sentPunctRule">📌 句末用英文标点 . 或 ? 或 !（中文 。？！也会自动认；缺标点时检测会自动补句号）</div>
     <div class="row s-btns"><button type="button" class="b-sub" id="sentChk">检测</button><button type="button" class="spk" id="sentMic">🎤 说一句</button><button type="button" class="mini" id="sentSay">🔊</button><button type="button" class="b-fuz beat-go" id="beat2Go">我写好了，去第3拍 →</button></div>
-    <label class="s-strict"><input type="checkbox" id="sentStrict" checked/> 严格模式（更细的语法/风格提示）</label>
+    <label class="s-strict"><input type="checkbox" id="sentStrict"/> 严格模式（更细的语法/风格提示，容易挑小毛病）</label>
     <div class="s-nomic" id="sentNoMic"></div><div class="s-msg" id="sentMsg" aria-live="polite"></div>
     <div id="sentRes"></div>
   </div>
   <div id="beat3" class="beat-step beat-locked">
     <div class="s-title" id="beat3Title">第3拍 · 口述加戏</div>
     <div class="beat-hint" id="beat3Hint">① 把第2拍那句大声说一遍（可用 🔊 读自己的句 / 🎤 再录一次）<br>② 再写/说一句「加戏」：反着来、换结果、问对方……必须还用上目标词。</div>
-    <div class="row s-btns" style="margin-top:0"><button type="button" class="mini" id="beat2Replay">🔊 读第2拍那句</button><button type="button" class="spk" id="sentMicReplay" style="display:none">🎤</button></div>
+    <div class="row s-btns" style="margin-top:0"><button type="button" class="mini" id="beat2Replay">🔊 读第2拍那句</button></div>
     <div class="s-last" id="twistLast"></div>
     <textarea id="twistIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="加戏一句：反着来 / 换结果 / 问对方…"></textarea>
+    <div class="s-punct-rule" id="twistPunctRule">📌 句末用英文标点 . 或 ? 或 !（中文 。？！也会自动认；缺标点时检测会自动补句号）</div>
     <div class="row s-btns"><button type="button" class="b-sub" id="twistChk">检测加戏</button><button type="button" class="spk" id="twistMic">🎤 说加戏</button><button type="button" class="mini" id="twistSay">🔊</button></div>
     <div class="s-msg" id="twistMsg" aria-live="polite"></div>
     <div id="twistRes"></div>
     <div class="beat-done" id="beatDone" style="display:none">🎉 两拍输出都完成啦！可以点下面「下一词 →」继续</div>
   </div>
-  <div class="row s-btns"><button type="button" class="b-fuz" id="sentTeach">发给老师精批</button><button type="button" class="b-no" id="sentSkip">跳过输出 →</button></div>
+  <div class="row s-btns"><button type="button" class="b-fuz" id="sentTeach">复制给老师看</button><button type="button" class="b-no" id="sentSkip">跳过输出 →</button></div>
 </div>
 <div id="nextArea" style="display:none"><button type="button" class="b-next" id="bNext">下一词 →</button></div>
 <div class="box done" id="done"><h2 style="margin:6px 0" id="doneTitle">本组全部拼对 🎉</h2><p class="sub" id="doneSub"></p>
@@ -858,6 +861,35 @@ function sNounThin(sent,w){const pos=String(w.pos||"");if(!/^名词/.test(pos))r
  if(toks.length<=3&&content.length===0)return "句子有点短，加点具体内容会更好（谁的？在哪？做什么？）。可以参考例句「"+w.exEn+"」再换个说法。";
  return null;}
 
+
+/* ===== 造句标点规范化：中文/全角 → 英文；压缩空格；缺句末可自动补 . ===== */
+function sNormPunctInput(raw){
+  let s=String(raw||"");
+  s=s.replace(/[\u2018\u2019\u201A\u201B]/g,"'").replace(/[\u201C\u201D\u201E\u201F]/g,'"');
+  s=s.replace(/[，、]/g,",").replace(/。/g,".").replace(/！/g,"!").replace(/？/g,"?")
+   .replace(/；/g,";").replace(/：/g,":")
+   .replace(/（/g,"(").replace(/）/g,")").replace(/【/g,"[").replace(/】/g,"]")
+   .replace(/[「『《]/g,'"').replace(/[」』》]/g,'"')
+   .replace(/…+/g,"...").replace(/[—–]/g,"-").replace(/\u3000/g," ");
+  s=s.replace(/[\uFF01-\uFF5E]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));
+  s=s.replace(/\s+/g," ").trim();
+  return s;
+}
+function sEndPunctMatch(s){return String(s||"").match(/([.?!])(["')\]])?\s*$/);}
+function sGotEndPunct(s){const m=String(s||"").match(/([^\w\s]+)\s*$/);return m?m[1]:"（没有句末标点）";}
+/** 检查前准备：规范化标点/空格；若缺句末 .?! 则自动补 . */
+function sPrepSentForCheck(raw){
+  const before=String(raw||"");
+  const mapped=/[，。！？；：、（）【】「」『』《》…\u3000\uFF01-\uFF5E\u2018-\u201F]/.test(before);
+  let s=sNormPunctInput(before);
+  let autoDot=false;
+  if(s&&!sEndPunctMatch(s)){
+    const stripped=s.replace(/[,;:\s]+$/,"");
+    if(stripped){s=stripped+".";autoDot=true;}
+  }
+  return {s:s,autoDot:autoDot,mapped:mapped};
+}
+
 function localCheck0(sent,w){const ok=[],fix=[],tips=[];const s=String(sent||"").trim();const toks=sTok(s);
  if(!s)return {ok,fix:["还没写句子哦。"],tips,level:"bad",corrLocal:null,time:null,verbTok:null,verbIdx:-1,verbNeedsFix:false};
  const hw=sHasWord(s,w.en);
@@ -866,7 +898,7 @@ function localCheck0(sent,w){const ok=[],fix=[],tips=[];const s=String(sent||"")
  else fix.push("没用上目标词：本句要练习的词是「"+w.en+"」（"+w.zh+"）。请在句子里写进「"+hw.miss.join(" / ")+"」，例如参考：「"+w.exEn+"」。");
  if(toks.length>=3)ok.push("句子长度可以");else if(toks.length===2)tips.push("句子偏短：现在只有 2 个词，英语完整句通常至少 3 个词（主语+动词+其他）。可参考：「"+w.exEn+"」");else fix.push("太短了：请至少写 3 个英文词，组成「谁+做什么/是什么」。参考例句：「"+w.exEn+"」");
  if(/^[A-Z]/.test(s))ok.push("开头大写对了");else if(/^[a-z]/.test(s))fix.push("句首未大写：英文每个句子第一个字母必须大写。改成："+s.charAt(0).toUpperCase()+s.slice(1));
- if(/[.?!]["')]?$/.test(s))ok.push("结尾标点对了");else fix.push("缺少句末标点：陈述句加句号 . ，疑问句加 ? ，感叹加 ! 。在句子最后补上一个即可。");
+ const _ep=sEndPunctMatch(s);if(_ep)ok.push("结尾标点对了（用了 "+_ep[1]+"）");else{const got=sGotEndPunct(s);fix.push("句末标点不对：你写的是「"+got+"」，该用英文 . 或 ? 或 !（中文 。？！会自动认）。陈述用 . ，疑问用 ? ，感叹用 ! 。");}
  if(/[\u4e00-\u9fff]/.test(s))fix.push("混进了中文：造句练习请全部用英文写。把中文词换成对应英文（可用本课目标词「"+w.en+"」）。");
  if(/(^|\s)i(\s|'|$)/.test(s))fix.push("代词 I 写错了：英文里「我」永远是大写 I，不能写成小写 i。把句子里的 i 改成 I。");
  if(toks.length>=3&&!sHasVerb(toks)&&!/^(please|let|don't)/i.test(s))tips.push("可能缺动词：英语句子通常要有动词（如 is/am/are/like/have/go）。没有动词就不成句。可参考：「"+w.exEn+"」");
@@ -880,7 +912,7 @@ function localCheck0(sent,w){const ok=[],fix=[],tips=[];const s=String(sent||"")
  let corrLocal=s;
  if(/^[a-z]/.test(corrLocal))corrLocal=corrLocal.charAt(0).toUpperCase()+corrLocal.slice(1);
  corrLocal=corrLocal.replace(/(^|\s)i(\s|'|$)/g,(m,a,b)=>a+"I"+b);
- if(!/[.?!]["')]?$/.test(corrLocal))corrLocal=corrLocal.replace(/[,;:\s]*$/,"")+".";
+ if(!sEndPunctMatch(corrLocal))corrLocal=corrLocal.replace(/[,;:\s]*$/,"")+".";
  // title-case short name-like tokens that are fully lowercase (not sentence-initial handled above)
  corrLocal=corrLocal.replace(/\b([a-z]{1,12})\b/g,(m,w0,off)=>{
   if(off===0)return m; // already handled first char maybe
@@ -904,7 +936,7 @@ function ltZh(m){const id=(m.rule&&m.rule.id)||"",cat=(m.rule&&m.rule.category&&
  if(/UPPERCASE_SENTENCE_START/.test(id))return "句首未大写：英文句子第一个字母必须大写。把开头那个词改成首字母大写即可。";
  if(/MORFOLOGIK|SPELL/.test(id)||cat==="TYPOS")return "拼写可疑：这个词可能拼错了，或词典里没有。对照目标词/例句检查字母，或换成正确拼写。";
  if(/I_LOWERCASE|LOWERCASE_I/.test(id))return "代词 I 未大写：英文里「我」永远写作大写 I，不能写成 i。";
- if(/PUNCTUATION_PARAGRAPH_END|PUNCT/.test(id))return "标点问题：句末通常要有 . ? 或 !；逗号、引号位置也可能不对，按建议改一下。";
+ if(/PUNCTUATION_PARAGRAPH_END|PUNCT/.test(id))return "标点问题：句末该用英文 . 或 ? 或 !（你写的若是中文 。？！，检测前会自动换成英文；若仍报错，对照「改成」看该用什么）。逗号、引号位置也可能不对。";
  if(/WHITESPACE|DOUBLE_SPACE|COMMA_PARENTHESIS/.test(id))return "空格/格式：单词之间只要一个空格，标点一般紧贴前面的词、后面留一格。";
  if(/DT_|DET|ARTICLE|THE_/.test(id))return "冠词问题：可数单数名词前常要 a/an；特指或双方都知道的事物用 the；复数/不可数泛指时常不用冠词。";
  if(/TENSE|PAST|PRP_VB|MD_BASEFORM|BASE_FORM/.test(id))return "动词形式/时态不对：看清时间词——过去用过去式，习惯用一般现在，will 后接原形，情态动词后也接原形。";
@@ -984,7 +1016,7 @@ function applyLT(text,matches,w){
  });
  // post: ensure sentence capital + final punct; title-case leftover lowercase nameish if needed
  if(/^[a-z]/.test(out))out=out.charAt(0).toUpperCase()+out.slice(1);
- if(!/[.?!]["')]?$/.test(out.trim()))out=out.replace(/\s*$/,"")+".";
+ if(!sEndPunctMatch(out.trim()))out=out.replace(/\s*$/,"")+".";
  // fix any remaining ALLCAPS short name tokens wrongly introduced — turn LI → Li if nameish
  out=out.replace(/\b([A-Z]{2,12})\b/g,(m)=>{
   const low=m.toLowerCase();
@@ -1065,8 +1097,8 @@ let sRec=null;
   start("en-GB");};})();
 
 const SSTRICT_KEY="oxford100_strict_v1";
-function sStrictOn(){try{const el=$("sentStrict");if(el)return !!el.checked;const v=localStorage.getItem(SSTRICT_KEY);return v===null?true:v!=="0";}catch(e){return true;}}
-function sStrictInit(){const el=$("sentStrict");if(!el)return;try{const v=localStorage.getItem(SSTRICT_KEY);el.checked=v===null?true:v!=="0";}catch(e){el.checked=true;}
+function sStrictOn(){try{const el=$("sentStrict");if(el)return !!el.checked;const v=localStorage.getItem(SSTRICT_KEY);return v===null?false:v!=="0";}catch(e){return false;}}
+function sStrictInit(){const el=$("sentStrict");if(!el)return;try{const v=localStorage.getItem(SSTRICT_KEY);el.checked=v===null?false:v!=="0";}catch(e){el.checked=false;}
  el.addEventListener("change",()=>{try{localStorage.setItem(SSTRICT_KEY,el.checked?"1":"0");}catch(e){}});}
 function sTokenSpans(sent){const out=[];const re=/[A-Za-z]+(?:'[A-Za-z]+)?/g;let m;while((m=re.exec(sent))){out.push({start:m.index,end:m.index+m[0].length,text:m[0],low:m[0].toLowerCase()});}return out;}
 function sMergePaintSpans(spans){if(!spans||!spans.length)return [];
@@ -1079,7 +1111,7 @@ function sMergePaintSpans(spans){if(!spans||!spans.length)return [];
  });return out;}
 function sLocalPaintSpans(sent,w,r){const spans=[];const toks=sTokenSpans(sent);
  if(/^[a-z]/.test(sent)){const t0=toks[0];spans.push({start:0,end:t0?t0.end:1,sev:"bad",kind:"capital",label:"句首要大写",why:"英文句子开头第一个字母必须大写。把第一个词改成首字母大写即可。",bad:sent.slice(0,t0?t0.end:1),fix:(sent.charAt(0).toUpperCase()+sent.slice(1)).slice(0,t0?t0.end:1),id:"loc-cap"});}
- if(sent&&!/[.?!]["')]?$/.test(sent)){const end=sent.length;const start=Math.max(0,end-1);spans.push({start:start,end:end,sev:"bad",kind:"punct",label:"末尾要加标点",why:"完整句子末尾要有句号 . 、问号 ? 或感叹号 !，这样别人（和机器）才知道这句话结束了。",bad:"（句末）",fix:"加 . ? 或 !",id:"loc-punct"});}
+ if(sent&&!sEndPunctMatch(sent)){const got=sGotEndPunct(sent);const end=sent.length;const start=Math.max(0,end-1);spans.push({start:start,end:end,sev:"bad",kind:"punct",label:"末尾标点",why:"句末标点不对：你写的是「"+got+"」，该用英文 . 或 ? 或 !（中文 。？！会自动认）。陈述用 . ，疑问用 ? ，感叹用 ! 。",bad:got,fix:"改成 . 或 ? 或 !",id:"loc-punct"});}
  if(/(^|\s)i(\s|'|$)/.test(sent)){const re=/(^|\s)(i)(?=\s|'|$)/g;let m;while((m=re.exec(sent))){const st=m.index+m[1].length;spans.push({start:st,end:st+1,sev:"bad",kind:"I",label:"「I」要大写",why:"英文里表示「我」的 I 永远大写，写小写 i 是错的。",bad:"i",fix:"I",id:"loc-I-"+st});}}
  const hw=sHasWord(sent,w.en);
  if(!hw.ok){/* missing target — no in-sentence span */}
@@ -1319,9 +1351,11 @@ function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
  function tipsSoft(r,line){if(!r.tips.includes(line))r.tips.push(line);}
 }
 
-async function sDoCheck(){const w=sCurWord();if(!w)return;let s=$("sentIn").value.trim().replace(/[’‘]/g,"'").replace(/\s+/g," ");$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
+async function sDoCheck(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForCheck($("sentIn").value);let s=_prep.s;$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
  sSave(w.en,s);try{dClear();}catch(e){}$("sentLast").textContent="已保存：" + s;
  const r=localCheck(s,w);
+ if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
+ else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}
  const btn=$("sentChk");const oldLabel=btn.textContent;btn.disabled=true;btn.textContent="检测中…";
  const localPaint=sCollectPaint(s,w,r,[]);
  let tr=sTranslateLocal(s);
@@ -1363,7 +1397,7 @@ function sPolish(c,r){c=String(c||"");c=c.replace(/(^|\s)i(?=\s|'|$)/g,(m,a)=>a+
  return c;}
 
 function sPaintAnnotatedHtml(sent,paint,targets){const all=paint||[];const pp=all.filter(p=>p.id!=="loc-punct");
- let h=sPaintAnnotatedHtml0(sent,pp,targets);if(pp.length!==all.length)h+='<span class="s-bad" data-sid="loc-punct" id="sid-loc-punct" title="末尾要加标点"> ＿</span>';return h;}
+ let h=sPaintAnnotatedHtml0(sent,pp,targets);if(pp.length!==all.length)h+='<span class="s-bad" data-sid="loc-punct" id="sid-loc-punct" title="句末该用 . ? 或 !"> ＿</span>';return h;}
 
 /* 本词表补充：不规则变化 & 动词表 */
 Object.assign(IRREG,{sell:["sold"],pay:["paid"],understand:["understood"],learn:["learnt","learned"],stop:["stops","stopped","stopping"],walk:["walks","walked","walking"],listen:["listens","listened","listening"],answer:["answers","answered","answering"],order:["orders","ordered","ordering"],practice:["practise","practises","practised","practising"],exercise:["exercises","exercised","exercising"]});
@@ -1420,7 +1454,7 @@ sStrictInit();
 $("sentChk").onclick=sDoCheck;
 $("sentIn").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheck();}});
 $("sentSay").onclick=()=>{const t=$("sentIn").value.trim();if(t)speak(t);else sMsg("先写一个句子再听。");};
-function beat2GoNext(){const w=sCurWord();if(!w)return;let s=($("sentIn").value||"").trim().replace(/[’‘]/g,"'").replace(/\s+/g," ");
+function beat2GoNext(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForCheck(($("sentIn").value||""));let s=_prep.s;
  if(!s){sMsg("先写或说一句再进第3拍。");$("sentIn").focus();return;}
  $("sentIn").value=s;sSave(w.en,s);$("sentLast").textContent="已保存："+s;
  const box=$("sentArea");const lvl=(box&&box.dataset.beat2Level)||"";
@@ -1448,9 +1482,11 @@ function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(
  const use=$("sUseCorrTwist");if(use&&corr){use.onclick=()=>{$("twistIn").value=corr;$("twistIn").focus();sMsgTwist("已填入参考改法，可再改一改再检测。");};}}
 async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sentArea");
  if(box&&box.dataset.beat!=="3"&&box.dataset.beat!=="done"){sMsgTwist("请先完成第2拍（或点「我写好了，去第3拍」）。");return;}
- let s=$("twistIn").value.trim().replace(/[’‘]/g,"'").replace(/\s+/g," ");$("twistIn").value=s;if(!s){sMsgTwist("先写或说一句加戏哦。");$("twistIn").focus();return;}
+ const _prep=sPrepSentForCheck($("twistIn").value);let s=_prep.s;$("twistIn").value=s;if(!s){sMsgTwist("先写或说一句加戏哦。");$("twistIn").focus();return;}
  const key=beatTwistKey(w.en);sSave(key,s);const tl=$("twistLast");if(tl)tl.textContent="已保存："+s;
- const r=localCheck(s,w);const btn=$("twistChk");const oldLabel=btn?btn.textContent:"检测加戏";if(btn){btn.disabled=true;btn.textContent="检测中…";}
+ const r=localCheck(s,w);
+ if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
+ else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}const btn=$("twistChk");const oldLabel=btn?btn.textContent:"检测加戏";if(btn){btn.disabled=true;btn.textContent="检测中…";}
  const localPaint=sCollectPaint(s,w,r,[]);let tr=sTranslateLocal(s);
  sRenderResInto("twistRes",r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,tr);
  let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s,ms=[];const picky=sStrictOn();
