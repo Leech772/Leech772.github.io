@@ -776,6 +776,76 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   .has-mascot.mascot-left > .btn-mascot{left:-26px}
 }
 </style>
+<style id="mod-css">
+/* ===== 新模块样式（沿用 Animus 白底红强调） ===== */
+.m-head .m-stat{margin-top:6px;color:var(--accent2)}
+.m-status{font-size:.82rem;color:var(--bad)}
+.m-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin:10px 0}
+.m-card{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;background:rgba(255,255,255,.62);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);box-shadow:var(--sm);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;color:var(--ink);transition:transform .12s,box-shadow .12s}
+.m-card:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.m-ic{font-size:1.6rem;flex:none}
+.m-ct{display:flex;flex-direction:column;min-width:0;flex:1}.m-ct b{font-size:.95rem}.m-ct small{color:var(--muted);font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-badge{flex:none;font-size:.75rem;color:var(--good);font-weight:700}
+.m-back{margin:6px 0}
+.m-zhs{font-weight:400;color:var(--muted);font-size:.9rem}
+.m-tags{display:flex;gap:6px;flex-wrap:wrap}
+.m-ctrl{gap:8px;flex-wrap:wrap;align-items:center}
+.m-rate{display:inline-flex;gap:4px}
+.mini.on{background:var(--accent)!important;color:#fff!important;border-color:transparent!important}
+.m-sw{font-size:.88rem;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.m-lines{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.m-line{padding:8px 10px;border:1px solid transparent;border-left:3px solid var(--border);background:rgba(255,255,255,.5);cursor:pointer;border-radius:var(--radius);line-height:1.55;transition:background .15s,border-color .15s}
+.m-line:hover{border-color:var(--border);border-left-color:var(--accent)}
+.m-line.hi{background:var(--accent-soft);border-left-color:var(--accent);box-shadow:0 1px 4px rgba(139,26,26,.15)}
+.m-line.hi .m-en{color:var(--accent2);font-weight:600}
+.m-spk{font-weight:700;color:var(--accent2);margin-right:4px}
+.m-zhl{display:none;color:var(--muted);font-size:.85rem}
+.m-lines.zh .m-zhl{display:block}
+.m-lines.nosub .m-line{color:transparent;text-shadow:0 0 8px rgba(0,0,0,.35);user-select:none}
+.m-lines.nosub .m-line .m-spk{color:var(--accent2);text-shadow:none}
+.m-lines.nosub .m-zhl{display:none}
+.m-hidden-tip{display:none;font-size:.82rem;color:var(--muted);margin-top:4px}
+.m-lines.nosub+.m-hidden-tip{display:block}
+.m-q{padding:10px 0;border-top:1px dashed var(--border)}
+.m-q:first-child{border-top:none}
+.m-opts{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.m-opt{text-align:left;padding:9px 12px;background:rgba(255,255,255,.7);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;color:var(--ink);font-size:.95rem}
+.m-opt:hover:not(:disabled){border-color:var(--accent)}
+.m-opt.ok{background:#e3efe8;border-color:var(--good);color:var(--good);font-weight:700}
+.m-opt.bad{background:#f5e5e2;border-color:var(--bad);color:var(--bad)}
+.m-opt:disabled{cursor:default}
+.m-ex{margin-top:6px;font-size:.9rem;line-height:1.55}
+.m-good{color:var(--good)}.m-badt{color:var(--bad)}
+.m-score{margin-top:8px;font-size:1rem}
+.m-bigq{font-size:1.25rem!important;margin:6px 0!important}
+.m-zhp{font-size:1rem;margin:4px 0}
+.m-tip{font-size:.88rem;color:var(--muted)}
+.m-pat b{color:var(--ink)}
+.m-shadow{padding:10px;border:1px solid var(--border);border-left:3px solid var(--border);margin:6px 0;background:rgba(255,255,255,.55);border-radius:var(--radius)}
+.m-shadow.done{border-left-color:var(--good);background:#f0f6f2}
+.m-sh-t{font-weight:600;margin-bottom:6px}
+.m-sh-r{font-size:.88rem;margin-top:6px}
+.m-hit{color:var(--good);font-weight:700}.m-miss{color:var(--bad);text-decoration:underline dotted}
+#mMyAns{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--border);font-size:1rem;font-family:inherit;border-radius:var(--radius);background:#fff}
+.m-rules{margin:4px 0 0;padding-left:20px;line-height:1.7}
+.m-subtabs{margin:8px 0;flex-wrap:wrap}
+.m-tpl{padding:8px 0;border-top:1px dashed var(--border)}
+.m-tpl-s{font-family:Georgia,serif;margin-top:4px;padding:6px 10px;background:var(--paper);border-left:3px solid var(--accent)}
+.m-bank{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px}
+.m-ftxt{line-height:2.3;font-size:1rem}
+.m-blank{width:7.5em;padding:3px 6px;border:none;border-bottom:2px solid var(--accent);background:var(--accent-soft);font-size:.95rem;font-family:inherit;text-align:center;border-radius:2px}
+.m-blank.ok{border-bottom-color:var(--good);background:#e3efe8}
+.m-blank.bad{border-bottom-color:var(--bad);background:#f5e5e2}
+.m-fres{margin-top:6px}
+.m-para{font-family:Georgia,serif;font-size:1rem}
+.m-chart{margin:8px 0;padding:10px;background:#fff;border:1px solid var(--border)}
+.m-bar{display:grid;grid-template-columns:52px 1fr 44px;align-items:center;gap:8px;margin:4px 0;font-size:.88rem}
+.m-bar i{display:block;height:16px;background:linear-gradient(90deg,var(--accent),#b54848)}
+.m-cap{font-size:.78rem;color:var(--muted);text-align:center;margin-top:4px}
+.m-sub{color:var(--muted);font-size:.86rem;margin:2px 0 6px;line-height:1.6;text-align:left}
+@media (max-width:640px){.tabs{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}.tabs button{white-space:nowrap;flex:none;padding:8px 11px!important;font-size:.84rem!important}.tabs::-webkit-scrollbar{display:none}.m-grid{grid-template-columns:1fr}.m-blank{width:6.2em}}
+</style>
+<script src="audio_modules_1.js"></script><script src="audio_modules_2.js"></script><script src="audio_modules_3.js"></script>
 <script src="assets/qchars-pack-0.js?v=20261102hd"></script>
 <script src="assets/qchars-pack-1.js?v=20261102hd"></script>
 </head><body>
@@ -889,7 +959,325 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 
 <div class="pane" id="p-list"></div>
 <div class="pane" id="p-mem"></div>
+<div class="pane" id="p-listen"></div>
+<div class="pane" id="p-speak"></div>
+<div class="pane" id="p-grammar"></div>
+<div class="pane" id="p-write"></div>
 </div>
+<script id="mod-js">
+const LISTEN=[
+{id:"l01",icon:"👋",title:"New in Class",zh:"新同学见面",topic:"个人信息 · 学校",type:"对话",words:["name","from","live","friendly","library"],
+lines:[["Lucy","Hi, I'm Lucy. Are you new in this class?","嗨，我是露西。你是这个班的新同学吗？"],["Tom","Yes, I am. My name is Tom. I'm from a small town near the sea.","是的。我叫汤姆，来自海边的一个小镇。"],["Lucy","Nice to meet you, Tom. How old are you?","很高兴认识你，汤姆。你多大了？"],["Tom","I'm seventeen. I live with my parents and my little sister.","我十七岁，和父母还有妹妹住在一起。"],["Lucy","Cool! I have a brother. Do you like our school?","酷！我有个哥哥。你喜欢我们学校吗？"],["Tom","Yes. The teachers are friendly, but the homework is difficult.","喜欢。老师们很友好，但是作业很难。"],["Lucy","Don't worry. We can study together in the library after class.","别担心，我们可以下课后一起去图书馆学习。"],["Tom","That's great. Thank you, Lucy!","太好了，谢谢你，露西！"]],
+qs:[{q:"Where is Tom from?",o:["A big city","A small town near the sea","Another country"],a:1,ex:"Tom 说 \"I'm from a small town near the sea\"——来自海边的小镇。"},
+{q:"Tom lives with his parents and his brother.",o:["True","False"],a:1,ex:"错。他说 \"my little sister\"，是妹妹；有哥哥的是 Lucy。注意听人称！"},
+{q:"What does Tom think of the homework?",o:["It's easy","It's difficult","It's interesting"],a:1,ex:"\"the homework is difficult\"。but 后面常是重点信息。"},
+{q:"Where will they study together?",o:["In the library","At Tom's home","In a café"],a:0,ex:"\"study together in the library after class\"。"}]},
+{id:"l02",icon:"⏰",title:"My Day",zh:"我的一天",topic:"日常 · 习惯",type:"短文",words:["get up","breakfast","walk","finish","sleep"],
+lines:[["","I get up at six o'clock every morning.","我每天早上六点起床。"],["","First, I drink a glass of water and have breakfast.","首先，我喝一杯水，然后吃早饭。"],["","I usually eat bread and an egg.","我通常吃面包和一个鸡蛋。"],["","Then I walk to school. It takes twenty minutes.","然后我走路去学校，要二十分钟。"],["","Classes start at eight and finish at four.","八点上课，四点放学。"],["","In the evening, I do my homework and help my mother cook dinner.","晚上我写作业，并帮妈妈做晚饭。"],["","After dinner, I read a book or listen to music for half an hour.","晚饭后我看半小时书或听音乐。"],["","I go to bed at ten because I need eight hours of sleep.","我十点睡觉，因为我需要睡八小时。"],["","I am busy, but I feel healthy and happy.","我很忙，但感觉健康又开心。"]],
+qs:[{q:"What time does the writer get up?",o:["At five","At six","At seven"],a:1,ex:"第一句：\"I get up at six o'clock\"。"},
+{q:"How does the writer go to school?",o:["By bus","By bike","On foot"],a:2,ex:"\"I walk to school\" = on foot（步行）。"},
+{q:"Classes finish at five.",o:["True","False"],a:1,ex:"错。\"finish at four\"，四点放学。"},
+{q:"Why does the writer go to bed at ten?",o:["Because of homework","Because he needs eight hours of sleep","Because his mother says so"],a:1,ex:"because 后面就是原因：\"I need eight hours of sleep\"。"}]},
+{id:"l03",icon:"🍚",title:"At a Restaurant",zh:"在餐厅点餐",topic:"食物 · 生活",type:"对话",words:["menu","hungry","rice","delicious","cash"],
+lines:[["Waiter","Good evening. Here is the menu. What would you like?","晚上好，这是菜单。您想点什么？"],["Anna","I'm very hungry. Can I have the chicken with rice, please?","我好饿。可以来一份鸡肉饭吗？"],["Waiter","Sure. Would you like a drink?","好的。要喝点什么吗？"],["Anna","Just water, please. I'm not very thirsty.","就要水吧，我不太渴。"],["Waiter","Any vegetables?","要蔬菜吗？"],["Anna","Yes, a small salad, please. How much is it?","要，一份小沙拉。一共多少钱？"],["Waiter","It's twelve pounds. You can pay by card or in cash.","十二英镑。可以刷卡或付现金。"],["Anna","Cash is fine. Mmm, the chicken is delicious!","现金就行。嗯，鸡肉好好吃！"]],
+qs:[{q:"What does Anna order?",o:["Chicken with rice","Fish and bread","Meat and noodles"],a:0,ex:"\"Can I have the chicken with rice\"。Can I have…? 是点餐常用句。"},
+{q:"What does Anna drink?",o:["Juice","Water","Tea"],a:1,ex:"\"Just water, please\"。"},
+{q:"How much is the meal?",o:["£10","£12","£20"],a:1,ex:"twelve = 12。小心 twelve 和 twenty（20）。"},
+{q:"Anna pays by card.",o:["True","False"],a:1,ex:"错。她说 \"Cash is fine\"，付现金。"}]},
+{id:"l04",icon:"🧥",title:"Buying a Jacket",zh:"买夹克",topic:"购物 · 金钱",type:"对话",words:["need","jacket","colour","expensive","cheap"],
+lines:[["Assistant","Hello. Can I help you?","你好，需要帮忙吗？"],["Ben","Yes, I need a warm jacket for winter.","是的，我需要一件过冬的暖和夹克。"],["Assistant","What colour do you like?","你喜欢什么颜色？"],["Ben","Black or blue. My size is medium.","黑色或蓝色。我穿中码。"],["Assistant","This blue one is nice. It's eighty dollars.","这件蓝色的不错，八十美元。"],["Ben","Oh, that's expensive. Do you have a cheaper one?","哦，好贵。有便宜点的吗？"],["Assistant","This black jacket is only fifty dollars, and it's very warm.","这件黑色的只要五十美元，而且很暖和。"],["Ben","Can I try it on? Yes, it's perfect. I'll buy it.","我能试穿吗？嗯，很合适，我买了。"]],
+qs:[{q:"Why does Ben need a jacket?",o:["For school","For winter","For a party"],a:1,ex:"\"a warm jacket for winter\"。"},
+{q:"How much is the blue jacket?",o:["$18","$50","$80"],a:2,ex:"eighty = 80，fifty = 50 是黑色那件。"},
+{q:"Which jacket does Ben buy?",o:["The blue one","The black one","Neither"],a:1,ex:"试穿黑色那件后说 \"I'll buy it\"。"},
+{q:"Ben's size is small.",o:["True","False"],a:1,ex:"错。\"My size is medium\"，中码。"}]},
+{id:"l05",icon:"🚆",title:"At the Station",zh:"在火车站",topic:"旅行 · 交通",type:"对话",words:["ticket","train","station","left","walk"],
+lines:[["Mia","Excuse me, where can I buy a ticket to London?","打扰一下，去伦敦的票在哪里买？"],["Man","You can use the machine near the door, or buy one online.","可以用门边的机器，或者网上买。"],["Mia","Thanks. What time is the next train?","谢谢。下一班火车几点？"],["Man","It leaves at ten fifteen from platform two.","十点十五分从二号站台出发。"],["Mia","How long does it take?","要多长时间？"],["Man","About one hour. The train is fast, but sometimes it's late.","大约一小时。火车很快，但有时会晚点。"],["Mia","Is the museum near the station in London?","伦敦的博物馆离车站近吗？"],["Man","Yes. You can walk there in ten minutes. Turn left when you leave the station.","近。走路十分钟。出站后左转。"]],
+qs:[{q:"Where can Mia buy a ticket?",o:["Only on the train","At the machine or online","From the man"],a:1,ex:"\"use the machine near the door, or buy one online\"。"},
+{q:"When does the next train leave?",o:["10:15","10:50","2:00"],a:0,ex:"ten fifteen = 10:15；platform two 是二号站台，不是时间。"},
+{q:"The trip takes about one hour.",o:["True","False"],a:0,ex:"对。\"About one hour\"。"},
+{q:"How can Mia get to the museum?",o:["Take a bus","Walk and turn left","Turn right and take a taxi"],a:1,ex:"\"walk there in ten minutes. Turn left\"。"}]},
+{id:"l06",icon:"🌦️",title:"Weather Is Changing",zh:"天气在变化",topic:"环境 · 天气",type:"短文",words:["season","spring","favourite","snow","rain"],
+lines:[["","My hometown has four seasons.","我的家乡四季分明。"],["","Spring is warm and windy, and the trees turn green.","春天温暖多风，树变绿了。"],["","Summer is very hot and sunny, so many people go swimming.","夏天又热又晴，所以很多人去游泳。"],["","Autumn is my favourite season because it is cool and beautiful.","秋天是我最喜欢的季节，因为凉爽又美丽。"],["","Winter is cold, and sometimes we have snow.","冬天很冷，有时会下雪。"],["","But the weather is changing.","但是天气正在变化。"],["","Last year, winter was warm and there was no snow at all.","去年冬天很暖和，一点雪都没下。"],["","In summer, there was too much rain.","夏天雨太多了。"],["","I think we should take the bus more and use less energy.","我认为我们应该多坐公交，少用能源。"]],
+qs:[{q:"What is the writer's favourite season?",o:["Spring","Summer","Autumn"],a:2,ex:"\"Autumn is my favourite season\"。"},
+{q:"Why does the writer like it?",o:["It is hot","It is cool and beautiful","It has snow"],a:1,ex:"because 后：\"it is cool and beautiful\"。"},
+{q:"Last winter there was a lot of snow.",o:["True","False"],a:1,ex:"错。\"no snow at all\"＝一点雪也没有。"},
+{q:"What does the writer suggest?",o:["Drive more","Take the bus more","Stay at home"],a:1,ex:"\"we should take the bus more and use less energy\"。should 用来提建议，雅思环境题常用。"}]},
+{id:"l07",icon:"🩺",title:"At the Doctor's",zh:"看医生",topic:"健康 · 生活",type:"对话",words:["pain","head","tired","medicine","rest"],
+lines:[["Doctor","Hello. What's the problem?","你好，哪里不舒服？"],["Sam","I have a pain in my head, and I feel very tired.","我头疼，而且觉得很累。"],["Doctor","When did it start?","什么时候开始的？"],["Sam","Yesterday evening. I didn't sleep well.","昨天晚上。我没睡好。"],["Doctor","Do you use the computer a lot?","你经常用电脑吗？"],["Sam","Yes, about ten hours a day.","是的，一天大约十小时。"],["Doctor","That's too much. Your eyes need a rest. Take this medicine twice a day and drink lots of water.","太多了，你的眼睛需要休息。这药一天吃两次，多喝水。"],["Sam","Can I go to school tomorrow?","我明天能去上学吗？"],["Doctor","No. Stay at home and rest for one day.","不行。在家休息一天。"]],
+qs:[{q:"What is Sam's problem?",o:["A pain in his foot","A pain in his head","A cold"],a:1,ex:"\"a pain in my head\"＝头疼。"},
+{q:"When did it start?",o:["This morning","Yesterday evening","Last week"],a:1,ex:"\"Yesterday evening\"。"},
+{q:"Sam should take the medicine three times a day.",o:["True","False"],a:1,ex:"错。\"twice a day\"＝一天两次。"},
+{q:"What should Sam do tomorrow?",o:["Go to school","Stay at home and rest","Work on the computer"],a:1,ex:"\"Stay at home and rest for one day\"。"}]},
+{id:"l08",icon:"💻",title:"Learning Online",zh:"网上学习",topic:"科技 · 教育",type:"短文",words:["online","internet","video","understand","difficult"],
+lines:[["","Today, many students study online.","如今很多学生在网上学习。"],["","I take an English class on the internet three evenings a week.","我每周三个晚上在网上上英语课。"],["","It is cheap, and I can learn at home.","它便宜，我还能在家学。"],["","My teacher sends us videos and homework by email.","老师用邮件给我们发视频和作业。"],["","I can watch a video again if I don't understand it.","如果没听懂，我可以再看一遍视频。"],["","But online learning is not always easy.","但网上学习并不总是容易的。"],["","Sometimes the internet is slow, and it is difficult to ask the teacher questions.","有时网速慢，也很难向老师提问。"],["","I also miss my classmates.","我也想念同学们。"],["","I think online classes are useful, but face-to-face classes are better for speaking.","我觉得网课有用，但面对面的课对练口语更好。"]],
+qs:[{q:"How often does the writer have the online class?",o:["Every day","Three evenings a week","Once a month"],a:1,ex:"\"three evenings a week\"。"},
+{q:"Which is a good point of online learning in the text?",o:["It is cheap","It is fast","It has no homework"],a:0,ex:"\"It is cheap, and I can learn at home\"。"},
+{q:"The teacher sends homework by email.",o:["True","False"],a:0,ex:"对。\"videos and homework by email\"。"},
+{q:"What does the writer think?",o:["Online classes are useless","Face-to-face classes are better for speaking","The internet is always fast"],a:1,ex:"最后一句是观点句：I think…, but…。雅思作文也常这样写。"},
+{q:"What is one problem with online learning?",o:["The teacher is angry","It is difficult to ask questions","It is expensive"],a:1,ex:"\"it is difficult to ask the teacher questions\"。"}]},
+{id:"l09",icon:"💼",title:"A Job Interview",zh:"一次面试",topic:"工作 · 实习",type:"对话",words:["job","experience","skill","computer","hotel"],
+lines:[["Manager","Good morning. Please sit down. Why do you want this job?","早上好，请坐。你为什么想要这份工作？"],["Lily","I like working with people, and I want to get more experience.","我喜欢和人打交道，也想多积累经验。"],["Manager","What skills do you have?","你有什么技能？"],["Lily","I can use a computer well, and I speak English and Chinese.","我电脑用得很好，会说英语和中文。"],["Manager","Good. Did you have a job before?","很好。你以前工作过吗？"],["Lily","Yes. Last summer I worked in a hotel for two months.","有。去年夏天我在一家酒店工作了两个月。"],["Manager","This job starts at nine and finishes at five. Is that OK?","这份工作九点上班五点下班，可以吗？"],["Lily","Yes, that's fine.","可以，没问题。"],["Manager","Great. We will call you tomorrow.","好的，我们明天给你打电话。"]],
+qs:[{q:"Why does Lily want the job?",o:["For more money","To get more experience","Because it is near her home"],a:1,ex:"\"I want to get more experience\"。"},
+{q:"Lily worked in a restaurant last summer.",o:["True","False"],a:1,ex:"错。\"worked in a hotel\"，酒店。"},
+{q:"How long did she work there?",o:["Two weeks","Two months","Two years"],a:1,ex:"\"for two months\"。"},
+{q:"When will the manager call her?",o:["Today","Tomorrow","Next week"],a:1,ex:"\"We will call you tomorrow\"。"}]},
+{id:"l10",icon:"🏃",title:"Healthy Habits",zh:"健康习惯",topic:"运动 · 习惯",type:"对话",words:["healthy","exercise","park","busy","fruit"],
+lines:[["Jack","You look healthy, Emma. Do you exercise a lot?","艾玛，你看起来很健康。你常运动吗？"],["Emma","Yes. I run in the park three mornings a week, and I play basketball on Saturdays.","是的。我每周三个早上在公园跑步，周六打篮球。"],["Jack","I want to be healthy too, but I'm always busy.","我也想健康，可总是很忙。"],["Emma","You don't need a lot of time. Walk to work and take the stairs.","不需要很多时间。走路上班，走楼梯。"],["Jack","That's a good idea. What about food?","好主意。那饮食呢？"],["Emma","Eat more fruit and vegetables and less fast food. And go to bed early!","多吃水果蔬菜，少吃快餐。还要早睡！"],["Jack","OK, I'll start tomorrow.","好，我明天开始。"],["Emma","Why not today?","为什么不今天就开始？"]],
+qs:[{q:"Where does Emma run?",o:["In the gym","In the park","At school"],a:1,ex:"\"I run in the park\"。"},
+{q:"How often does she run?",o:["Every day","Three mornings a week","On Saturdays"],a:1,ex:"周六是打篮球，跑步是 three mornings a week。"},
+{q:"Jack has a lot of free time.",o:["True","False"],a:1,ex:"错。\"I'm always busy\"。"},
+{q:"Which is NOT Emma's advice?",o:["Take the stairs","Eat more fruit","Drink more coffee"],a:2,ex:"她没提咖啡。NOT 题要排除听到过的选项。"}]},
+{id:"l11",icon:"🏙️",title:"My City",zh:"我的城市",topic:"家乡 · 城市",type:"短文",words:["city","park","library","museum","free"],
+lines:[["","I live in a city in the south of China.","我住在中国南方的一座城市。"],["","It is not very big, but it is busy and interesting.","它不太大，但热闹有趣。"],["","There is a big park near my flat, and old people dance there in the evening.","我家附近有个大公园，晚上老人们在那里跳舞。"],["","The city has a new library and a museum.","城里有一座新图书馆和一座博物馆。"],["","The library is free, so I often go there at the weekend.","图书馆免费，所以我周末常去。"],["","The food is cheap and delicious.","这里的食物便宜又好吃。"],["","However, there are too many cars, and the air is not always clean.","不过车太多了，空气也不总是干净。"],["","I hope the city will have more buses and bikes in the future.","我希望将来城市有更多公交和自行车。"]],
+qs:[{q:"Where is the city?",o:["In the north of China","In the south of China","Near the sea"],a:1,ex:"\"in the south of China\"。"},
+{q:"The library costs a lot of money.",o:["True","False"],a:1,ex:"错。\"The library is free\"，free 在这里是“免费”。"},
+{q:"What is the problem in the city?",o:["Too many cars","No parks","Expensive food"],a:0,ex:"However 后面是问题：\"too many cars\"。"},
+{q:"What does the writer hope for?",o:["More cars","More buses and bikes","A bigger museum"],a:1,ex:"\"more buses and bikes in the future\"。"}]},
+{id:"l12",icon:"📱",title:"Phones at School?",zh:"学校该不该用手机",topic:"观点 · 社会",type:"对话",words:["online","video","listen","teacher","important"],
+lines:[["Teacher","Today's question is: should students use phones at school? Leo, what do you think?","今天的问题是：学生在学校该用手机吗？里奥，你怎么看？"],["Leo","I think phones are useful. We can find information online and check new words quickly.","我认为手机有用。可以上网查资料、快速查生词。"],["Teacher","Good point. Nina?","说得好。妮娜呢？"],["Nina","I don't agree. Many students play games or watch videos in class, so they don't listen to the teacher.","我不同意。很多学生上课玩游戏、看视频，所以不听老师讲课。"],["Leo","That's true, but teachers can make rules. For example, phones are OK only for class work.","没错，但老师可以定规则。比如只能用手机做课堂任务。"],["Nina","Maybe. But I think it is important to put phones in our bags during lessons.","也许吧。但我认为上课时把手机放进书包很重要。"],["Teacher","Thank you both. You both gave good reasons.","谢谢你们俩，理由都很好。"]],
+qs:[{q:"What does Leo think about phones?",o:["They are useful","They are dangerous","They are expensive"],a:0,ex:"\"I think phones are useful\"。"},
+{q:"Why does Nina disagree?",o:["Phones are too expensive","Students play games and don't listen","Teachers don't like phones"],a:1,ex:"\"play games or watch videos in class, so they don't listen\"。"},
+{q:"What is Leo's idea?",o:["Teachers can make rules","Students should buy new phones","Phones should be free"],a:0,ex:"\"teachers can make rules. For example…\"——让步+举例，作文里也很好用。"},
+{q:"In the end, Nina agrees with Leo completely.",o:["True","False"],a:1,ex:"错。她说 \"Maybe. But…\"，仍坚持自己的观点。"}]}
+];
+
+const SPEAK=[
+{id:"s01",icon:"🏡",q:"Where is your hometown?",zh:"你的家乡在哪？说说那里怎么样。",tip:"先说在哪 → 再说一个特点 → 最后说喜不喜欢 + 原因。",
+pat:[["My hometown is ___. It's in the ___ of China.","我的家乡是___，在中国___部。"],["It's a small / big ___ with ___.","它是一个小/大___，有___。"],["The best thing about it is ___.","那里最好的是___。"],["I like it because ___.","我喜欢它，因为___。"]],
+ans:["My hometown is a small town in the south of China.","It's quiet and the people are very friendly.","The best thing about it is the food. It's cheap and delicious.","I like it because my family and friends live there."]},
+{id:"s02",icon:"📚",q:"Do you work or are you a student?",zh:"你在工作还是在上学？学什么？",tip:"雅思口语第一题常是它。回答 + 学什么 + 一个感受。",
+pat:[["I'm a student. I study ___ at a ___ school.","我是学生，在___学校学___。"],["I'm in my ___ year.","我在读___年级。"],["My favourite subject is ___ because ___.","我最喜欢的科目是___，因为___。"],["After I finish school, I want to ___.","毕业后我想___。"]],
+ans:["I'm a student. I study computers at a vocational school.","I'm in my second year.","My favourite subject is English because it is useful for my future job.","After I finish school, I want to work in a big company."]},
+{id:"s03",icon:"🎮",q:"What do you do in your free time?",zh:"你空闲时间做什么？",tip:"说 1–2 个爱好，加上 how often（多久一次）和 why。",
+pat:[["In my free time, I like ___ing.","空闲时我喜欢___。"],["I usually do it ___ times a week.","我通常一周做___次。"],["It helps me ___.","它帮助我___。"],["Sometimes I also ___ with my friends.","有时我也和朋友一起___。"]],
+ans:["In my free time, I like listening to music and watching videos.","I usually do it every evening after my homework.","It helps me relax when I feel tired.","At the weekend, I sometimes play basketball with my friends."]},
+{id:"s04",icon:"⏰",q:"What is your daily routine like?",zh:"描述一下你一天的安排。",tip:"按时间顺序：first → then → after that → in the evening。",
+pat:[["I usually get up at ___.","我通常___起床。"],["First, I ___. Then I ___.","首先我___，然后___。"],["After school, I ___.","放学后我___。"],["I go to bed at about ___.","我大约___睡觉。"]],
+ans:["I usually get up at half past six.","First, I have breakfast. Then I take the bus to school.","After school, I do my homework and practise English for two hours.","I go to bed at about eleven o'clock."]},
+{id:"s05",icon:"🍜",q:"What kind of food do you like?",zh:"你喜欢什么食物？",tip:"说出食物 + 味道形容词（delicious, sweet, hot）+ 健康不健康。",
+pat:[["My favourite food is ___.","我最喜欢的食物是___。"],["It's ___ and ___.","它___又___。"],["I often eat it at ___.","我常在___吃。"],["I know it's not very healthy, but ___.","我知道它不太健康，但___。"]],
+ans:["My favourite food is noodles.","They're hot and delicious, and they're cheap too.","I often eat them at a small restaurant near my school.","I also try to eat fruit and vegetables every day to stay healthy."]},
+{id:"s06",icon:"⛅",q:"What's the weather like in your hometown?",zh:"你家乡天气怎么样？喜欢哪个季节？",tip:"说季节特点 + 最喜欢的季节 + because。",
+pat:[["In my hometown, summer is ___ and winter is ___.","我家乡夏天___，冬天___。"],["My favourite season is ___.","我最喜欢的季节是___。"],["I like it because ___.","我喜欢它是因为___。"],["I don't like ___ weather because ___.","我不喜欢___天气，因为___。"]],
+ans:["In my hometown, summer is very hot and winter is quite cold.","My favourite season is autumn.","I like it because it's cool and sunny, and it's good for walking.","I don't like rainy weather because I can't go out."]},
+{id:"s07",icon:"🚌",q:"How do you usually travel around?",zh:"你平时怎么出行？",tip:"交通方式 + 花多长时间 + 优点/缺点。",
+pat:[["I usually go to ___ by ___.","我通常坐___去___。"],["It takes about ___ minutes.","大约要___分钟。"],["It's ___ and ___.","它___又___。"],["But sometimes ___.","但有时___。"]],
+ans:["I usually go to school by bus.","It takes about twenty minutes.","It's cheap and safe, and I can listen to English on the way.","But sometimes the bus is late, so I walk."]},
+{id:"s08",icon:"🤝",q:"Tell me about your best friend.",zh:"说说你最好的朋友。",tip:"名字 + 怎么认识 + 性格 + 一起做什么。",
+pat:[["My best friend is ___. We met ___.","我最好的朋友是___，我们在___认识。"],["He / She is very ___ and ___.","他/她很___又___。"],["We often ___ together.","我们常一起___。"],["I like him / her because ___.","我喜欢他/她因为___。"]],
+ans:["My best friend is Li Ming. We met at middle school.","He is very kind and funny.","We often play games and go to the park together.","I like him because he always helps me when I have a problem."]},
+{id:"s09",icon:"📱",q:"How often do you use the internet?",zh:"你多久上一次网？用来做什么？",tip:"频率（every day / for ___ hours）+ 用途 + 好坏。",
+pat:[["I use the internet every day, for about ___ hours.","我每天上网大约___小时。"],["I mainly use it to ___.","我主要用它来___。"],["It's useful because ___.","它有用，因为___。"],["But I try not to ___ too much.","但我尽量不___太多。"]],
+ans:["I use the internet every day, for about three hours.","I mainly use it to send messages, watch videos and learn English.","It's useful because I can find information quickly.","But I try not to play games online too much."]},
+{id:"s10",icon:"🎉",q:"What did you do last weekend?",zh:"你上周末做了什么？",tip:"注意全部用过去式：went, watched, was, had…",
+pat:[["Last weekend, I went to ___.","上周末我去了___。"],["I ___ with ___.","我和___一起___。"],["It was ___.","那很___。"],["In the evening, I ___.","晚上我___。"]],
+ans:["Last weekend, I went to the city museum with my cousin.","We looked at old photos and learned about the history of our city.","It was really interesting.","In the evening, I cooked dinner for my family."]},
+{id:"s11",icon:"🏫",q:"Do you like your school?",zh:"你喜欢你的学校吗？",tip:"Yes/No + 两个原因（First… Also…）。",
+pat:[["Yes, I do. / Not really.","喜欢 / 不太喜欢。"],["First, ___.","第一，___。"],["Also, ___.","另外，___。"],["The only problem is ___.","唯一的问题是___。"]],
+ans:["Yes, I do.","First, the teachers are friendly and helpful.","Also, there is a big library, so I can read there after class.","The only problem is that the classrooms are a bit small."]},
+{id:"s12",icon:"🛍️",q:"Do you like shopping?",zh:"你喜欢购物吗？网上还是去商店？",tip:"表明态度 + 比较 online 和 shop（用比较级 cheaper / easier）。",
+pat:[["I like / don't like shopping very much.","我很喜欢/不太喜欢购物。"],["I usually buy things ___.","我通常在___买东西。"],["Online shopping is ___er than ___.","网购比___更___。"],["But I prefer to buy ___ in a shop because ___.","但我更喜欢在店里买___，因为___。"]],
+ans:["I don't like shopping very much.","I usually buy things online.","Online shopping is cheaper and easier than going to a shop.","But I prefer to buy clothes in a shop because I can try them on."]}
+];
+
+const GRAMMAR=[
+{id:"g01",icon:"🟥",t:"be 动词 am / is / are",zh:["be 动词＝“是/在/处于某种状态”。","I 用 am；he / she / it / 单数名词 用 is；you / we / they / 复数 用 are。","否定直接加 not：I'm not / isn't / aren't。疑问把 be 提到前面：Are you…?"],
+ex:[["I am a student at a vocational school.","我是一所职业学校的学生。"],["My sister is very kind.","我妹妹很善良。"],["Are your parents at home today?","你父母今天在家吗？"]],
+qz:[["My brother ___ a doctor.",["am","is","are"],1,"my brother 是单数第三人称 → is。"],["We ___ in the same class.",["is","am","are"],2,"we 是复数 → are。"],["I ___ tired today.",["am","is","are"],0,"I 只配 am。"],["___ the library open on Sunday?",["Am","Is","Are"],1,"the library 单数，疑问句把 is 提前。"],["They ___ not at school. They are at home.",["is","aren't","are"],2,"后面已经有 not 了，所以用 are（are not）。"]]},
+{id:"g02",icon:"🔁",t:"一般现在时（习惯、事实）",zh:["表示经常发生的事、习惯、事实。常和 every day, usually, often, sometimes 一起用。","主语是 he / she / it / 单数名词时，动词加 -s 或 -es：works, watches, goes, has。","否定和疑问用 do / does，后面动词用原形：She doesn't like… / Does he work…?"],
+ex:[["I usually get up at six o'clock.","我通常六点起床。"],["My mother works in a hospital.","我妈妈在医院工作。"],["Does your brother play basketball?","你哥哥打篮球吗？"]],
+qz:[["She ___ to school by bike.",["go","goes","going"],1,"she 第三人称单数 → goes。"],["My friends often ___ games online.",["play","plays","playing"],0,"my friends 复数 → 原形 play。"],["He ___ like fish.",["don't","doesn't","isn't"],1,"he 的否定用 doesn't + 动词原形。"],["___ you study English every evening?",["Do","Does","Are"],0,"you 用 Do 提问。"],["The shop ___ at nine in the morning.",["open","opens","is open at"],1,"the shop 单数 → opens。"]]},
+{id:"g03",icon:"⏪",t:"一般过去时（昨天、上周发生的事）",zh:["表示过去发生并已经结束的事。常见时间词：yesterday, last week, two days ago, in 2020。","规则动词加 -ed：worked, watched, studied。不规则要背：go→went, have→had, see→saw, buy→bought。","否定和疑问用 did，动词变回原形：I didn't go… / Did you see…?"],
+ex:[["I watched a film with my friends yesterday.","我昨天和朋友看了一部电影。"],["We went to the museum last weekend.","我们上周末去了博物馆。"],["Did you finish your homework?","你写完作业了吗？"]],
+qz:[["Last summer, I ___ in a hotel.",["work","worked","works"],1,"last summer 是过去 → worked。"],["She ___ a new jacket yesterday.",["buy","buys","bought"],2,"buy 的过去式是不规则的 bought。"],["We ___ go out because it rained.",["don't","didn't","weren't"],1,"过去的否定：didn't + 原形。"],["___ you see the teacher this morning?",["Do","Did","Were"],1,"this morning 已过去，用 Did 提问。"],["I ___ very tired last night.",["was","were","am"],0,"I 的过去式 be → was。"]]},
+{id:"g04",icon:"⏩",t:"将来时 will / be going to",zh:["will + 动词原形：临时决定、预测。I'll help you.","be going to + 动词原形：已经计划好的事。I'm going to study tonight.","否定：won't = will not；isn't going to。"],
+ex:[["I think it will rain tomorrow.","我觉得明天会下雨。"],["I'm going to take the IELTS exam next year.","我打算明年考雅思。"],["Don't worry, I'll call you later.","别担心，我晚点给你打电话。"]],
+qz:[["Look at the clouds. It ___ rain.",["is going to","go to","going"],0,"看到乌云有依据的预测 → is going to。"],["The phone is ringing. I ___ answer it.",["will","am going to","going"],0,"电话响了才当场决定 → will（I'll answer it）。"],["We ___ visit my grandmother next Sunday.",["are going to","is going to","going to"],0,"we → are going to。"],["She ___ come to the party. She's sick.",["won't","willn't","isn't"],0,"will not 的缩写是 won't。"],["Will you ___ me with my homework?",["helps","helping","help"],2,"will 后面接动词原形。"]]},
+{id:"g05",icon:"💪",t:"情态动词 can / must / should",zh:["can＝能、会、可以；must＝必须（规定、很强）；should＝应该（建议）。","它们后面都接动词原形，主语是 he 也不加 -s：He can swim.","否定：can't, mustn't（禁止）, shouldn't。"],
+ex:[["I can speak a little English.","我会说一点英语。"],["You must wear a seat belt in the car.","在车里必须系安全带。"],["You should drink more water.","你应该多喝水。"]],
+qz:[["She can ___ the piano.",["plays","play","playing"],1,"can 后接原形 play。"],["You ___ smoke in the hospital. It's not allowed.",["mustn't","can","should"],0,"不允许 → mustn't（禁止）。"],["You look tired. You ___ go to bed early.",["must","should","can't"],1,"给建议 → should。"],["___ I use your phone, please?",["Must","Can","Should"],1,"请求许可 → Can I…?"],["He ___ swim. He never learned.",["can","can't","must"],1,"从来没学过 → 不会 can't。"]]},
+{id:"g06",icon:"📈",t:"比较级和最高级",zh:["两者比较用比较级 + than：taller than。短词加 -er，长词前面加 more：more expensive。","三者以上用最高级：the tallest, the most beautiful。","不规则：good→better→best，bad→worse→worst。"],
+ex:[["The train is faster than the bus.","火车比公交快。"],["This jacket is more expensive than that one.","这件夹克比那件贵。"],["Summer is the hottest season in my city.","夏天是我们城市最热的季节。"]],
+qz:[["My brother is ___ than me.",["tall","taller","tallest"],1,"有 than → 比较级 taller。"],["English is ___ than maths for me.",["easy","easier","more easy"],1,"easy 变 y 为 i 加 er → easier。"],["This is the ___ restaurant in town.",["better","good","best"],2,"the + 最高级 → best。"],["A car is ___ than a bike.",["expensiver","more expensive","most expensive"],1,"长词用 more expensive。"],["Today is ___ than yesterday. It's 5°C!",["cold","colder","coldest"],1,"两天比较 → colder。"]]},
+{id:"g07",icon:"🅰️",t:"冠词 a / an / the",zh:["a / an＝“一个”，第一次提到、泛指。发音以元音开头用 an：an apple, an hour。","the＝“这个/那个”，双方都知道的、前面提过的、独一无二的：the sun。","吃饭、学科、运动前一般不用冠词：have breakfast, play football。"],
+ex:[["I have an English class every morning.","我每天早上有一节英语课。"],["I bought a bag. The bag is blue.","我买了一个包。这个包是蓝色的。"],["The sun is very hot today.","今天太阳很晒。"]],
+qz:[["She is ___ nurse.",["a","an","the"],0,"nurse 辅音开头，泛指职业 → a。"],["I waited for ___ hour.",["a","an","the"],1,"hour 的 h 不发音，元音开头 → an。"],["Can you close ___ door, please?",["a","an","the"],2,"双方都知道是哪扇门 → the。"],["I have ___ egg for breakfast.",["a","an","the"],1,"egg 元音开头 → an。"],["We play ___ basketball after school.",["a","the","（不填）"],2,"运动名词前不用冠词。"]]},
+{id:"g08",icon:"📍",t:"介词 in / on / at（时间和地点）",zh:["时间：at + 钟点（at 7 o'clock）；on + 星期/日期（on Monday）；in + 月/年/季节/上午下午（in May, in the morning）。","地点：in 在里面（in the room, in China）；on 在表面上（on the desk）；at 在某个点（at the station, at school）。"],
+ex:[["The class starts at eight o'clock.","课八点开始。"],["I was born in 2008.","我出生于 2008 年。"],["Your phone is on the desk.","你的手机在桌子上。"]],
+qz:[["I have a meeting ___ Monday.",["in","on","at"],1,"星期几用 on。"],["We go swimming ___ summer.",["in","on","at"],0,"季节用 in。"],["Let's meet ___ the station.",["in","on","at"],2,"车站是一个地点（点）→ at。"],["The keys are ___ the table.",["in","on","at"],1,"在桌面上 → on。"],["I get up ___ 6:30.",["in","on","at"],2,"钟点用 at。"]]},
+{id:"g09",icon:"🏠",t:"There is / There are（某处有某物）",zh:["表示“某地有某物”。后面单数或不可数用 There is，复数用 There are。","否定：There isn't / There aren't any…；疑问：Is there…? / Are there…?","过去：There was / There were。"],
+ex:[["There is a big park near my flat.","我家附近有个大公园。"],["There are thirty students in my class.","我们班有三十个学生。"],["Is there a bank near here?","这附近有银行吗？"]],
+qz:[["There ___ a library in our school.",["is","are","be"],0,"a library 单数 → is。"],["There ___ many cars in the city.",["is","are","has"],1,"many cars 复数 → are。"],["There ___ some water in the bottle.",["is","are","have"],0,"water 不可数 → is。"],["___ there any shops near your home?",["Is","Are","Do"],1,"shops 复数 → Are there…?"],["There ___ a lot of snow last winter.",["is","was","were"],1,"last winter 过去 + snow 不可数 → was。"]]},
+{id:"g10",icon:"❓",t:"疑问句：Yes/No 与 Wh- 问句",zh:["Yes/No 问句：把 be / can / will 提前，或在句首加 do / does / did。","Wh- 问句：疑问词 + 一般疑问句。what 什么，where 哪里，when 何时，why 为什么，how 怎样，how much 多少钱，who 谁。"],
+ex:[["Where do you live?","你住在哪里？"],["How much is this shirt?","这件衬衫多少钱？"],["Why are you late today?","你今天为什么迟到？"]],
+qz:[["___ do you go to school? — By bus.",["What","How","Where"],1,"问方式（坐公交）→ How。"],["___ is your birthday? — In May.",["When","Who","Why"],0,"问时间 → When。"],["___ she like music?",["Do","Does","Is"],1,"she 一般现在时 → Does。"],["___ are you sad? — Because I lost my phone.",["What","Why","Where"],1,"回答 because → 问 Why。"],["___ is that man? — He's my teacher.",["Who","What","How"],0,"问人 → Who。"]]},
+{id:"g11",icon:"🔄",t:"现在进行时（正在做）",zh:["表示说话时正在发生的事：am / is / are + 动词-ing。","常和 now, at the moment, Look!, Listen! 一起用。","加 -ing 规则：run→running，write→writing，study→studying。"],
+ex:[["I am doing my homework now.","我现在正在写作业。"],["Look! It's snowing.","看！下雪了。"],["What are you watching?","你在看什么？"]],
+qz:[["She ___ a book now.",["reads","is reading","read"],1,"now → 进行时 is reading。"],["Listen! The baby ___.",["cries","is crying","cry"],1,"Listen! 提示正在发生。"],["They ___ dinner at the moment.",["are having","is having","have"],0,"they → are having。"],["I'm ___ to the park.",["runing","running","run"],1,"run 双写 n 加 ing。"],["What ___ you doing?",["is","are","do"],1,"you → are。"]]},
+{id:"g12",icon:"🔗",t:"连接词 and / but / so / because",zh:["and＝和、而且（补充）；but＝但是（转折）；so＝所以（结果）；because＝因为（原因）。","这四个词能把两个短句连成一个长句——雅思口语和作文最快的加分方法。","注意：中文“因为…所以…”，英文只用其中一个，不能 because 和 so 同时用。"],
+ex:[["I was tired, so I went to bed early.","我累了，所以早早睡了。"],["I like summer because I can go swimming.","我喜欢夏天，因为可以游泳。"],["The phone is nice, but it is expensive.","这部手机不错，但是很贵。"]],
+qz:[["It was raining, ___ I took a taxi.",["because","so","but"],1,"下雨是原因，打车是结果 → so。"],["I didn't eat breakfast ___ I got up late.",["because","so","and"],0,"起晚是原因 → because。"],["The hotel is cheap ___ it's far from the city.",["and","so","but"],2,"便宜 vs 远（不好）→ 转折 but。"],["I can speak English ___ Chinese.",["but","and","so"],1,"并列 → and。"],["Which sentence is right?",["Because I was sick, so I stayed home.","Because I was sick, I stayed home.","I was sick, because so I stayed home."],1,"because 和 so 不能同时用。"]]}
+];
+
+const WRITE={
+bank:[
+{k:"观点句",icon:"💬",zh:"开头/结尾亮明态度，雅思 Task 2 必备。",s:[["I think (that) ___.","我认为___。"],["In my opinion, ___.","在我看来，___。"],["I agree that ___.","我同意___。"],["I don't agree that ___.","我不同意___。"],["I believe ___ is more important than ___.","我相信___比___更重要。"]]},
+{k:"原因句",icon:"🔍",zh:"每个观点后面都要给原因，不然考官会觉得“空”。",s:[["This is because ___.","这是因为___。"],["The main reason is that ___.","主要原因是___。"],["One reason is that ___. Another reason is that ___.","一个原因是___，另一个原因是___。"],["___, so ___.","___，所以___。"]]},
+{k:"让步句",icon:"⚖️",zh:"先承认对方有道理，再转回自己观点——显得成熟，容易上 5 分。",s:[["Some people think ___. However, I think ___.","有些人认为___。然而我认为___。"],["It is true that ___, but ___.","___确实如此，但是___。"],["Although ___, ___.","虽然___，但___。（although 和 but 不同时用）"]]},
+{k:"举例句",icon:"🌰",zh:"给一个具体例子，最好是自己或身边的事。",s:[["For example, ___.","例如，___。"],["For instance, my friend ___.","比如，我的朋友___。"],["___ such as ___ and ___.","___，比如___和___。"]]},
+{k:"图表句 (Task 1)",icon:"📊",zh:"小作文描述图表：说最高、最低、变化。",s:[["The chart shows ___.","这张图显示了___。"],["The number of ___ went up / went down from ___ to ___.","___的数量从___上升/下降到___。"],["___ was the highest / lowest.","___是最高/最低的。"],["Overall, ___.","总体来说，___。"]]},
+{k:"结尾句",icon:"🏁",zh:"最后一段重复观点，换种说法。",s:[["In conclusion, ___.","总之，___。"],["To sum up, I think ___.","总的来说，我认为___。"]]}
+],
+tpl:[
+{t:"Task 2 观点文 · 四段模板（约 150–250 词）",zh:"入门先写 150 词也行，结构比字数更重要。",p:[["第1段 开头","改写题目 + 我的观点","Some people think ___. In my opinion, ___."],["第2段 理由一","观点句 + 原因 + 例子","First, ___. This is because ___. For example, ___."],["第3段 理由二（或让步）","另一个理由 / 承认对方 + 反驳","Second, ___. / It is true that ___, but ___."],["第4段 结尾","重复观点","In conclusion, I think ___ because ___ and ___."]]},
+{t:"Task 1 图表 · 三段模板（约 150 词）",zh:"只描述数据，不写自己的观点。",p:[["第1段 介绍","图表显示什么","The chart shows ___ in ___ (时间/地点)."],["第2段 细节","最高、最低、变化 + 数字","___ was the highest, at ___. ___ went up from ___ to ___."],["第3段 总结","Overall 一句话总结","Overall, ___ was the most popular."]]}
+],
+fill:[
+{id:"f01",t:"我的周末（一般过去时）",bank:["morning","park","friend","delicious","tired"],txt:"Last Saturday, I got up early in the {0}. I went to the {1} with my best {2}. We walked for two hours. After that, we had lunch at a small restaurant. The food was {3}. In the evening, I was very {4}, so I went to bed at nine."},
+{id:"f02",t:"网课好不好（观点 + 原因）",bank:["online","because","internet","However","difficult"],txt:"Some people think {0} classes are better than face-to-face classes. They are cheap, and students can learn at home. {3}, I think face-to-face classes are better {1} students can talk to the teacher easily. Also, when the {2} is slow, it is {4} to listen."},
+{id:"f03",t:"我的城市（there is / are）",bank:["city","library","museum","There are","free"],txt:"I live in a small {0} in the south. There is a new {1} near my flat, and it is {2}, so I go there every weekend. There is also a {3}. {4} many restaurants, and the food is cheap."},
+{id:"f04",t:"健康习惯（should / 建议）",bank:["healthy","exercise","fruit","sleep","should"],txt:"I want to be more {0}. First, I {4} do more {1}, for example, running in the park three times a week. Second, I should eat more {2} and vegetables. Finally, I need eight hours of {3} every night."},
+{id:"f05",t:"Task 1 图表描述",bank:["shows","went up","highest","lowest","Overall"],txt:"The chart {0} how students in one class go to school. Bus was the {2}, at 40%. Walking was the {3}, at 10%. The number of students who ride a bike {1} from 15% in 2022 to 25% in 2024. {4}, most students take the bus."}
+],
+model:[
+{id:"m01",t:"Task 2 · Is it better to study online or in a classroom?",zh:"网上学习还是教室学习更好？",p:["Today, many students study online. Some people think online classes are better than classroom lessons. In my opinion, classroom lessons are still better for most students.","First, students can ask the teacher questions easily in a classroom. This is because the teacher is in the same room and can help them at once. For example, when I do not understand a new word, I can put up my hand and ask.","It is true that online classes are cheap and students can learn at home. However, it is difficult to stay focused at home, and the internet is sometimes slow.","In conclusion, I think classroom lessons are better because students can get help quickly and learn with their friends."],
+note:[["第1段","先用一句话介绍背景（Today, many students…），再用 Some people think… 改写题目，最后 In my opinion 亮观点。"],["第2段","First（理由）→ This is because（原因）→ For example（例子）：三步走是 5 分段落的标准结构。"],["第3段","It is true that… However… 是让步句，先承认网课优点再反驳，展示“考虑了两面”。"],["第4段","In conclusion 重复观点，并把前面两个理由浓缩成 because…and…。"],["用到的词库词","online, study, teacher, question, understand, cheap, internet, difficult, learn, friend（都在你的 200 词里）"]]},
+{id:"m02",t:"Task 2 · Should people do more exercise?",zh:"人们应该多运动吗？（健康/运动习惯话题）",p:["Many people today are very busy, and they do not have time to exercise. I believe everyone should do some exercise every week.","The main reason is that exercise keeps our body healthy. People who walk or run often do not get sick easily. For instance, my father started running in the park last year, and now he feels much better.","Another reason is that exercise helps us relax. After a long day at work or school, playing sport with friends can make us happy again.","To sum up, exercise is important for our body and our feelings, so people should find time for it, even when they are busy."],
+note:[["第1段","先描述现状（busy, no time），再用 I believe… should… 给出明确观点。"],["第2段","The main reason is that… 引出理由一；For instance 给身边真实例子（我爸爸），比空讲更有说服力。"],["第3段","Another reason is that… 引出理由二，与第2段平行，结构清晰。"],["第4段","To sum up 总结，并回应开头的 busy：even when they are busy，首尾呼应。"],["用到的词库词","busy, exercise, week, body, healthy, walk, sick, park, feel, work, school, happy, important"]]},
+{id:"m03",t:"Task 1 · How students travel to school",zh:"小作文：学生上学方式柱状图",chart:[["Bus",40],["Bike",25],["Walk",10],["Car",25]],p:["The chart shows how forty students in one class travel to school.","Bus was the most popular way, at 40%. Bike and car were the same, at 25% each. Only 10% of the students walk to school, so walking was the lowest.","Overall, most students take the bus, and very few students walk."],
+note:[["第1段","The chart shows… 改写图表标题，不要照抄。"],["第2段","先写最高（most popular），再写相同的（the same），最后写最低（the lowest），每个都带数字。"],["第3段","Overall 总结最明显的特点。Task 1 不写 I think！"],["用到的词库词","school, bus, bike, car, walk, student, class"]]}
+]};
+const AUDSEG={"l01": [[0, 3.27], [3.27, 8.0], [8.0, 10.9], [10.9, 15.62], [15.62, 17.89], [17.89, 23.96], [23.96, 27.92], [27.92, 30.16]], "l02": [[0, 2.13], [2.13, 5.41], [5.41, 8.4], [8.4, 10.44], [10.44, 13.56], [13.56, 17.71], [17.71, 21.94], [21.94, 26.96], [26.96, 29.28]], "l03": [[0.18, 3.33], [3.33, 8.04], [8.04, 12.42], [12.42, 14.12], [14.12, 17.4], [17.4, 18.27], [18.27, 21.67], [21.67, 25.68]], "l04": [[0, 1.33], [1.33, 4.09], [4.09, 5.65], [5.65, 8.83], [8.83, 12.4], [12.4, 16.1], [16.1, 19.84], [19.84, 23.76]], "l05": [[0, 3.5], [3.5, 8.07], [8.07, 10.94], [10.94, 14.67], [14.67, 16.43], [16.43, 20.07], [20.07, 23.58], [23.58, 29.04]], "l06": [[0, 2.59], [2.59, 6.26], [6.26, 11.22], [11.22, 16.12], [16.12, 18.27], [18.27, 20.11], [20.11, 25.68], [25.68, 28.61], [28.61, 32.24]], "l07": [[0, 2.01], [2.01, 6.67], [6.67, 8.45], [8.45, 11.72], [11.72, 14.41], [14.41, 15.73], [15.73, 23.61], [23.61, 25.84], [25.84, 29.2]], "l08": [[0, 2.6], [2.6, 5.96], [5.96, 8.51], [8.51, 12.37], [12.37, 16.05], [16.05, 18.71], [18.71, 24.6], [24.6, 27.11], [27.11, 33.04]], "l09": [[0, 4.45], [4.45, 8.88], [8.88, 11.36], [11.36, 16.67], [16.67, 19.5], [19.5, 23.09], [23.09, 27.38], [27.38, 29.24], [29.24, 31.84]], "l10": [[0, 3.19], [3.19, 9.02], [9.02, 12.7], [12.7, 18.81], [18.81, 20.73], [20.73, 26.41], [26.41, 28.74], [28.74, 30.24]], "l11": [[0, 2.7], [2.7, 6.62], [6.62, 11.62], [11.62, 14.54], [14.54, 17.89], [17.89, 20.66], [20.66, 25.74], [25.74, 29.44]], "l12": [[0, 6.3], [6.3, 12.35], [12.35, 13.59], [13.59, 20.99], [20.99, 27.48], [27.48, 32.56], [32.56, 35.92]], "s01": [[0, 3.33], [3.33, 6.62], [6.62, 11.97], [11.97, 14.88]], "s02": [[0, 3.68], [3.68, 5.18], [5.18, 9.87], [9.87, 13.68]], "s03": [[0, 5.14], [5.14, 8.12], [8.12, 10.44], [10.44, 14.4]], "s04": [[0, 3.0], [3.0, 7.25], [7.25, 12.04], [12.04, 14.64]], "s05": [[0, 2.62], [2.62, 5.34], [5.34, 9.84], [9.84, 14.0]], "s06": [[0, 4.56], [4.56, 6.9], [6.9, 11.59], [11.59, 14.56]], "s07": [[0, 2.08], [2.08, 4.44], [4.44, 8.26], [8.26, 11.52]], "s08": [[0, 3.28], [3.28, 6.04], [6.04, 8.69], [8.69, 13.2]], "s09": [[0.14, 3.63], [3.63, 8.76], [8.76, 12.02], [12.02, 15.6]], "s10": [[0, 3.32], [3.32, 7.59], [7.59, 9.25], [9.25, 13.36]], "s11": [[0, 1.49], [1.49, 4.63], [4.63, 9.02], [9.02, 12.56]], "s12": [[0, 1.89], [1.89, 4.03], [4.03, 8.21], [8.21, 12.32]], "g01": [[0, 2.56], [2.56, 5.49], [5.49, 7.52]], "g02": [[0, 2.21], [2.21, 4.21], [4.21, 6.4]], "g03": [[0, 2.61], [2.61, 5.08], [5.08, 7.04]], "g04": [[0, 2.02], [2.02, 4.65], [4.65, 6.96]], "g05": [[0, 2.14], [2.14, 4.99], [4.99, 6.72]], "g06": [[0.14, 2.55], [2.55, 6.0], [6.0, 8.64]], "g07": [[0, 2.57], [2.57, 5.62], [5.62, 8.24]], "g08": [[0, 1.87], [1.87, 4.68], [4.68, 6.4]], "g09": [[0, 2.4], [2.4, 5.32], [5.32, 7.36]], "g10": [[0, 1.27], [1.27, 3.21], [3.21, 5.44]], "g11": [[0, 2.12], [2.12, 4.11], [4.11, 5.76]], "g12": [[0, 2.4], [2.4, 4.78], [4.78, 7.44]], "m01": [[0, 10.73], [10.73, 24.98], [24.98, 32.58], [32.58, 40.8]], "m02": [[0, 8.5], [8.5, 22.7], [22.7, 31.92], [31.92, 40.4]], "m03": [[0, 4.39], [4.39, 18.16], [18.16, 22.88]]};
+/* ===== 新模块：听力 / 口语 / 语法 / 作文（原创内容，Jessica 预生成音频 audio/modules/*.mp3） ===== */
+const MKEY="oxford100_modules_v1";
+const MOD_AUDIO_DIR="audio/modules/";
+function mLoad(){try{const o=JSON.parse(localStorage.getItem(MKEY)||"{}");return (o&&typeof o==="object")?o:{};}catch(e){return {};}}
+let MP=mLoad();["listen","speak","grammar","fill","cur"].forEach(k=>{if(!MP[k]||typeof MP[k]!=="object")MP[k]={};});
+if(typeof MP.rate!=="number")MP.rate=1;if(MP.sub===undefined)MP.sub=true;if(MP.zh===undefined)MP.zh=false;
+function mSave(){try{localStorage.setItem(MKEY,JSON.stringify(MP));}catch(e){}try{if(typeof flashSaved==="function")flashSaved();}catch(e){}}
+function mE(x){return String(x==null?"":x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function mWord(en){try{return W.find(w=>w.en.toLowerCase()===String(en).toLowerCase())||null;}catch(e){return null;}}
+/* ---- 播放器：整段播放 + 单句播放（按时间段），逐句高亮 ---- */
+const MA={a:null,id:null,seg:null,stopAt:null,host:null,single:false};
+function mStop(){try{if(MA.a){MA.a.pause();}}catch(e){}MA.stopAt=null;mPaintBtn();}
+function mStopOthers(){try{if(typeof _packAudio!=="undefined"&&_packAudio){_packAudio.pause();}}catch(e){}try{if(window.speechSynthesis)speechSynthesis.cancel();}catch(e){}}
+function mEnsure(id){if(MA.a&&MA.id===id)return MA.a;mStop();const a=new Audio((window.MODULE_AUDIO&&window.MODULE_AUDIO[id])||(MOD_AUDIO_DIR+id+".mp3"));a.preload="auto";MA.a=a;MA.id=id;MA.seg=(typeof AUDSEG!=="undefined"&&AUDSEG[id])||null;
+ a.addEventListener("timeupdate",mTick);a.addEventListener("ended",()=>{MA.stopAt=null;mHi(-1);mPaintBtn();});a.addEventListener("pause",mPaintBtn);a.addEventListener("play",mPaintBtn);
+ a.addEventListener("error",()=>{const s=document.querySelector(".m-status");if(s)s.textContent="音频加载失败：请确认 audio/modules/ 文件夹已一起上传（离线请先联网打开一次）";});return a;}
+function mPlay(id,from,to){mStopOthers();const a=mEnsure(id);a.playbackRate=MP.rate||1;try{a.defaultPlaybackRate=MP.rate||1;}catch(e){}
+ if(typeof from==="number"){try{a.currentTime=from;}catch(e){}MA.stopAt=(typeof to==="number")?to:null;}else MA.stopAt=null;
+ const p=a.play();if(p&&p.catch)p.catch(()=>{const s=document.querySelector(".m-status");if(s)s.textContent="播放失败，请再点一次";});}
+function mToggle(id){const a=MA.a;if(a&&MA.id===id&&!a.paused){a.pause();return;}if(a&&MA.id===id&&a.currentTime>0&&!a.ended){MA.stopAt=null;mStopOthers();a.playbackRate=MP.rate||1;a.play();return;}mPlay(id,0);}
+function mSeg(id,i){const s=(typeof AUDSEG!=="undefined"&&AUDSEG[id])||null;if(!s||!s[i])return;mPlay(id,s[i][0],s[i][1]);}
+function mTick(){const a=MA.a;if(!a)return;const t=a.currentTime;if(MA.stopAt!=null&&t>=MA.stopAt-0.03){a.pause();MA.stopAt=null;}
+ if(MA.seg){let k=-1;for(let i=0;i<MA.seg.length;i++){if(t>=MA.seg[i][0]&&t<MA.seg[i][1]){k=i;break;}}mHi(a.paused?-1:k);}}
+function mHi(k){document.querySelectorAll('[data-mline][data-aid="'+MA.id+'"]').forEach(el=>{const on=+el.dataset.mline===k;if(on&&!el.classList.contains("hi")&&MP.sub){try{el.scrollIntoView({block:"nearest",behavior:"smooth"});}catch(e){}}el.classList.toggle("hi",on);});}
+function mPaintBtn(){document.querySelectorAll("[data-mplay]").forEach(b=>{const on=MA.a&&MA.id===b.dataset.mplay&&!MA.a.paused;b.textContent=on?"⏸ 暂停":(b.dataset.lbl||"▶ 播放全文");});}
+function mRateBtns(){return '<span class="m-rate">'+[0.8,1].map(r=>'<button type="button" class="mini'+(MP.rate===r?" on":"")+'" data-mrate="'+r+'">'+(r===1?"1.0×常速":"0.8×慢速")+'</button>').join("")+'</span>';}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-mplay],[data-mseg],[data-mrate]");if(!t)return;
+ if(t.dataset.mplay){mToggle(t.dataset.mplay);return;}
+ if(t.dataset.mrate){MP.rate=+t.dataset.mrate;mSave();if(MA.a)MA.a.playbackRate=MP.rate;document.querySelectorAll("[data-mrate]").forEach(b=>b.classList.toggle("on",+b.dataset.mrate===MP.rate));return;}
+ if(t.dataset.mseg){const [id,i]=t.dataset.mseg.split("|");mSeg(id,+i);}});
+function mBack(lbl,fn){return '<div class="row m-back" style="justify-content:flex-start"><button type="button" class="mini" data-mback="1">← '+mE(lbl)+'</button></div>';}
+function mQuiz(prefix,qs,saveFn){/* qs:[{q,o,a,ex}] */
+ return qs.map((q,i)=>'<div class="m-q" data-qi="'+i+'" data-pre="'+prefix+'"><div class="m-qt"><b>'+(i+1)+'.</b> '+mE(q.q)+'</div><div class="m-opts">'+q.o.map((o,j)=>'<button type="button" class="m-opt" data-oj="'+j+'">'+String.fromCharCode(65+j)+'. '+mE(o)+'</button>').join("")+'</div><div class="m-ex"></div></div>').join("");}
+function mBindQuiz(root,qs,onDone){let right=0,ans=0;root.querySelectorAll(".m-q").forEach(box=>{const q=qs[+box.dataset.qi];box.querySelectorAll(".m-opt").forEach(b=>b.onclick=()=>{if(box.dataset.done)return;box.dataset.done="1";ans++;const j=+b.dataset.oj;const ok=j===q.a;if(ok)right++;
+  box.querySelectorAll(".m-opt").forEach((x,k)=>{x.disabled=true;if(k===q.a)x.classList.add("ok");else if(k===j)x.classList.add("bad");});
+  box.querySelector(".m-ex").innerHTML=(ok?'<b class="m-good">✅ 答对了！</b> ':'<b class="m-badt">❌ 正确答案是 '+String.fromCharCode(65+q.a)+'</b> ')+mE(q.ex);
+  if(ans===qs.length&&onDone)onDone(right,qs.length);});});}
+/* ---- 通用：模块头部 ---- */
+function mHead(icon,title,sub,stat){return '<div class="g m-head"><h3>'+icon+' '+mE(title)+'</h3><div class="m-sub">'+sub+'</div>'+(stat?'<div class="m-stat">'+stat+'</div>':'')+'<div class="m-status" aria-live="polite"></div></div>';}
+function mGrid(items){return '<div class="m-grid">'+items.join("")+'</div>';}
+function mCard(attr,icon,t,zh,badge){return '<button type="button" class="m-card" '+attr+'><span class="m-ic">'+icon+'</span><span class="m-ct"><b>'+mE(t)+'</b><small>'+mE(zh)+'</small></span>'+(badge?'<span class="m-badge">'+badge+'</span>':'')+'</button>';}
+/* ================= ④ 听力 ================= */
+function renderListen(){const P=$("p-listen");const cur=MP.cur.listen;const L=LISTEN.find(x=>x.id===cur);mStop();
+ if(!L){const done=Object.keys(MP.listen).length;
+  P.innerHTML=mHead("🎧","听力 · 短对话与短文","每课 1 分钟左右：<b>① 听前 5 个词</b> → <b>② 听 Jessica 朗读</b>（可慢速 0.8×、逐句字幕）→ <b>③ 做 4–5 道理解题</b>，看中文解析。建议每课听 3 遍：第 1 遍不看字幕，第 2 遍看字幕，第 3 遍跟读。","已完成 <b>"+done+"</b> / "+LISTEN.length+" 课")+
+  mGrid(LISTEN.map((l,i)=>{const r=MP.listen[l.id];return mCard('data-lid="'+l.id+'"',l.icon,"L"+(i+1)+" "+l.title,l.zh+" · "+l.topic+" · "+l.type,r?("✅ "+r[0]+"/"+r[1]):"");}));
+  P.querySelectorAll("[data-lid]").forEach(b=>b.onclick=()=>{MP.cur.listen=b.dataset.lid;mSave();renderListen();window.scrollTo(0,0);});return;}
+ const idx=LISTEN.indexOf(L);
+ P.innerHTML=mBack("返回课程列表")+
+ '<div class="g"><h3>'+L.icon+' L'+(idx+1)+' '+mE(L.title)+' <span class="m-zhs">'+mE(L.zh)+'</span></h3><div class="m-tags"><span class="tag">'+mE(L.topic)+'</span><span class="tag">'+mE(L.type)+'</span><span class="tag">'+L.lines.map(x=>x[1]).join(" ").split(/\s+/).length+' 词</span></div></div>'+
+ '<div class="g"><h3>① 听前词汇（来自你的 200 词）</h3><p class="m-sub">先认识这 5 个词，再听会轻松很多。点 🔊 听 Jessica 发音。</p>'+
+ L.words.map(en=>{const w=mWord(en);return '<div class="sent m-word"><b>'+mE(en)+'</b> '+(w?'<span class="ph">'+mE(w.ph)+'</span> '+mE(w.pos)+' · '+mE(w.zh):'')+spkBtns(en)+'</div>';}).join("")+'</div>'+
+ '<div class="g m-player"><h3>② 听 Jessica 朗读</h3><div class="row m-ctrl" style="justify-content:flex-start"><button type="button" class="spk" data-mplay="'+L.id+'">▶ 播放全文</button>'+mRateBtns()+
+ '<label class="m-sw"><input type="checkbox" id="mSub" class="m-subcb" '+(MP.sub?"checked":"")+'> 字幕</label><label class="m-sw"><input type="checkbox" id="mZh" '+(MP.zh?"checked":"")+'> 中文</label></div>'+
+ '<p class="m-sub">💡 点任意一句只播那一句，适合反复听没听懂的地方。</p><div class="m-lines'+(MP.sub?"":" nosub")+(MP.zh?" zh":"")+'" id="mLines">'+
+ L.lines.map((x,i)=>'<div class="m-line" data-mline="'+i+'" data-aid="'+L.id+'" data-mseg="'+L.id+'|'+i+'">'+(x[0]?'<span class="m-spk">'+mE(x[0])+'：</span>':'')+'<span class="m-en">'+mE(x[1])+'</span><span class="m-zhl">'+mE(x[2])+'</span></div>').join("")+'</div><div class="m-hidden-tip">字幕已关闭：先只用耳朵听 👂</div></div>'+
+ '<div class="g"><h3>③ 听后理解题</h3><div class="m-qz">'+mQuiz("l",L.qs)+'</div><div class="m-score"></div></div>'+
+ '<div class="row" style="justify-content:space-between">'+(idx>0?'<button type="button" class="mini" data-lgo="'+LISTEN[idx-1].id+'">← 上一课</button>':'<span></span>')+(idx<LISTEN.length-1?'<button type="button" class="b-sub" style="flex:none" data-lgo="'+LISTEN[idx+1].id+'">下一课 →</button>':'')+'</div>';
+ P.querySelector("[data-mback]").onclick=()=>{MP.cur.listen=null;mSave();renderListen();};
+ P.querySelectorAll("[data-lgo]").forEach(b=>b.onclick=()=>{MP.cur.listen=b.dataset.lgo;mSave();renderListen();window.scrollTo(0,0);});
+ $("mSub").onchange=e=>{MP.sub=e.target.checked;mSave();$("mLines").classList.toggle("nosub",!MP.sub);};
+ $("mZh").onchange=e=>{MP.zh=e.target.checked;mSave();$("mLines").classList.toggle("zh",MP.zh);};
+ mBindQuiz(P.querySelector(".m-qz"),L.qs,(r,n)=>{MP.listen[L.id]=[r,n];mSave();P.querySelector(".m-score").innerHTML=(r===n?"🎉 全对！":"得分 ")+"<b>"+r+"/"+n+"</b>"+(r<n?" · 打开字幕再听一遍，找到答案所在的句子。":" · 试试关掉字幕再听一遍，跟着 Jessica 读。");});}
+/* ================= ⑤ 口语 ================= */
+const SR_API=window.SpeechRecognition||window.webkitSpeechRecognition;
+function mCmpWords(said,target){const tk=s=>(String(s).toLowerCase().replace(/[’]/g,"'").match(/[a-z']+/g)||[]);const S=new Set(tk(said));const T=tk(target);let hit=0;const html=String(target).split(/(\s+)/).map(p=>{const w=(p.toLowerCase().match(/[a-z']+/)||[""])[0];if(!w)return mE(p);const ok=S.has(w);if(ok)hit++;return '<span class="'+(ok?"m-hit":"m-miss")+'">'+mE(p)+'</span>';}).join("");return {pct:T.length?Math.round(hit/T.length*100):0,html};}
+function renderSpeak(){const P=$("p-speak");const T=SPEAK.find(x=>x.id===MP.cur.speak);mStop();
+ if(!T){const done=Object.keys(MP.speak).filter(k=>(MP.speak[k]||[]).length).length;
+  P.innerHTML=mHead("🗣️","口语 · 雅思 Part 1 话题卡","每张卡：<b>看中文提示</b> → <b>学 3–4 个句型</b> → <b>听 Jessica 示范回答</b> → <b>逐句跟读</b>（"+(SR_API?"可用 🎙️ 语音识别打分":"本浏览器不支持语音识别，用「听→说→自评打勾」")+"）→ <b>换成自己的内容说一遍</b>。","已练 <b>"+done+"</b> / "+SPEAK.length+" 个话题")+
+  mGrid(SPEAK.map(t=>{const d=(MP.speak[t.id]||[]).length;return mCard('data-sid="'+t.id+'"',t.icon,t.q,t.zh,d?("✅ "+d+"/"+t.ans.length):"");}));
+  P.querySelectorAll("[data-sid]").forEach(b=>b.onclick=()=>{MP.cur.speak=b.dataset.sid;mSave();renderSpeak();window.scrollTo(0,0);});return;}
+ const idx=SPEAK.indexOf(T);const done=new Set(MP.speak[T.id]||[]);
+ P.innerHTML=mBack("返回话题列表")+
+ '<div class="g m-topic"><div class="tag">Part 1 · 话题 '+(idx+1)+'</div><h3 class="m-bigq">'+T.icon+' '+mE(T.q)+'</h3><div class="m-zhp">💭 '+mE(T.zh)+'</div><div class="m-tip">🧭 答题思路：'+mE(T.tip)+'</div></div>'+
+ '<div class="g"><h3>🧩 可用句型</h3>'+T.pat.map(p=>'<div class="sent m-pat"><b>'+mE(p[0])+'</b><br><span class="zhl">'+mE(p[1])+'</span></div>').join("")+'</div>'+
+ '<div class="g m-player"><h3>🎧 示范回答（Jessica）</h3><div class="row m-ctrl" style="justify-content:flex-start"><button type="button" class="spk" data-mplay="'+T.id+'" data-lbl="▶ 听示范">▶ 听示范</button>'+mRateBtns()+'</div><div class="m-lines">'+T.ans.map((s,i)=>'<div class="m-line" data-mline="'+i+'" data-aid="'+T.id+'" data-mseg="'+T.id+'|'+i+'"><span class="m-en">'+mE(s)+'</span></div>').join("")+'</div></div>'+
+ '<div class="g"><h3>🔁 逐句跟读</h3><p class="m-sub">每句：🔊 听 → '+(SR_API?'🎙️ 说（机器听你说了哪些词，绿色=听到了）':'自己大声说 2 遍')+' → 觉得说顺了就点 ✓ 打勾。</p>'+
+ T.ans.map((s,i)=>'<div class="m-shadow'+(done.has(i)?" done":"")+'" data-si="'+i+'"><div class="m-sh-t">'+mE(s)+'</div><div class="row" style="justify-content:flex-start"><button type="button" class="mini" data-mseg="'+T.id+'|'+i+'">🔊 听</button>'+(SR_API?'<button type="button" class="mini m-mic">🎙️ 我说</button>':'')+'<button type="button" class="mini m-ok">'+(done.has(i)?"✅ 已会":"✓ 我说顺了")+'</button></div><div class="m-sh-r"></div></div>').join("")+'</div>'+
+ '<div class="g"><h3>✍️ 换成我自己的回答</h3><p class="m-sub">用上面的句型，把示范里的内容换成你自己的（家乡、学校、爱好…），写下来再大声说 3 遍。会自动保存。</p><textarea id="mMyAns" rows="4" placeholder="例如：My hometown is ...">'+mE((MP.speak[T.id+"_my"]||""))+'</textarea>'+(SR_API?'<div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="mMyMic">🎙️ 说出来转文字</button></div>':'')+'</div>'+
+ '<div class="row" style="justify-content:space-between">'+(idx>0?'<button type="button" class="mini" data-sgo="'+SPEAK[idx-1].id+'">← 上一个</button>':'<span></span>')+(idx<SPEAK.length-1?'<button type="button" class="b-sub" style="flex:none" data-sgo="'+SPEAK[idx+1].id+'">下一个话题 →</button>':'')+'</div>';
+ P.querySelector("[data-mback]").onclick=()=>{MP.cur.speak=null;mSave();renderSpeak();};
+ P.querySelectorAll("[data-sgo]").forEach(b=>b.onclick=()=>{MP.cur.speak=b.dataset.sgo;mSave();renderSpeak();window.scrollTo(0,0);});
+ P.querySelectorAll(".m-shadow").forEach(box=>{const i=+box.dataset.si;const okB=box.querySelector(".m-ok");
+  okB.onclick=()=>{const arr=new Set(MP.speak[T.id]||[]);if(arr.has(i))arr.delete(i);else arr.add(i);MP.speak[T.id]=[...arr].sort();mSave();box.classList.toggle("done",arr.has(i));okB.textContent=arr.has(i)?"✅ 已会":"✓ 我说顺了";};
+  const mic=box.querySelector(".m-mic");if(mic)mic.onclick=()=>mListen(mic,txt=>{const r=mCmpWords(txt,T.ans[i]);box.querySelector(".m-sh-r").innerHTML='<div>听到：“'+mE(txt)+'”</div><div>'+r.html+'</div><b>'+(r.pct>=80?"👍 很好 ":r.pct>=50?"🙂 不错，再来一次 ":"💪 再听一遍慢速，跟着读 ")+r.pct+'%</b>';if(r.pct>=80&&!(MP.speak[T.id]||[]).includes(i))okB.click();});});
+ const ta=$("mMyAns");ta.oninput=()=>{MP.speak[T.id+"_my"]=ta.value;clearTimeout(ta._t);ta._t=setTimeout(mSave,400);};
+ const mm=$("mMyMic");if(mm)mm.onclick=()=>mListen(mm,txt=>{ta.value=(ta.value?ta.value.trim()+" ":"")+txt;ta.oninput();});}
+function mListen(btn,cb){if(!SR_API){alert("这个浏览器不支持语音识别，请用 Chrome / Edge，或者直接自评打勾。");return;}mStop();const r=new SR_API();r.lang="en-US";r.interimResults=false;r.maxAlternatives=1;const old=btn.textContent;btn.textContent="🔴 正在听…";btn.disabled=true;
+ r.onresult=e=>{const t=e.results[0][0].transcript;cb(t);};r.onerror=e=>{btn.textContent=old;btn.disabled=false;if(e.error==="not-allowed")alert("需要允许麦克风权限才能语音识别");};r.onend=()=>{btn.textContent=old;btn.disabled=false;};try{r.start();}catch(e){btn.textContent=old;btn.disabled=false;}}
+/* ================= ⑥ 语法 ================= */
+function renderGrammar(){const P=$("p-grammar");const G=GRAMMAR.find(x=>x.id===MP.cur.grammar);mStop();
+ if(!G){const done=Object.keys(MP.grammar).length;
+  P.innerHTML=mHead("📐","语法 · A1–A2 核心 12 点","每个语法点：<b>3 行中文讲解</b> → <b>3 个例句</b>（Jessica 发音）→ <b>5 道小测验</b>（点选马上出对错和原因）。按顺序学，一晚 2–3 个点。","已完成 <b>"+done+"</b> / "+GRAMMAR.length+" 个语法点")+
+  mGrid(GRAMMAR.map((g,i)=>{const r=MP.grammar[g.id];return mCard('data-gid="'+g.id+'"',g.icon,(i+1)+". "+g.t,g.ex[0][0],r?((r[0]===r[1]?"🏆 ":"✅ ")+r[0]+"/"+r[1]):"");}));
+  P.querySelectorAll("[data-gid]").forEach(b=>b.onclick=()=>{MP.cur.grammar=b.dataset.gid;mSave();renderGrammar();window.scrollTo(0,0);});return;}
+ const idx=GRAMMAR.indexOf(G);const qs=G.qz.map(x=>({q:x[0],o:x[1],a:x[2],ex:x[3]}));
+ P.innerHTML=mBack("返回语法列表")+
+ '<div class="g"><h3>'+G.icon+' '+(idx+1)+'. '+mE(G.t)+'</h3><ul class="m-rules">'+G.zh.map(z=>'<li>'+mE(z)+'</li>').join("")+'</ul></div>'+
+ '<div class="g m-player"><h3>🔊 例句</h3><div class="row m-ctrl" style="justify-content:flex-start"><button type="button" class="spk" data-mplay="'+G.id+'" data-lbl="▶ 连读 3 句">▶ 连读 3 句</button>'+mRateBtns()+'</div><div class="m-lines zh">'+G.ex.map((x,i)=>'<div class="m-line" data-mline="'+i+'" data-aid="'+G.id+'" data-mseg="'+G.id+'|'+i+'"><span class="m-en">🔊 '+mE(x[0])+'</span><span class="m-zhl">'+mE(x[1])+'</span></div>').join("")+'</div></div>'+
+ '<div class="g"><h3>✏️ 小测验（5 题）</h3><div class="m-qz">'+mQuiz("g",qs)+'</div><div class="m-score"></div><div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="mRedo">🔄 重做</button></div></div>'+
+ '<div class="row" style="justify-content:space-between">'+(idx>0?'<button type="button" class="mini" data-ggo="'+GRAMMAR[idx-1].id+'">← 上一个</button>':'<span></span>')+(idx<GRAMMAR.length-1?'<button type="button" class="b-sub" style="flex:none" data-ggo="'+GRAMMAR[idx+1].id+'">下一个语法点 →</button>':'')+'</div>';
+ P.querySelector("[data-mback]").onclick=()=>{MP.cur.grammar=null;mSave();renderGrammar();};
+ P.querySelectorAll("[data-ggo]").forEach(b=>b.onclick=()=>{MP.cur.grammar=b.dataset.ggo;mSave();renderGrammar();window.scrollTo(0,0);});
+ $("mRedo").onclick=()=>renderGrammar();
+ mBindQuiz(P.querySelector(".m-qz"),qs,(r,n)=>{const old=MP.grammar[G.id];if(!old||r>=old[0])MP.grammar[G.id]=[r,n];mSave();P.querySelector(".m-score").innerHTML=(r===n?"🏆 全对！这个语法点过关了。":"得分 <b>"+r+"/"+n+"</b> · 看看错题的解析，再点「重做」。");});}
+/* ================= ⑦ 作文 ================= */
+function renderWrite(){const P=$("p-write");mStop();const sub=MP.cur.write||"bank";const subs=[["bank","💬 句型库"],["tpl","🧱 段落模板"],["fill","🧩 填空练习"],["model","📄 范文解读"]];
+ let h=mHead("📝","作文 · 雅思 Task 1 / Task 2 入门","先背<b>句型</b> → 套<b>段落模板</b> → 用已背的词做<b>填空小作文</b> → 读<b>范文和中文解读</b>。（原来「练完一个场景后写小作文」的功能保持不变，仍在 ① 单词拼写 每组练完后出现。）","")+
+ '<div class="chips m-subtabs">'+subs.map(s=>'<button type="button" class="chip'+(s[0]===sub?" on":"")+'" data-wsub="'+s[0]+'">'+s[1]+'</button>').join("")+'</div>';
+ if(sub==="bank")h+=WRITE.bank.map(b=>'<div class="g"><h3>'+b.icon+' '+mE(b.k)+'</h3><p class="m-sub">'+mE(b.zh)+'</p>'+b.s.map(s=>'<div class="sent m-pat"><b>'+mE(s[0])+'</b><br><span class="zhl">'+mE(s[1])+'</span></div>').join("")+'</div>').join("");
+ if(sub==="tpl")h+=WRITE.tpl.map(t=>'<div class="g"><h3>🧱 '+mE(t.t)+'</h3><p class="m-sub">'+mE(t.zh)+'</p>'+t.p.map(p=>'<div class="m-tpl"><div class="m-tpl-h"><span class="tag">'+mE(p[0])+'</span> '+mE(p[1])+'</div><div class="m-tpl-s">'+mE(p[2])+'</div></div>').join("")+'</div>').join("");
+ if(sub==="fill")h+=WRITE.fill.map(f=>{const sv=MP.fill[f.id]||{};let k=0;const body=mE(f.txt).replace(/\{(\d)\}/g,(m,n)=>'<input class="m-blank" data-fid="'+f.id+'" data-n="'+n+'" value="'+mE((sv.a||[])[n]||"")+'" autocomplete="off" autocapitalize="off" spellcheck="false">');
+  return '<div class="g m-fill" data-fid="'+f.id+'"><h3>🧩 '+mE(f.t)+(sv.ok?' ✅':'')+'</h3><div class="m-bank">'+f.bank.map(w=>'<button type="button" class="mini m-bw">'+mE(w)+'</button>').join("")+'</div><p class="m-sub">先点空格，再点上面的词填进去（也可以直接打字）。</p><div class="m-ftxt">'+body+'</div><div class="row" style="justify-content:flex-start"><button type="button" class="b-sub" style="flex:none" data-fchk="'+f.id+'">✔ 检查</button><button type="button" class="mini" data-fclr="'+f.id+'">清空</button></div><div class="m-fres"></div></div>';}).join("");
+ if(sub==="model")h+=WRITE.model.map(m=>'<div class="g m-model m-player"><h3>📄 '+mE(m.t)+'</h3><p class="m-sub">'+mE(m.zh)+' · 约 '+m.p.join(" ").split(/\s+/).length+' 词</p>'+(m.chart?mChart(m.chart):'')+
+  '<div class="row m-ctrl" style="justify-content:flex-start"><button type="button" class="spk" data-mplay="'+m.id+'" data-lbl="▶ 听范文">▶ 听范文</button>'+mRateBtns()+'</div><div class="m-lines">'+m.p.map((p,i)=>'<div class="m-line m-para" data-mline="'+i+'" data-aid="'+m.id+'" data-mseg="'+m.id+'|'+i+'"><span class="m-en">'+mE(p)+'</span></div>').join("")+'</div>'+
+  '<h3 style="margin-top:12px">🔍 中文解读</h3>'+m.note.map(n=>'<div class="sent"><span class="tag">'+mE(n[0])+'</span> '+mE(n[1])+'</div>').join("")+'</div>').join("");
+ P.innerHTML=h;
+ P.querySelectorAll("[data-wsub]").forEach(b=>b.onclick=()=>{MP.cur.write=b.dataset.wsub;mSave();renderWrite();});
+ let lastBlank=null;P.querySelectorAll(".m-blank").forEach(inp=>{inp.onfocus=()=>{lastBlank=inp;};inp.oninput=()=>{inp.classList.remove("ok","bad");mFillSave(inp.dataset.fid);};});
+ P.querySelectorAll(".m-fill").forEach(box=>{box.querySelectorAll(".m-bw").forEach(b=>b.onclick=()=>{let t=(lastBlank&&box.contains(lastBlank))?lastBlank:[...box.querySelectorAll(".m-blank")].find(x=>!x.value);if(!t)return;t.value=b.textContent;t.classList.remove("ok","bad");mFillSave(box.dataset.fid);const nx=[...box.querySelectorAll(".m-blank")].find(x=>!x.value);if(nx){nx.focus();lastBlank=nx;}});});
+ P.querySelectorAll("[data-fchk]").forEach(b=>b.onclick=()=>mFillCheck(b.dataset.fchk));
+ P.querySelectorAll("[data-fclr]").forEach(b=>b.onclick=()=>{delete MP.fill[b.dataset.fclr];mSave();renderWrite();});}
+function mFillSave(fid){const a=[];document.querySelectorAll('.m-blank[data-fid="'+fid+'"]').forEach(i=>a[+i.dataset.n]=i.value);MP.fill[fid]=Object.assign(MP.fill[fid]||{},{a});mSave();}
+function mFillCheck(fid){const f=WRITE.fill.find(x=>x.id===fid);let ok=0;const ins=document.querySelectorAll('.m-blank[data-fid="'+fid+'"]');
+ ins.forEach(i=>{const want=f.bank[+i.dataset.n];const good=i.value.trim().toLowerCase()===want.toLowerCase();i.classList.toggle("ok",good);i.classList.toggle("bad",!good);if(good)ok++;});
+ const box=document.querySelector('.m-fill[data-fid="'+fid+'"]');const all=ok===ins.length;MP.fill[fid]=Object.assign(MP.fill[fid]||{},{ok:all});mSave();
+ box.querySelector(".m-fres").innerHTML=all?'🎉 全对！把整段<b>抄一遍并大声读出来</b>，再试着把内容换成你自己的。<div class="wex">'+mE(f.txt.replace(/\{(\d)\}/g,(m,n)=>f.bank[+n]))+'</div>':'对了 <b>'+ok+"/"+ins.length+'</b>，红框再想想：看前后文是名词、形容词还是连接词？';}
+function mChart(d){const mx=Math.max(...d.map(x=>x[1]));return '<div class="m-chart">'+d.map(x=>'<div class="m-bar"><span>'+mE(x[0])+'</span><i style="width:'+(x[1]/mx*100)+'%"></i><b>'+x[1]+'%</b></div>').join("")+'<div class="m-cap">How students travel to school (one class, 2024)</div></div>';}
+window.MOD_RENDER={listen:renderListen,speak:renderSpeak,grammar:renderGrammar,write:renderWrite};
+</script>
 <script>
 "use strict";
 /* ===== 词表数据：16 个场景主题 · 200 词（Oxford 3000，A1 为主，标注 A2 的为稍难词；B1 无） =====
@@ -1335,7 +1723,7 @@ const JESSICA_AUDIO={
 const KEY="oxford100_v1";
 const ALLTH="全部";
 const REP_FUZZY=1,REP_NO=2; /* 模糊：之后再拼对 1 次；不会/拼错：之后再拼对 2 次 */
-const TABS=[["words","① 单词拼写"],["list","② 词表"],["mem","③ 进度"]];
+const TABS=[["words","① 单词拼写"],["list","② 词表"],["listen","③ 听力"],["speak","④ 口语"],["grammar","⑤ 语法"],["write","⑥ 作文"],["mem","⑦ 进度"]];
 const $=id=>document.getElementById(id);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function sEscH(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&"+"amp;","<":"&"+"lt;",">":"&"+"gt;",'"':"&"+"quot;"}[c]));}
@@ -1598,6 +1986,9 @@ function renderAll(){renderIntro();renderTabs();$("auto").checked=!!ST.auto;
  if(ST.tab==="words"){renderChips();renderWords();}
  if(ST.tab==="list")renderList();
  if(ST.tab==="mem")renderMem();
+ try{const tb=$("tabs"),o=tb&&tb.querySelector("button.on");if(o&&tb.scrollWidth>tb.clientWidth)tb.scrollLeft=Math.max(0,o.offsetLeft-tb.offsetLeft-tb.clientWidth/2+o.offsetWidth/2);}catch(e){}
+ if(window.MOD_RENDER&&MOD_RENDER[ST.tab]){try{MOD_RENDER[ST.tab]();}catch(e){console.error(e);}}
+ if(ST.tab!=="listen"&&ST.tab!=="speak"&&ST.tab!=="grammar"&&ST.tab!=="write"){try{if(typeof mStop==="function")mStop();}catch(e){}}
  try{updateSideChars();decorateMascots();}catch(e){}}
 
 /* ===== 造句检测 Sentence check (smarter) ===== */
