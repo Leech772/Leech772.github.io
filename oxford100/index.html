@@ -14,7 +14,7 @@
 <title>Oxford 3000 · 中职基础 100 词（A1→B1）</title>
 <style>
 :root{
-  /* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack */
+  /* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack2 */
   --bg:#f4f4f2;--bg2:#ebeae6;--card:#fafaf8;--paper:#f2f1ed;
   --accent:#8b1a1a;--accent2:#6e1515;--accent-soft:#f0e4e4;
   --good:#2f6b4e;--bad:#a84f42;--warn:#a67c3a;--speak:#5a5a58;
@@ -264,7 +264,7 @@ html.immersive .top{flex-wrap:nowrap;justify-content:flex-start;gap:6px}html.imm
 
 </style>
 <style id="animus-ac2-chrome">
-/* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack — premium layered shadows + frosted glass (CSS only) */
+/* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack2 — premium layered shadows + frosted glass (CSS only) */
 html{background:var(--bg)}
 body{
   background-color:var(--bg);
@@ -774,11 +774,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   .has-mascot.mascot-left > .btn-mascot{left:-26px}
 }
 </style>
-<script src="assets/qchars-pack-0.js"></script>
-<script src="assets/qchars-pack-1.js"></script>
-<script src="assets/qchars-pack-2.js"></script>
-<script src="assets/qchars-pack-3.js"></script>
-<script src="assets/qchars-pack-4.js"></script>
+<script src="assets/qchars-pack.js?v=20261102b"></script>
 </head><body>
 <img class="char-deco left" id="charLeft" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
 <img class="char-deco right" id="charRight" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
@@ -1315,8 +1311,8 @@ $("fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new File
 /* ===== 东方可爱Q版角色装饰（侧边+小按钮旁，互不挡点击） ===== */
 const CHAR_SLUGS=["reimu","marisa","cirno","meiling","patchouli","sakuya","remilia","flandre","alice","youmu","yuyuko","yukari","reisen","aya","sanae","suwako","tenshi","suika","koishi","nitori","chen","rumia","tewi","kogasa"];
 const CHAR_SIDE_PAIRS=[["reimu","marisa"],["cirno","flandre"],["sakuya","remilia"],["youmu","yuyuko"],["sanae","suwako"],["alice","patchouli"],["aya","momiji"],["koishi","satori"],["nitori","suika"],["chen","ran"]];
-function charIcon(slug){var k=slug+"-icon";return (window.__QCHARS&&window.__QCHARS[k])||("assets/qchars/"+slug+"-icon.webp");}
-function charFull(slug){return (window.__QCHARS&&window.__QCHARS[slug])||("assets/qchars/"+slug+".webp");}
+function charIcon(slug){var k=slug+"-icon";var m=window.__QCHARS||{};if(m[k])return m[k];return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";}
+function charFull(slug){var m=window.__QCHARS||{};if(m[slug])return m[slug];return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";}
 function updateSideChars(){
   const i=Math.max(0, THEMES.findIndex(t=>t.name===ST.theme));
   const pair=CHAR_SIDE_PAIRS[i%CHAR_SIDE_PAIRS.length];
