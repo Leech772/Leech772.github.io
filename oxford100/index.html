@@ -14,7 +14,7 @@
 <title>Oxford 3000 · 中职基础 100 词（A1→B1）</title>
 <style>
 :root{
-  /* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack2 */
+  /* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-hd */
   --bg:#f4f4f2;--bg2:#ebeae6;--card:#fafaf8;--paper:#f2f1ed;
   --accent:#8b1a1a;--accent2:#6e1515;--accent-soft:#f0e4e4;
   --good:#2f6b4e;--bad:#a84f42;--warn:#a67c3a;--speak:#5a5a58;
@@ -264,7 +264,7 @@ html.immersive .top{flex-wrap:nowrap;justify-content:flex-start;gap:6px}html.imm
 
 </style>
 <style id="animus-ac2-chrome">
-/* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack2 — premium layered shadows + frosted glass (CSS only) */
+/* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-hd — premium layered shadows + frosted glass (CSS only) */
 html{background:var(--bg)}
 body{
   background-color:var(--bg);
@@ -732,8 +732,9 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 
 /* 可爱 Q版 / SD 角色装饰 — Animus proportions */
 .char-deco{position:fixed;bottom:0;z-index:0;pointer-events:none;user-select:none;
-  height:min(58vh,520px);width:auto;max-width:min(300px,28vw);object-fit:contain;object-position:bottom center;
-  opacity:.94;filter:drop-shadow(0 12px 24px rgba(26,26,26,.2));
+  height:min(58vh,560px);width:auto;max-width:min(320px,30vw);object-fit:contain;object-position:bottom center;
+  opacity:.96;filter:drop-shadow(0 12px 24px rgba(26,26,26,.2));
+  image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden;
 }
 .char-deco.left{left:max(4px, calc(50% - 620px));}
 .char-deco.right{right:max(4px, calc(50% - 620px));transform:scaleX(-1)}
@@ -751,10 +752,11 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 .has-mascot{position:relative}
 .has-mascot > .btn-mascot{
   position:absolute;pointer-events:none;user-select:none;
-  width:26px;height:26px;border-radius:50%;object-fit:cover;object-position:center top;
+  width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:center 20%;
   top:50%;transform:translateY(-50%);
   box-shadow:0 1px 3px rgba(26,26,26,.28),0 0 0 1.5px rgba(255,255,255,.75);
-  z-index:2;opacity:.95;
+  z-index:2;opacity:.98;
+  image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden;
 }
 .has-mascot.mascot-left > .btn-mascot{left:-30px}
 .has-mascot.mascot-right > .btn-mascot{right:-30px;left:auto}
@@ -774,7 +776,8 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   .has-mascot.mascot-left > .btn-mascot{left:-26px}
 }
 </style>
-<script src="assets/qchars-pack.js?v=20261102b"></script>
+<script src="assets/qchars-pack-0.js?v=20261102hd"></script>
+<script src="assets/qchars-pack-1.js?v=20261102hd"></script>
 </head><body>
 <img class="char-deco left" id="charLeft" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
 <img class="char-deco right" id="charRight" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
