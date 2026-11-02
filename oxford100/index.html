@@ -14,7 +14,7 @@
 <title>Oxford 3000 · 中职基础 100 词（A1→B1）</title>
 <style>
 :root{
-  /* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v2 */
+  /* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack */
   --bg:#f4f4f2;--bg2:#ebeae6;--card:#fafaf8;--paper:#f2f1ed;
   --accent:#8b1a1a;--accent2:#6e1515;--accent-soft:#f0e4e4;
   --good:#2f6b4e;--bad:#a84f42;--warn:#a67c3a;--speak:#5a5a58;
@@ -247,8 +247,24 @@ html.immersive .top{flex-wrap:nowrap;justify-content:flex-start;gap:6px}html.imm
 .intro-start{position:sticky;top:0;z-index:5}
 </style>
 
+<style>
+
+/* module essay */
+.essay-area{margin-top:14px;padding:14px 14px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--paper);text-align:left}
+.essay-title{font-weight:700;color:var(--accent2);font-size:1rem;margin:0 0 6px}
+.essay-hint{font-size:.84rem;color:var(--muted);line-height:1.5;margin:0 0 10px}
+.essay-words{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.essay-chip{font-size:.78rem;padding:4px 10px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--ink);font-weight:600}
+.essay-chip.on{background:#cfe9d8;border-color:#9cc9ae;color:#1f4d36}
+.essay-chip.miss{background:#fce4ec;border-color:#f0c4d2;color:#9b2d4a}
+.essay-stat{font-size:.82rem;color:var(--accent2);font-weight:650;margin:0 0 8px;min-height:1.2em}
+#essayIn{width:100%;box-sizing:border-box;font-size:16px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);resize:vertical;font-family:inherit;background:var(--card);color:var(--ink);line-height:1.55}
+#essayIn:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(139,26,26,.18)}
+#essayRes{margin-top:8px;font-size:.88rem;line-height:1.55}
+
+</style>
 <style id="animus-ac2-chrome">
-/* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v2 — premium layered shadows + frosted glass (CSS only) */
+/* ANIMUS_AC2_TOKEN: animus-ac2-light-glass-v4-qchars-pack — premium layered shadows + frosted glass (CSS only) */
 html{background:var(--bg)}
 body{
   background-color:var(--bg);
@@ -713,8 +729,60 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   .chip{padding:8px 12px}
   h1::before{font-size:.55rem;letter-spacing:.08em}
 }
+
+/* 可爱 Q版 / SD 角色装饰 — Animus proportions */
+.char-deco{position:fixed;bottom:0;z-index:0;pointer-events:none;user-select:none;
+  height:min(58vh,520px);width:auto;max-width:min(300px,28vw);object-fit:contain;object-position:bottom center;
+  opacity:.94;filter:drop-shadow(0 12px 24px rgba(26,26,26,.2));
+}
+.char-deco.left{left:max(4px, calc(50% - 620px));}
+.char-deco.right{right:max(4px, calc(50% - 620px));transform:scaleX(-1)}
+@media (max-width:1100px){
+  .char-deco{height:min(46vh,380px);max-width:min(200px,28vw);opacity:.8}
+  .char-deco.left{left:2px}
+  .char-deco.right{right:2px}
+}
+@media (max-width:720px){
+  .char-deco{height:min(36vh,280px);max-width:34vw;opacity:.68}
+}
+.wrap,.fs-fixed,#fsTip{position:relative;z-index:1}
+
+/* tiny mascot beside small controls — pointer-events none, no layout crush */
+.has-mascot{position:relative}
+.has-mascot > .btn-mascot{
+  position:absolute;pointer-events:none;user-select:none;
+  width:26px;height:26px;border-radius:50%;object-fit:cover;object-position:center top;
+  top:50%;transform:translateY(-50%);
+  box-shadow:0 1px 3px rgba(26,26,26,.28),0 0 0 1.5px rgba(255,255,255,.75);
+  z-index:2;opacity:.95;
+}
+.has-mascot.mascot-left > .btn-mascot{left:-30px}
+.has-mascot.mascot-right > .btn-mascot{right:-30px;left:auto}
+.has-mascot.mascot-left{margin-left:28px}
+.has-mascot.mascot-right{margin-right:28px}
+.fs-fixed.has-mascot{margin-left:0;margin-right:0}
+.fs-fixed.has-mascot.mascot-left > .btn-mascot{left:6px;right:auto;top:calc(100% + 4px);transform:none}
+.fs-fixed.has-mascot{padding-bottom:2px}
+.chip.has-mascot.mascot-left,.tabs button.has-mascot.mascot-left{margin-left:22px}
+.chip.has-mascot > .btn-mascot,.tabs button.has-mascot > .btn-mascot{width:22px;height:22px}
+.thgo.has-mascot.mascot-left{margin-left:30px}
+.mini.has-mascot{margin-left:22px;margin-right:4px}
+.mini.has-mascot > .btn-mascot{width:20px;height:20px;left:-22px}
+@media (max-width:600px){
+  .has-mascot.mascot-left{margin-left:24px}
+  .has-mascot > .btn-mascot{width:24px;height:24px}
+  .has-mascot.mascot-left > .btn-mascot{left:-26px}
+}
 </style>
+<script src="assets/qchars-pack-0.js"></script>
+<script src="assets/qchars-pack-1.js"></script>
+<script src="assets/qchars-pack-2.js"></script>
+<script src="assets/qchars-pack-3.js"></script>
+<script src="assets/qchars-pack-4.js"></script>
 </head><body>
+<img class="char-deco left" id="charLeft" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
+<img class="char-deco right" id="charRight" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
+
 <button type="button" class="fs-fixed" id="btnFs" title="点一下进入全屏，再点退出">⛶ 全屏</button>
 <div id="fsTip" role="status"><span id="fsTipTxt"></span><br><button type="button" id="fsTipOk">知道了</button></div>
 <div class="wrap">
@@ -798,6 +866,20 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 </div>
 <div id="nextArea" style="display:none"><button type="button" class="b-next" id="bNext">下一词 →</button></div>
 <div class="box done" id="done"><h2 style="margin:6px 0" id="doneTitle">本组全部拼对 🎉</h2><p class="sub" id="doneSub"></p>
+<div id="essayArea" class="essay-area" style="display:none">
+  <div class="essay-title" id="essayTitle">📝 小作文 · 用上本组词</div>
+  <p class="essay-hint" id="essayHint">写一段短小英文（大概 5～8 句就够），把下面这些词都用进去；不用很长，通顺就好。</p>
+  <div class="essay-words" id="essayWords" aria-live="polite"></div>
+  <div class="essay-stat" id="essayStat"></div>
+  <textarea id="essayIn" rows="6" autocapitalize="sentences" spellcheck="false" placeholder="用本组词写一段小短文…"></textarea>
+  <div class="row s-btns" style="margin-top:10px">
+    <button type="button" class="b-sub" id="essayChk">检测用词</button>
+    <button type="button" class="spk" id="essaySay">🔊 朗读</button>
+    <button type="button" class="b-fuz" id="essayCopy">复制给老师</button>
+  </div>
+  <div class="s-msg" id="essayMsg" aria-live="polite"></div>
+  <div id="essayRes"></div>
+</div>
 <div class="row" style="margin-top:10px"><button type="button" class="b-fuz" id="bRetest">🔁 复测错过的词</button><button type="button" class="b-sub" id="bNextTheme">下一组 →</button><button type="button" class="danger" id="bRestart">重新练这一组</button></div></div>
 <div class="box voice" id="voiceBox">
   <div class="line">🔊 发音：<b id="vName">Jessica · 内置真人女声</b> <button type="button" class="mini" id="bTest">试听</button></div>
@@ -1179,7 +1261,7 @@ function renderDone(){const ids=themeIds(ST.theme);const missT=ST.missed.filter(
  $("doneTitle").textContent=(ST.theme===ALLTH?"全部 100 词":"「"+ST.theme+"」")+" 全部拼对 🎉";
  $("doneSub").textContent=missT.length?"这一组有 "+missT.length+" 个词曾经错过/模糊，建议再复测一遍。":"一次都没错，太棒了！";
  $("bRetest").style.display=missT.length?"":"none";
- $("bNextTheme").style.display=nextTh?"":"none";if(nextTh){$("bNextTheme").textContent="下一组："+nextTh.icon+" "+nextTh.name+" →";$("bNextTheme").dataset.th=nextTh.name;}}
+ $("bNextTheme").style.display=nextTh?"":"none";if(nextTh){$("bNextTheme").textContent="下一组："+nextTh.icon+" "+nextTh.name+" →";$("bNextTheme").dataset.th=nextTh.name;} try{renderEssay();try{decorateMascots();}catch(e){}}catch(e){}}
 function reveal(msg,cls){ST.revealed=true;ST.lastFb=[msg,cls];save();renderWords();try{$("bNext").focus({preventScroll:true});}catch(e){}}
 function markMiss(id,need){ST.reps[id]=Math.max(ST.reps[id]||0,need);if(!ST.missed.includes(id))ST.missed.push(id);ST.known=ST.known.filter(x=>x!==id);ST.pending="later";}
 function logIt(en,r){ST.log.push([Date.now(),en,r]);if(ST.log.length>500)ST.log=ST.log.slice(-500);}
@@ -1215,25 +1297,128 @@ function renderList(){
  THEMES.map(t=>'<div class="g"><h3><button type="button" class="thgo" data-th="'+sEscH(t.name)+'">'+t.icon+" "+sEscH(t.name)+" · "+t.words.length+" 词 →</button></h3>"+
   W.filter(w=>w.theme===t.name).map(w=>'<div class="wl"><div class="sent"><span class="tag">'+sEscH(t.name)+"</span>"+(ST.known.includes(w.id)?"✅":"▫️")+" <b>"+sEscH(w.en)+'</b> <span class="ph">'+sEscH(w.ph)+"</span> "+sEscH(w.pos)+" · "+sEscH(w.zh)+spkBtns(w.en)+'</div><div class="wex">'+sEscH(w.exEn)+spkBtns(w.exEn)+'<br><span class="zhl">'+sEscH(w.exZh)+" · "+sEscH(w.scene)+"</span></div></div>").join("")+"</div>").join("");
  $("p-list").querySelectorAll(".thgo").forEach(b=>b.onclick=()=>{ST.theme=b.dataset.th;buildQueue();ST.tab="words";save();renderAll();window.scrollTo(0,0);});}
-function renderMem(){const miss=ST.missed.map(i=>W[i]);let sents={};try{sents=JSON.parse(localStorage.getItem(SKEY)||"{}")||{};}catch(e){}
- const sc=Object.keys(sents).length;
+function renderMem(){const miss=ST.missed.map(i=>W[i]);let sents={},essays={};try{sents=JSON.parse(localStorage.getItem(SKEY)||"{}")||{};}catch(e){}try{essays=JSON.parse(localStorage.getItem(EKEY)||"{}")||{};}catch(e){}
+ const sc=Object.keys(sents).length;const ec=Object.keys(essays).length;
  $("p-mem").innerHTML='<div class="g"><h3>📊 总进度</h3><div class="big">已掌握 <b>'+ST.known.length+"</b> / "+W.length+'</div><div class="progress"><i style="width:'+(ST.known.length/W.length*100)+'%"></i></div>'+
-  '<div style="margin-top:6px">待重复：'+Object.keys(ST.reps).length+" 词 · 错过/模糊过："+miss.length+" 词 · 已造句："+sc+" 个<br>上次保存："+(ST.updated?new Date(ST.updated).toLocaleString():"—")+"</div></div>"+
+  '<div style="margin-top:6px">待重复：'+Object.keys(ST.reps).length+" 词 · 错过/模糊过："+miss.length+" 词 · 已造句："+sc+" 个 · 小作文："+ec+" 篇<br>上次保存："+(ST.updated?new Date(ST.updated).toLocaleString():"—")+"</div></div>"+
   '<div class="g"><h3>🗂️ 各场景</h3>'+THEMES.map(t=>{const k=knownIn(t.name);return '<div class="throw"><span>'+t.icon+" "+sEscH(t.name)+'</span><span class="progress thbar"><i style="width:'+(k/t.words.length*100)+'%"></i></span><b>'+k+"/"+t.words.length+"</b></div>";}).join("")+"</div>"+
   '<div class="g"><h3>🧠 错过/模糊过的词</h3>'+(miss.length?miss.map(w=>'<div class="sent">'+(ST.known.includes(w.id)?"✅":"⏳")+" <b>"+sEscH(w.en)+"</b> "+sEscH(w.ph)+" "+sEscH(w.pos)+" "+sEscH(w.zh)+spkBtns(w.en)+"</div>").join(""):"还没有错过的词 👍")+"</div>"+
   (sc?'<div class="g"><h3>✍️ 我造过的句子</h3>'+Object.keys(sents).map(k=>'<div class="sent"><b>'+sEscH(k)+"</b>："+sEscH(sents[k].s)+spkBtns(sents[k].s)+"</div>").join("")+"</div>":"")+
+  (ec?'<div class="g"><h3>📝 我写过的小作文</h3>'+Object.keys(essays).map(k=>{const e=essays[k]||{};return '<div class="sent"><b>'+sEscH(k)+'</b> · '+(e.ok?'✅':'⏳')+' '+(e.used||0)+'/'+(e.total||'?')+'<div class="wex">'+sEscH(e.s||'')+spkBtns(e.s||'')+'</div></div>';}).join('')+'</div>':'')+
   '<div class="g"><h3>💾 备份 / 重置</h3>进度只存在这台设备这个浏览器里（key：<code>'+KEY+'</code>）。换手机/电脑可以先「导出」，再在新设备「导入」。<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-pc" id="mExport">💾 导出进度</button><button type="button" class="b-pc2" id="mImport">📂 导入进度</button><button type="button" class="danger" id="mReset">⚠ 清空全部进度</button></div></div>';
- $("mReset").onclick=()=>{if(!confirm("确定清空全部 100 词的进度吗？（造句记录也会清空）此操作不能撤销。"))return;const v=ST.voice,a=ST.auto;ST=defState();ST.voice=v;ST.auto=a;ST.tab="mem";ST.introHidden=true;buildQueue();try{localStorage.removeItem(SKEY);dClear();}catch(e){}save();renderAll();$("restore").textContent="已清空，重新开始 💪";};
- $("mExport").onclick=()=>{save();let s={};try{s=JSON.parse(localStorage.getItem(SKEY)||"{}");}catch(e){}const b=new Blob([JSON.stringify({app:KEY,state:ST,sentences:s},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);const d=new Date();a.download="oxford100_进度_"+d.getFullYear()+(d.getMonth()+1)+d.getDate()+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);};
+ $("mReset").onclick=()=>{if(!confirm("确定清空全部 100 词的进度吗？（造句记录也会清空）此操作不能撤销。"))return;const v=ST.voice,a=ST.auto;ST=defState();ST.voice=v;ST.auto=a;ST.tab="mem";ST.introHidden=true;buildQueue();try{localStorage.removeItem(SKEY);localStorage.removeItem(EKEY);dClear();}catch(e){}save();renderAll();$("restore").textContent="已清空，重新开始 💪";};
+ $("mExport").onclick=()=>{save();let s={},es={};try{s=JSON.parse(localStorage.getItem(SKEY)||"{}");}catch(e){}try{es=JSON.parse(localStorage.getItem(EKEY)||"{}");}catch(e){}const b=new Blob([JSON.stringify({app:KEY,state:ST,sentences:s,essays:es},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);const d=new Date();a.download="oxford100_进度_"+d.getFullYear()+(d.getMonth()+1)+d.getDate()+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);};
  $("mImport").onclick=()=>$("fileIn").click();}
-$("fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);ST=mergeState(o.state||o);if(o.sentences)try{localStorage.setItem(SKEY,JSON.stringify(o.sentences));}catch(_){}if(!ST.queue.length)buildQueue();save();renderAll();$("restore").textContent="✅ 已导入进度";}catch(err){alert("文件格式不对，导入失败");}e.target.value="";};r.readAsText(f);};
+$("fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);ST=mergeState(o.state||o);if(o.sentences)try{localStorage.setItem(SKEY,JSON.stringify(o.sentences));}catch(_){}if(o.essays)try{localStorage.setItem(EKEY,JSON.stringify(o.essays));}catch(_){}if(!ST.queue.length)buildQueue();save();renderAll();$("restore").textContent="✅ 已导入进度";}catch(err){alert("文件格式不对，导入失败");}e.target.value="";};r.readAsText(f);};
+
+
+/* ===== 东方可爱Q版角色装饰（侧边+小按钮旁，互不挡点击） ===== */
+const CHAR_SLUGS=["reimu","marisa","cirno","meiling","patchouli","sakuya","remilia","flandre","alice","youmu","yuyuko","yukari","reisen","aya","sanae","suwako","tenshi","suika","koishi","nitori","chen","rumia","tewi","kogasa"];
+const CHAR_SIDE_PAIRS=[["reimu","marisa"],["cirno","flandre"],["sakuya","remilia"],["youmu","yuyuko"],["sanae","suwako"],["alice","patchouli"],["aya","momiji"],["koishi","satori"],["nitori","suika"],["chen","ran"]];
+function charIcon(slug){var k=slug+"-icon";return (window.__QCHARS&&window.__QCHARS[k])||("assets/qchars/"+slug+"-icon.webp");}
+function charFull(slug){return (window.__QCHARS&&window.__QCHARS[slug])||("assets/qchars/"+slug+".webp");}
+function updateSideChars(){
+  const i=Math.max(0, THEMES.findIndex(t=>t.name===ST.theme));
+  const pair=CHAR_SIDE_PAIRS[i%CHAR_SIDE_PAIRS.length];
+  const L=$("charLeft"), R=$("charRight");
+  if(L){L.src=charFull(pair[0]);}
+  if(R){R.src=charFull(pair[1]);}
+}
+function ensureMascot(el, slug, side){
+  if(!el||!slug)return;
+  el.classList.add("has-mascot", side==="right"?"mascot-right":"mascot-left");
+  el.classList.remove(side==="right"?"mascot-left":"mascot-right");
+  let img=el.querySelector(":scope > .btn-mascot");
+  if(!img){img=document.createElement("img");img.className="btn-mascot";img.alt="";img.setAttribute("aria-hidden","true");img.decoding="async";el.appendChild(img);}
+  if(img.dataset.slug!==slug){img.dataset.slug=slug;img.src=charIcon(slug);}
+}
+function decorateMascots(){
+  // stable UI buttons — each a different character
+  const fixed=[
+    ["btnFs","cirno","left"],
+    ["bIntro","reimu","left"],
+    ["bHint","marisa","left"],
+    ["sp","sakuya","left"],
+    ["spSlow","alice","left"],
+    ["bSub","sanae","left"],
+    ["bFuz","youmu","left"],
+    ["bNo","suika","left"],
+    ["spEx","patchouli","left"],
+    ["spExS","yukari","left"],
+    ["sentChk","meiling","left"],
+    ["sentMic","aya","left"],
+    ["sentSay","reisen","left"],
+    ["beat2Go","tenshi","left"],
+    ["beat2Replay","chen","left"],
+    ["twistChk","suwako","left"],
+    ["twistMic","koishi","left"],
+    ["twistSay","flandre","left"],
+    ["essayChk","yuyuko","left"],
+    ["essaySay","remilia","left"],
+    ["bRetest","reimu","left"],
+    ["bNextTheme","marisa","left"],
+    ["bRestart","cirno","left"],
+    ["bTest","sanae","left"],
+    ["bHideIntro0","sakuya","left"],
+    ["bHideIntro","alice","left"],
+    ["fsTipOk","youmu","left"]
+  ];
+  fixed.forEach(([id,slug,side])=>{const el=$(id);if(el)ensureMascot(el,slug,side);});
+  // theme chips / tabs / thgo — cycle remaining cast, skip already used if possible
+  let k=0;
+  const dyn=[...document.querySelectorAll("#chips .chip, #tabs button, .thgo, #speakRow .spk, .actions-main button")];
+  dyn.forEach(el=>{
+    if(el.querySelector(":scope > .btn-mascot") && fixed.some(([id])=>el.id===id)) return;
+    const slug=CHAR_SLUGS[k%CHAR_SLUGS.length]; k++;
+    ensureMascot(el, slug, "left");
+  });
+  // mini speak buttons in card (not every feedback mini flood)
+  document.querySelectorAll("#card .mini, #done .mini").forEach((el,i)=>{
+    if(el.id && fixed.some(([id])=>el.id===id)) return;
+    ensureMascot(el, CHAR_SLUGS[(i+7)%CHAR_SLUGS.length], "left");
+  });
+}
 
 function renderAll(){renderIntro();renderTabs();$("auto").checked=!!ST.auto;
  if(ST.tab==="words"){renderChips();renderWords();}
  if(ST.tab==="list")renderList();
- if(ST.tab==="mem")renderMem();}
+ if(ST.tab==="mem")renderMem();
+ try{updateSideChars();decorateMascots();}catch(e){}}
 
 /* ===== 造句检测 Sentence check (smarter) ===== */
+const EKEY="oxford100_essays_v1";
+function eLoad(){try{return JSON.parse(localStorage.getItem(EKEY)||"{}")||{};}catch(e){return {};}}
+function eSave(theme,text,meta){try{const o=eLoad();o[theme]={s:String(text||""),t:Date.now(),ok:!!(meta&&meta.ok),used:(meta&&meta.used)||0,total:(meta&&meta.total)||0};localStorage.setItem(EKEY,JSON.stringify(o));}catch(e){}}
+function eThemeWords(th){if(!th||th===ALLTH)return [];return W.filter(w=>w.theme===th);}
+function eScan(text,words){const used=[],miss=[];words.forEach(w=>{const hit=sHasWord(text||"",w.en);if(hit.ok)used.push(w);else miss.push(w);});return {used,miss,total:words.length,ok:miss.length===0&&words.length>0};}
+function ePaintWords(words,scan){const box=$("essayWords");if(!box)return;const usedSet=new Set((scan.used||[]).map(w=>w.en));
+ box.innerHTML=words.map(w=>{const on=usedSet.has(w.en);return '<span class="'+(on?"essay-chip on":"essay-chip miss")+'" title="'+sEscH(w.zh)+'">'+sEscH(w.en)+'</span>';}).join("");}
+function eMsg(x){const el=$("essayMsg");if(el)el.textContent=x||"";}
+function renderEssay(){const area=$("essayArea");if(!area)return;
+ const th=ST.theme;const words=eThemeWords(th);
+ if(!words.length){area.style.display="none";
+  if(th===ALLTH){const sub=$("doneSub");if(sub)sub.textContent=(sub.textContent||"")+" 小作文请点上面场景芯片，按每一组分别写（100 词一次写太长啦）。";}
+  return;}
+ area.style.display="";
+ const icon=(THEMES.find(t=>t.name===th)||{}).icon||"📝";
+ $("essayTitle").textContent="📝 小作文 · "+icon+" 「"+th+"」用上本组 "+words.length+" 个词";
+ $("essayHint").textContent="写一段短小英文（大概 5～8 句就够），把下面词都用进去。可以写成小故事或自我介绍，不用很长，通顺就好。";
+ const last=eLoad()[th];const ta=$("essayIn");if(ta)ta.value=last&&last.s?last.s:"";
+ const scan=eScan(ta?ta.value:"",words);ePaintWords(words,scan);
+ $("essayStat").textContent=scan.total?("已用上 "+scan.used.length+" / "+scan.total+(scan.ok?" · 全部用上啦 ✅":" · 还差 "+scan.miss.length+" 个")):"";
+ eMsg(last&&last.s?(scan.ok?"已保存过一版，且词都用上了。可继续改。":"已恢复上次草稿；点「检测用词」看看还缺哪些。"):"写完后点「检测用词」。");
+ const res=$("essayRes");if(res)res.innerHTML="";}
+function eDoCheck(){const th=ST.theme;const words=eThemeWords(th);if(!words.length){eMsg("请先选一个场景组练完，再写小作文。");return;}
+ const ta=$("essayIn");const text=(ta&&ta.value||"").trim();if(!text){eMsg("先写几句再检测哦。");if(ta)ta.focus();return;}
+ const scan=eScan(text,words);ePaintWords(words,scan);
+ $("essayStat").textContent="已用上 "+scan.used.length+" / "+scan.total+(scan.ok?" · 全部用上啦 ✅":" · 还差 "+scan.miss.length+" 个");
+ eSave(th,text,{ok:scan.ok,used:scan.used.length,total:scan.total});
+ const res=$("essayRes");
+ if(scan.ok){eMsg("🎉 本组词都用上了！短小作文过关。");if(res)res.innerHTML='<div class="fb ok">✅ 用词检查通过</div>';}
+ else{eMsg("还差这些词： "+scan.miss.map(w=>w.en).join(", ")+"。改一改再检测。");
+  if(res)res.innerHTML='<div class="fb mid">⚠️ 未用上：'+scan.miss.map(w=>'<b>'+sEscH(w.en)+'</b>（'+sEscH(w.zh)+')').join(' · ')+'</div>';}}
+try{const _ei=$("essayIn");if(_ei)_ei.addEventListener("input",()=>{const th=ST.theme;const words=eThemeWords(th);if(!words.length)return;const scan=eScan(_ei.value||"",words);ePaintWords(words,scan);$("essayStat").textContent=scan.total?("已用上 "+scan.used.length+" / "+scan.total+(scan.ok?" · 全部用上啦 ✅":" · 还差 "+scan.miss.length+" 个")):"";});}catch(e){}
+
 const SKEY="oxford100_sentences_v1";
 const DRAFT_KEY="oxford100_sent_draft_v1";
 function sLoad(){try{return JSON.parse(localStorage.getItem(SKEY)||"{}")||{};}catch(e){return {};}}
@@ -1900,6 +2085,9 @@ $("bTest").onclick=()=>{const w=cur();speak(w?w.en:"beautiful");};
 $("bHideIntro").onclick=()=>{ST.introHidden=true;save();renderIntro();};
 {const b0=$("bHideIntro0");if(b0)b0.onclick=()=>{ST.introHidden=true;save();renderIntro();window.scrollTo(0,0);};}
 $("bIntro").onclick=()=>{ST.introHidden=false;save();renderIntro();window.scrollTo({top:0,behavior:"smooth"});};
+$("essayChk").onclick=eDoCheck;
+$("essaySay").onclick=()=>{const t=($("essayIn")&&$("essayIn").value||"").trim();if(t)speak(t);else eMsg("先写一段再听。");};
+$("essayCopy").onclick=()=>{const th=ST.theme;const words=eThemeWords(th);const text=($("essayIn")&&$("essayIn").value||"").trim();if(!text){eMsg("先写一段再复制。");return;}const scan=eScan(text,words);eSave(th,text,{ok:scan.ok,used:scan.used.length,total:scan.total});sCopy("【小作文】场景："+th+"\n目标词（"+words.length+"）："+words.map(w=>w.en).join(", ")+"\n已用上："+scan.used.length+"/"+scan.total+"\n------\n"+text+"\n------\n请帮我看用词和语法。");eMsg("已复制，可以发给老师。");};
 $("bRetest").onclick=()=>{const ids=themeIds(ST.theme);const m=ST.missed.filter(i=>ids.includes(i));if(!m.length)return;ST.queue=shuffle(m);ST.round="final";ST.revealed=false;ST.pending=null;save();renderAll();};
 $("bNextTheme").onclick=()=>{const th=$("bNextTheme").dataset.th;if(!th)return;ST.theme=th;buildQueue();save();renderAll();window.scrollTo(0,0);};
 $("bRestart").onclick=()=>{if(!confirm("把「"+(ST.theme===ALLTH?"全部 100 词":ST.theme)+"」重新练一遍？（这组的已掌握会清零）"))return;const ids=themeIds(ST.theme);ST.known=ST.known.filter(i=>!ids.includes(i));ids.forEach(i=>delete ST.reps[i]);buildQueue();save();renderAll();};
@@ -2021,5 +2209,7 @@ const _restored=load();renderAll();save({silent:true});
 try{const ta=$("sentIn");if(ta){ta.addEventListener("input",()=>dSaveDebounced());ta.addEventListener("change",()=>dFlushFromInput({flash:true}));}}catch(e){}
 window.addEventListener("pagehide",()=>{try{dFlushFromInput();}catch(e){}save({silent:true});});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){try{dFlushFromInput();}catch(e){}save({silent:true});}});
+try{if(/[?&]demo=essay\b/.test(location.search)){(function(){function go(){try{const intro=$("intro");if(intro)intro.style.display="none";const card=$("card");if(card)card.style.display="none";if(typeof ST!=="undefined")ST.theme=(THEMES[0]&&THEMES[0].name)||"个人信息与家庭";const done=$("done");if(done)done.style.display="block";if(typeof renderDone==="function")renderDone();setTimeout(()=>{const a=$("essayArea");if(a)a.scrollIntoView({block:"start"});},100);}catch(e){console.error(e);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();})();}}catch(e){}
+
 </script>
 </body></html>
