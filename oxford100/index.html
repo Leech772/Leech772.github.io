@@ -792,7 +792,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
     <div class="row s-btns"><button type="button" class="b-sub" id="twistChk">检测加戏</button><button type="button" class="spk" id="twistMic">🎤 说加戏</button><button type="button" class="mini" id="twistSay">🔊</button></div>
     <div class="s-msg" id="twistMsg" aria-live="polite"></div>
     <div id="twistRes"></div>
-    <div class="beat-done" id="beatDone" style="display:none">🎉 两拍输出都完成啦！可以点下面「下一词 →」继续</div>
+    <div class="beat-done" id="beatDone" style="display:none">🎉 两拍输出都完成啦！马上进入下一词…</div>
   </div>
   <div class="row s-btns"><button type="button" class="b-fuz" id="sentTeach">复制给老师看</button><button type="button" class="b-no" id="sentSkip">跳过输出 →</button></div>
 </div>
@@ -1192,12 +1192,22 @@ function doSubmit(){const w=cur();if(!w||ST.revealed)return;const raw=$("ans").v
   logIt(w.en,"ok");}
  else{markMiss(w.id,REP_NO);logIt(w.en,"wrong");reveal("❌ 拼错了，正确是 "+w.en+"（你写的："+raw+"），稍后要再拼对 "+REP_NO+" 次","bad");speak(w.en);}
  save();}
+function focusPractice(){
+ const target=$("card")||$("inputArea")||$("ans");
+ try{
+  if(target){
+   const y=Math.max(0,(target.getBoundingClientRect().top+window.pageYOffset)-8);
+   window.scrollTo(0,y);
+   try{target.scrollIntoView({behavior:"auto",block:"start"});}catch(e0){}
+  }else{window.scrollTo(0,0);}
+ }catch(e){try{window.scrollTo(0,0);}catch(e2){}}
+ try{const a=$("ans");if(a&&$("inputArea")&&$("inputArea").style.display!=="none")a.focus({preventScroll:true});}catch(e){}}
 function next(){const w=cur();if(!w)return;
  try{dClear();}catch(e){}
  if(ST.pending==="later")insertLater(w.id);else{ST.queue.shift();if(!ST.known.includes(w.id))ST.known.push(w.id);ST.queue=ST.queue.filter(x=>x!==w.id||(ST.reps[x]||0)>0);}
  ST.pending=null;ST.revealed=false;ST.sentOn=false;ST.hint=false;ST.lastFb=null;if($("sentArea")){const sa=$("sentArea");sa.dataset.word="";sa.dataset.beat="2";sa.dataset.beat2Level="";sa.dataset.beat3Level="";}
  $("ans").value="";$("fb").textContent="";save();renderAll();if(ST.auto&&cur())speak(cur().en);
- if(cur()){try{$("ans").focus({preventScroll:true});}catch(e){}}}
+ focusPractice();}
 
 /* ---------- 词表 / 进度 ---------- */
 function renderList(){
@@ -1973,7 +1983,9 @@ async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sent
  if(sCurWord()!==w)return;corr=sPolish(corr,r);const paintInfo=sCollectPaint(s,w,r,ms);
  sRenderResInto("twistRes",r,lt,state,corr,s,paintInfo,tr);
  if(box)box.dataset.beat3Level=r.level||"";
- if(r.level!=="bad"&&sHasWord(s,w.en).ok){beatSet("done");const done=$("beatDone");if(done)done.style.display="";sMsgTwist("🎉 加戏完成！可以点「下一词 →」");}
+ if(r.level!=="bad"&&sHasWord(s,w.en).ok){beatSet("done");const done=$("beatDone");if(done)done.style.display="";sMsgTwist("🎉 加戏完成！马上进入下一词…");
+  try{if(window.__autoNextTimer)clearTimeout(window.__autoNextTimer);}catch(e){}
+  window.__autoNextTimer=setTimeout(()=>{try{if(sCurWord()===w&&ST.revealed)next();}catch(e){}},650);}
  else sMsgTwist("加戏句也要用上「"+w.en+"」，再改一改吧。");}
 (function initTwistMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("twistMic");if(!b)return;
  if(!SR){b.style.display="none";return;}
