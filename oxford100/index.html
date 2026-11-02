@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="UTF-8"/>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -826,6 +826,11 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 .m-sh-t{font-weight:600;margin-bottom:6px}
 .m-sh-r{font-size:.88rem;margin-top:6px}
 .m-hit{color:var(--good);font-weight:700}.m-miss{color:var(--bad);text-decoration:underline dotted}
+.m-live{min-height:1.2em;color:var(--muted);font-size:.9rem;margin-top:4px}
+.m-live.on{color:var(--accent,#3b82f6);font-weight:600}
+.m-sh-r .m-scoreline{margin-top:4px}
+.m-lang{font-size:.82rem;margin:6px 0 0;opacity:.9}
+.m-lang select{font:inherit;padding:2px 6px;border-radius:6px}
 #mMyAns{width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--border);font-size:1rem;font-family:inherit;border-radius:var(--radius);background:#fff}
 .m-rules{margin:4px 0 0;padding-left:20px;line-height:1.7}
 .m-subtabs{margin:8px 0;flex-wrap:wrap}
@@ -1213,10 +1218,26 @@ function renderListen(){const P=$("p-listen");const cur=MP.cur.listen;const L=LI
  mBindQuiz(P.querySelector(".m-qz"),L.qs,(r,n)=>{MP.listen[L.id]=[r,n];mSave();P.querySelector(".m-score").innerHTML=(r===n?"🎉 全对！":"得分 ")+"<b>"+r+"/"+n+"</b>"+(r<n?" · 打开字幕再听一遍，找到答案所在的句子。":" · 试试关掉字幕再听一遍，跟着 Jessica 读。");});}
 /* ================= ⑤ 口语 ================= */
 const SR_API=window.SpeechRecognition||window.webkitSpeechRecognition;
-function mCmpWords(said,target){const tk=s=>(String(s).toLowerCase().replace(/[’]/g,"'").match(/[a-z']+/g)||[]);const S=new Set(tk(said));const T=tk(target);let hit=0;const html=String(target).split(/(\s+)/).map(p=>{const w=(p.toLowerCase().match(/[a-z']+/)||[""])[0];if(!w)return mE(p);const ok=S.has(w);if(ok)hit++;return '<span class="'+(ok?"m-hit":"m-miss")+'">'+mE(p)+'</span>';}).join("");return {pct:T.length?Math.round(hit/T.length*100):0,html};}
+const SR_LANG_KEY="oxford100_sr_lang_v1";
+function mSrLang(){try{const v=localStorage.getItem(SR_LANG_KEY);return v==="en-GB"?"en-GB":"en-US";}catch(e){return"en-US";}}
+function mSetSrLang(v){try{localStorage.setItem(SR_LANG_KEY,v==="en-GB"?"en-GB":"en-US");}catch(e){}}
+function mSrSafariHint(){const ua=navigator.userAgent||"";return /iP(hone|ad|od)/.test(ua)||(/Safari/.test(ua)&&!/Chrome|Chromium|Edg|CriOS|FxiOS/.test(ua));}
+function mExpandContractions(s){s=String(s||"").toLowerCase().replace(/[\u2018\u2019]/g,"'");
+  const map={"i'm":"i am","you're":"you are","we're":"we are","they're":"they are","he's":"he is","she's":"she is","it's":"it is","that's":"that is","there's":"there is","here's":"here is","who's":"who is","what's":"what is","where's":"where is","how's":"how is","let's":"let us","isn't":"is not","aren't":"are not","wasn't":"was not","weren't":"were not","don't":"do not","doesn't":"does not","didn't":"did not","can't":"cannot","couldn't":"could not","won't":"will not","wouldn't":"would not","shouldn't":"should not","haven't":"have not","hasn't":"has not","hadn't":"had not","i've":"i have","you've":"you have","we've":"we have","they've":"they have","i'd":"i would","you'd":"you would","he'd":"he would","she'd":"she would","we'd":"we would","they'd":"they would","i'll":"i will","you'll":"you will","he'll":"he will","she'll":"she will","we'll":"we will","they'll":"they will","mustn't":"must not"};
+  return s.replace(/\b[a-z]+'[a-z]+\b/g,m=>map[m]||m);}
+function mNormTokens(s){s=mExpandContractions(s).replace(/[^a-z0-9'\s]/g," ").replace(/\s+/g," ").trim();return s?s.split(" ").filter(Boolean):[];}
+function mWordClose(a,b){if(a===b)return true;if(!a||!b)return false;if(Math.min(a.length,b.length)>=4&&a.slice(0,3)===b.slice(0,3)){const la=a.length,lb=b.length;if(Math.abs(la-lb)>2)return false;let i=0,j=0,miss=0;while(i<la&&j<lb){if(a[i]===b[j]){i++;j++;}else{miss++;if(miss>2)return false;if(la>lb)i++;else if(lb>la)j++;else{i++;j++;}}}return miss<=2;}return false;}
+function mCmpWords(said,target){const S=mNormTokens(said);const T=mNormTokens(target);const used=new Array(S.length).fill(false);let hit=0,soft=0;const flags=[];
+  T.forEach(tw=>{let found=-1;for(let i=0;i<S.length;i++){if(!used[i]&&S[i]===tw){found=i;break;}}
+    if(found<0){for(let i=0;i<S.length;i++){if(!used[i]&&mWordClose(S[i],tw)){found=i;soft+=0.5;break;}}}
+    if(found>=0){used[found]=true;hit++;flags.push(1);}else flags.push(0);});
+  let ti=0;const html=String(target).split(/(\s+)/).map(p=>{const raw=(String(p).toLowerCase().replace(/[\u2018\u2019]/g,"'").match(/[a-z']+/)||[""])[0];if(!raw)return mE(p);const ok=flags[ti++]===1;return '<span class="'+(ok?"m-hit":"m-miss")+'">'+mE(p)+'</span>';}).join("");
+  const base=T.length?((hit+soft)/T.length):0;let pct=Math.round(base*100);
+  if(T.length&&S.length){const cov=Math.min(1,S.length/T.length);if(pct<15&&cov>=0.4)pct=Math.max(pct,18);if(pct===0&&S.length>0)pct=Math.max(8,Math.round(100*S.length/(T.length+S.length)));}
+  if(pct>100)pct=100;return {pct,html,hit,total:T.length,saidTokens:S};}
 function renderSpeak(){const P=$("p-speak");const T=SPEAK.find(x=>x.id===MP.cur.speak);mStop();
  if(!T){const done=Object.keys(MP.speak).filter(k=>(MP.speak[k]||[]).length).length;
-  P.innerHTML=mHead("🗣️","口语 · 雅思 Part 1 话题卡","每张卡：<b>看中文提示</b> → <b>学 3–4 个句型</b> → <b>听 Jessica 示范回答</b> → <b>逐句跟读</b>（"+(SR_API?"可用 🎙️ 语音识别打分":"本浏览器不支持语音识别，用「听→说→自评打勾」")+"）→ <b>换成自己的内容说一遍</b>。","已练 <b>"+done+"</b> / "+SPEAK.length+" 个话题")+
+  P.innerHTML=mHead("🗣️","口语 · 雅思 Part 1 话题卡","每张卡：<b>看中文提示</b> → <b>学 3–4 个句型</b> → <b>听 Jessica 示范回答</b> → <b>逐句跟读</b>（"+(SR_API?"可用 🎙️ 英语语音识别打分（默认 en-US）":"本浏览器不支持语音识别"+(mSrSafariHint()?"，iPhone Safari 尤其如此":"")+"，用「听→说→自评打勾」")+"）→ <b>换成自己的内容说一遍</b>。","已练 <b>"+done+"</b> / "+SPEAK.length+" 个话题")+
   mGrid(SPEAK.map(t=>{const d=(MP.speak[t.id]||[]).length;return mCard('data-sid="'+t.id+'"',t.icon,t.q,t.zh,d?("✅ "+d+"/"+t.ans.length):"");}));
   P.querySelectorAll("[data-sid]").forEach(b=>b.onclick=()=>{MP.cur.speak=b.dataset.sid;mSave();renderSpeak();window.scrollTo(0,0);});return;}
  const idx=SPEAK.indexOf(T);const done=new Set(MP.speak[T.id]||[]);
@@ -1224,19 +1245,66 @@ function renderSpeak(){const P=$("p-speak");const T=SPEAK.find(x=>x.id===MP.cur.
  '<div class="g m-topic"><div class="tag">Part 1 · 话题 '+(idx+1)+'</div><h3 class="m-bigq">'+T.icon+' '+mE(T.q)+'</h3><div class="m-zhp">💭 '+mE(T.zh)+'</div><div class="m-tip">🧭 答题思路：'+mE(T.tip)+'</div></div>'+
  '<div class="g"><h3>🧩 可用句型</h3>'+T.pat.map(p=>'<div class="sent m-pat"><b>'+mE(p[0])+'</b><br><span class="zhl">'+mE(p[1])+'</span></div>').join("")+'</div>'+
  '<div class="g m-player"><h3>🎧 示范回答（Jessica）</h3><div class="row m-ctrl" style="justify-content:flex-start"><button type="button" class="spk" data-mplay="'+T.id+'" data-lbl="▶ 听示范">▶ 听示范</button>'+mRateBtns()+'</div><div class="m-lines">'+T.ans.map((s,i)=>'<div class="m-line" data-mline="'+i+'" data-aid="'+T.id+'" data-mseg="'+T.id+'|'+i+'"><span class="m-en">'+mE(s)+'</span></div>').join("")+'</div></div>'+
- '<div class="g"><h3>🔁 逐句跟读</h3><p class="m-sub">每句：🔊 听 → '+(SR_API?'🎙️ 说（机器听你说了哪些词，绿色=听到了）':'自己大声说 2 遍')+' → 觉得说顺了就点 ✓ 打勾。</p>'+
- T.ans.map((s,i)=>'<div class="m-shadow'+(done.has(i)?" done":"")+'" data-si="'+i+'"><div class="m-sh-t">'+mE(s)+'</div><div class="row" style="justify-content:flex-start"><button type="button" class="mini" data-mseg="'+T.id+'|'+i+'">🔊 听</button>'+(SR_API?'<button type="button" class="mini m-mic">🎙️ 我说</button>':'')+'<button type="button" class="mini m-ok">'+(done.has(i)?"✅ 已会":"✓ 我说顺了")+'</button></div><div class="m-sh-r"></div></div>').join("")+'</div>'+
+ '<div class="g"><h3>🔁 逐句跟读</h3><p class="m-sub">每句：🔊 听 → '+(SR_API?'🎙️ 说英语（实时显示听到的词，绿色=对上了；说完自动打分）':'自己大声说 2 遍')+' → 觉得说顺了就点 ✓ 打勾（自评后备）。</p>'+(SR_API?'<div class="m-lang">识别语言 <select id="mSrLang"><option value="en-US"'+(mSrLang()==="en-US"?" selected":"")+'>en-US 美式</option><option value="en-GB"'+(mSrLang()==="en-GB"?" selected":"")+'>en-GB 英式</option></select> · 请允许麦克风 · Chrome/Edge 效果最好</div>':'')+
+ T.ans.map((s,i)=>'<div class="m-shadow'+(done.has(i)?" done":"")+'" data-si="'+i+'"><div class="m-sh-t">'+mE(s)+'</div><div class="row" style="justify-content:flex-start"><button type="button" class="mini" data-mseg="'+T.id+'|'+i+'">🔊 听</button>'+(SR_API?'<button type="button" class="mini m-mic">🎙️ 我说</button><button type="button" class="mini m-again" hidden>🔄 再说一次</button>':'')+'<button type="button" class="mini m-ok">'+(done.has(i)?"✅ 已会":"✓ 我说顺了")+'</button></div><div class="m-live" aria-live="polite"></div><div class="m-sh-r"></div></div>').join("")+'</div>'+
  '<div class="g"><h3>✍️ 换成我自己的回答</h3><p class="m-sub">用上面的句型，把示范里的内容换成你自己的（家乡、学校、爱好…），写下来再大声说 3 遍。会自动保存。</p><textarea id="mMyAns" rows="4" placeholder="例如：My hometown is ...">'+mE((MP.speak[T.id+"_my"]||""))+'</textarea>'+(SR_API?'<div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="mMyMic">🎙️ 说出来转文字</button></div>':'')+'</div>'+
  '<div class="row" style="justify-content:space-between">'+(idx>0?'<button type="button" class="mini" data-sgo="'+SPEAK[idx-1].id+'">← 上一个</button>':'<span></span>')+(idx<SPEAK.length-1?'<button type="button" class="b-sub" style="flex:none" data-sgo="'+SPEAK[idx+1].id+'">下一个话题 →</button>':'')+'</div>';
  P.querySelector("[data-mback]").onclick=()=>{MP.cur.speak=null;mSave();renderSpeak();};
  P.querySelectorAll("[data-sgo]").forEach(b=>b.onclick=()=>{MP.cur.speak=b.dataset.sgo;mSave();renderSpeak();window.scrollTo(0,0);});
  P.querySelectorAll(".m-shadow").forEach(box=>{const i=+box.dataset.si;const okB=box.querySelector(".m-ok");
   okB.onclick=()=>{const arr=new Set(MP.speak[T.id]||[]);if(arr.has(i))arr.delete(i);else arr.add(i);MP.speak[T.id]=[...arr].sort();mSave();box.classList.toggle("done",arr.has(i));okB.textContent=arr.has(i)?"✅ 已会":"✓ 我说顺了";};
-  const mic=box.querySelector(".m-mic");if(mic)mic.onclick=()=>mListen(mic,txt=>{const r=mCmpWords(txt,T.ans[i]);box.querySelector(".m-sh-r").innerHTML='<div>听到：“'+mE(txt)+'”</div><div>'+r.html+'</div><b>'+(r.pct>=80?"👍 很好 ":r.pct>=50?"🙂 不错，再来一次 ":"💪 再听一遍慢速，跟着读 ")+r.pct+'%</b>';if(r.pct>=80&&!(MP.speak[T.id]||[]).includes(i))okB.click();});});
+  const live=box.querySelector(".m-live");const again=box.querySelector(".m-again");
+  const showScore=(txt)=>{const r=mCmpWords(txt,T.ans[i]);const tip=r.pct>=80?"👍 很好 ":r.pct>=55?"🙂 不错，可再练一次 ":r.pct>=25?"💪 听慢速再跟读 ":"👂 没怎么听到，靠近麦、说清楚英语再试 ";
+    box.querySelector(".m-sh-r").innerHTML='<div>听到：“'+mE(txt||"（空）")+'”</div><div>'+r.html+'</div><div class="m-scoreline"><b>'+tip+r.pct+'%</b>（对上 '+r.hit+'/'+r.total+' 词）</div>';
+    if(again)again.hidden=false;if(r.pct>=80&&!(MP.speak[T.id]||[]).includes(i))okB.click();};
+  const startListen=()=>mListen({btn:mic,live,onFinal:showScore,onInterim:t=>{if(live){live.classList.add("on");live.textContent="正在听… "+t;}}});
+  if(mic)mic.onclick=startListen;if(again)again.onclick=()=>{box.querySelector(".m-sh-r").innerHTML="";if(live){live.textContent="";live.classList.remove("on");}startListen();};});
+ const langSel=$("mSrLang");if(langSel)langSel.onchange=()=>mSetSrLang(langSel.value);
  const ta=$("mMyAns");ta.oninput=()=>{MP.speak[T.id+"_my"]=ta.value;clearTimeout(ta._t);ta._t=setTimeout(mSave,400);};
- const mm=$("mMyMic");if(mm)mm.onclick=()=>mListen(mm,txt=>{ta.value=(ta.value?ta.value.trim()+" ":"")+txt;ta.oninput();});}
-function mListen(btn,cb){if(!SR_API){alert("这个浏览器不支持语音识别，请用 Chrome / Edge，或者直接自评打勾。");return;}mStop();const r=new SR_API();r.lang="en-US";r.interimResults=false;r.maxAlternatives=1;const old=btn.textContent;btn.textContent="🔴 正在听…";btn.disabled=true;
- r.onresult=e=>{const t=e.results[0][0].transcript;cb(t);};r.onerror=e=>{btn.textContent=old;btn.disabled=false;if(e.error==="not-allowed")alert("需要允许麦克风权限才能语音识别");};r.onend=()=>{btn.textContent=old;btn.disabled=false;};try{r.start();}catch(e){btn.textContent=old;btn.disabled=false;}}
+ const mm=$("mMyMic");if(mm)mm.onclick=()=>mListen({btn:mm,onFinal:txt=>{ta.value=(ta.value?ta.value.trim()+" ":"")+txt;ta.oninput();}});}
+let _mRec=null;
+function mSrErrZh(code){const safari=mSrSafariHint();
+  if(code==="not-allowed"||code==="service-not-allowed")return"麦克风权限被拒绝：请在浏览器地址栏站点设置里允许麦克风，然后点「再说一次」。";
+  if(code==="no-speech")return"没听到声音：请靠近麦克风，用英语大声说，再点「再说一次」。";
+  if(code==="audio-capture")return"找不到麦克风：请检查手机/电脑麦克风是否可用。";
+  if(code==="network")return"语音识别需要联网，请检查网络后重试。";
+  if(code==="language-not-supported")return"当前浏览器不支持该英语识别语言，试试切换 en-US / en-GB。";
+  if(!SR_API||code==="not-supported")return"这个浏览器不支持英语语音识别"+(safari?"（iPhone/iPad 的 Safari 通常不支持，请用 Chrome / Edge，或改用「✓ 我说顺了」自评）":"。请用 Chrome / Edge，或改用自评打勾。");
+  return"语音识别出错（"+code+"）。可点「再说一次」，或用「✓ 我说顺了」自评。";}
+function mListen(opts){opts=opts||{};const btn=opts.btn,live=opts.live,onFinal=opts.onFinal,onInterim=opts.onInterim;
+  if(!SR_API){alert(mSrErrZh("not-supported"));return;}
+  try{if(_mRec){_mRec.onend=null;_mRec.onerror=null;_mRec.onresult=null;_mRec.stop();}}catch(e){}
+  mStop();const r=new SR_API();_mRec=r;r.lang=mSrLang();r.continuous=true;r.interimResults=true;r.maxAlternatives=3;
+  const old=btn?btn.textContent:"";let finalTxt="",interimTxt="",stopped=false,gotResult=false;
+  if(btn){btn.textContent="⏹️ 停止";}
+  if(live){live.classList.add("on");live.textContent="正在听… 请说英语";}
+  const finish=(why)=>{if(stopped)return;stopped=true;try{r.stop();}catch(e){}
+    if(btn){btn.textContent=old||"🎙️ 我说";}
+    const best=(finalTxt||interimTxt||"").trim();
+    if(live){live.classList.remove("on");live.textContent=best?"识别完成":"";}
+    if(best){if(onFinal)onFinal(best);}
+    else if(why&&live){live.textContent=mSrErrZh(why);}
+    else if(live){live.textContent="没识别到英文，请点「再说一次」或靠近麦克风再说。";}
+    if(btn)btn.onclick=startClick;_mRec=null;};
+  function startClick(){mListen(opts);}
+  r.onstart=()=>{if(live){live.classList.add("on");live.textContent="正在听… 请说英语";}};
+  r.onresult=e=>{gotResult=true;let finals="",inter="";
+    for(let i=e.resultIndex;i<e.results.length;i++){const res=e.results[i];let best="",bestC=-1;
+      for(let j=0;j<Math.min(res.length||1,3);j++){const alt=res[j];if(!alt)continue;const t=String(alt.transcript||"").trim();if(!t)continue;const c=typeof alt.confidence==="number"?alt.confidence:-1;if(c>bestC||(bestC<0&&t.length>best.length)){best=t;bestC=c;}}
+      if(!best)continue;if(res.isFinal)finals+=(finals?" ":"")+best;else inter+=(inter?" ":"")+best;}
+    if(finals){finalTxt=(finalTxt?finalTxt+" ":"")+finals;interimTxt="";}else interimTxt=inter;
+    const show=((finalTxt?finalTxt+" ":"")+(interimTxt||"")).trim();
+    if(live){live.classList.add("on");live.textContent="正在听… "+(show||"请说英语");}
+    if(onInterim&&show)onInterim(show);};
+  r.onerror=e=>{const er=e.error||"error";if(er==="aborted")return;
+    if(er==="no-speech"&&(finalTxt||interimTxt))return;
+    if(live)live.textContent=mSrErrZh(er);
+    if(er==="not-allowed"||er==="service-not-allowed"){try{alert(mSrErrZh(er));}catch(x){}}};
+  r.onend=()=>{if(stopped){if(btn){btn.textContent=old||"🎙️ 我说";btn.onclick=startClick;}return;}
+    finish(gotResult?"":"no-speech");};
+  if(btn)btn.onclick=()=>{if(_mRec===r&&!stopped)finish("");};
+  try{r.start();}catch(err){if(btn){btn.textContent=old||"🎙️ 我说";btn.onclick=startClick;}alert(mSrErrZh("not-supported"));}}
+
 /* ================= ⑥ 语法 ================= */
 function renderGrammar(){const P=$("p-grammar");const G=GRAMMAR.find(x=>x.id===MP.cur.grammar);mStop();
  if(!G){const done=Object.keys(MP.grammar).length;
@@ -2344,7 +2412,7 @@ function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWor
 function sMsg(t){$("sentMsg").textContent=t;}
 let sRec=null;
 (function initMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("sentMic");if(!b)return;
- if(!SR){b.style.display="none";$("sentNoMic").textContent="（这个浏览器不支持语音识别，可直接打字）";return;}
+ if(!SR){b.style.display="none";$("sentNoMic").textContent="（这个浏览器不支持语音识别"+(/(iPhone|iPad|iPod)/.test(navigator.userAgent)||(/Safari/.test(navigator.userAgent)&&!/Chrome|Chromium|Edg|CriOS|FxiOS/.test(navigator.userAgent))?"，Safari/iPhone 通常不行，请用 Chrome/Edge":"")+"，可直接打字）";return;}
  let listening=false,baseText="",committed="",interim="",wantStop=false;
  const normQ=s=>String(s||"").replace(/[\u2018\u2019\u201A\u201B]/g,"'").replace(/[\u201C\u201D\u201E\u201F]/g,'"').replace(/\u2026/g,"...").replace(/\s+/g," ").trim();
  const pickAlt=res=>{if(!res||!res.length)return"";let best="",bestC=-1;for(let i=0;i<Math.min(res.length,3);i++){const a=res[i];if(!a)continue;const t=normQ(a.transcript);if(!t)continue;const c=typeof a.confidence==="number"?a.confidence:-1;if(c>bestC||(c===bestC&&t.length>best.length)||(bestC<0&&t.length>best.length)){best=t;bestC=c;}}return best;};
@@ -2355,18 +2423,18 @@ let sRec=null;
  const paint=()=>{const ta=$("sentIn");if(!ta)return;const full=joinAppend(baseText,committed);const show=interim?joinAppend(full,interim):full;ta.value=show;try{ta.selectionStart=ta.selectionEnd=show.length;}catch(e){}try{dSaveDebounced();}catch(e){}};
  b.onclick=()=>{if(listening){wantStop=true;try{sRec&&sRec.stop();}catch(e){}return;}
   let tried=false;wantStop=false;baseText=($("sentIn")&&$("sentIn").value)||"";committed="";interim="";
-  const start=(lang)=>{try{sRec=new SR();sRec.lang=lang;sRec.interimResults=true;sRec.maxAlternatives=3;sRec.continuous=false;
-   sRec.onstart=()=>{listening=true;b.textContent="⏹️ 停止";sMsg("🎙️ 正在听…请慢慢说英文句子（再次点击可继续追加下一句）");};
+  const start=(lang)=>{try{sRec=new SR();sRec.lang=lang;sRec.interimResults=true;sRec.maxAlternatives=3;sRec.continuous=true;
+   sRec.onstart=()=>{listening=true;b.textContent="⏹️ 停止";sMsg("🎙️ 正在听…请慢慢说英文句子（识别语言 en-US；点⏹️停止；可再点🎤追加）");};
    sRec.onresult=e=>{let finals="",inter="";for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];const t=pickAlt(r);if(!t)continue;if(r.isFinal)finals+=(finals?" ":"")+t;else inter+=(inter?" ":"")+t;}
     if(finals){committed=committed?normQ(committed+" "+finals):finals;interim="";}else{interim=inter;}
     paint();if(committed)sMsg("✅ 已追加识别结果，可继续改，或再点🎤说下一句。（不会清空已有文字）");};
-   sRec.onerror=e=>{const er=e.error||"";if(er==="language-not-supported"&&!tried){tried=true;listening=false;start("en-US");return;}
+   sRec.onerror=e=>{const er=e.error||"";if(er==="language-not-supported"&&!tried){tried=true;listening=false;start(lang==="en-US"?"en-GB":"en-US");return;}
     if(er==="aborted")return;
     sMsg(er==="not-allowed"||er==="service-not-allowed"?"⚠️ 没有麦克风权限：请在浏览器设置里允许麦克风，或直接打字。":er==="no-speech"?"⚠️ 没听到声音，靠近一点再说一次，慢慢说。":er==="audio-capture"?"⚠️ 找不到麦克风，可直接打字。":er==="network"?"⚠️ 语音识别需要联网，可直接打字。":"⚠️ 语音识别出错（"+er+"），可直接打字。");};
    sRec.onend=()=>{listening=false;b.textContent="🎤 说一句";if(interim&&!committed){committed=interim;interim="";paint();}
     if(committed){const ta=$("sentIn");if(ta)ta.value=joinAppend(baseText,committed);try{dFlushFromInput({flash:true});}catch(e){}sMsg("✅ 听到了，可改一改再点「检测」。再点🎤会追加下一句，不会清空。");}
     wantStop=false;};sRec.start();}catch(err){listening=false;b.textContent="🎤 说一句";sMsg("⚠️ 无法启动语音识别，可直接打字。");}};
-  start("en-GB");};})();
+  start("en-US");};})();
 
 const SSTRICT_KEY="oxford100_strict_v1";
 function sStrictOn(){try{const el=$("sentStrict");if(el)return !!el.checked;const v=localStorage.getItem(SSTRICT_KEY);return v===null?false:v!=="0";}catch(e){return false;}}
@@ -2793,15 +2861,15 @@ async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sent
  const paint=()=>{const ta=$("twistIn");if(!ta)return;const full=joinAppend(baseText,committed);const show=interim?joinAppend(full,interim):full;ta.value=show;try{ta.selectionStart=ta.selectionEnd=show.length;}catch(e){}};
  b.onclick=()=>{if(listening){wantStop=true;try{sRecT&&sRecT.stop();}catch(e){}return;}
   let tried=false;wantStop=false;baseText=($("twistIn")&&$("twistIn").value)||"";committed="";interim="";
-  const start=(lang)=>{try{sRecT=new SR();sRecT.lang=lang;sRecT.interimResults=true;sRecT.maxAlternatives=3;sRecT.continuous=false;
+  const start=(lang)=>{try{sRecT=new SR();sRecT.lang=lang;sRecT.interimResults=true;sRecT.maxAlternatives=3;sRecT.continuous=true;
    sRecT.onstart=()=>{listening=true;b.textContent="⏹️ 停止";sMsgTwist("🎙️ 正在听加戏句…");};
    sRecT.onresult=e=>{let finals="",inter="";for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];const t=pickAlt(r);if(!t)continue;if(r.isFinal)finals+=(finals?" ":"")+t;else inter+=(inter?" ":"")+t;}
     if(finals){committed=committed?normQ(committed+" "+finals):finals;interim="";}else interim=inter;paint();};
-   sRecT.onerror=e=>{const er=e.error||"";if(er==="language-not-supported"&&!tried){tried=true;listening=false;start("en-US");return;}if(er==="aborted")return;sMsgTwist("⚠️ 语音识别出错，可直接打字。");};
+   sRecT.onerror=e=>{const er=e.error||"";if(er==="language-not-supported"&&!tried){tried=true;listening=false;start(lang==="en-US"?"en-GB":"en-US");return;}if(er==="aborted")return;sMsgTwist(er==="not-allowed"||er==="service-not-allowed"?"⚠️ 没有麦克风权限，请在浏览器设置允许麦克风，或直接打字。":er==="no-speech"?"⚠️ 没听到声音，靠近一点用英语再说一次。":er==="audio-capture"?"⚠️ 找不到麦克风，可直接打字。":er==="network"?"⚠️ 语音识别需要联网，可直接打字。":"⚠️ 语音识别出错（"+er+"），可直接打字。");};
    sRecT.onend=()=>{listening=false;b.textContent="🎤 说加戏";if(interim&&!committed){committed=interim;interim="";paint();}
     if(committed){const ta=$("twistIn");if(ta)ta.value=joinAppend(baseText,committed);sMsgTwist("✅ 听到了，可改一改再点「检测加戏」。");}
     wantStop=false;};sRecT.start();}catch(err){listening=false;b.textContent="🎤 说加戏";sMsgTwist("⚠️ 无法启动语音识别，可直接打字。");}};
-  start("en-GB");};})();
+  start("en-US");};})();
 const twChk=$("twistChk");if(twChk)twChk.onclick=sDoCheckTwist;
 const twIn=$("twistIn");if(twIn)twIn.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheckTwist();}});
 const twSay=$("twistSay");if(twSay)twSay.onclick=()=>{const t=($("twistIn").value||"").trim();if(t)speak(t);else sMsgTwist("先写加戏句再听。");};
