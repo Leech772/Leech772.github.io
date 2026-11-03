@@ -103,6 +103,19 @@ html:fullscreen body,body:fullscreen{width:100vw;height:100vh}
 .s-chip-lab{color:#9f1239;font-size:.82rem;font-weight:650}
 .s-strict{display:flex;align-items:center;gap:6px;font-size:.85rem;color:#1b5e20;margin:6px 0 0;user-select:none}
 .s-strict input{width:16px;height:16px;accent-color:#16a34a}
+
+.s-improve{background:#fffbeb;border:1.5px solid #fbbf24;border-radius:12px;padding:12px 14px;margin:10px 0}
+.s-improve-title{font-size:1rem;font-weight:800;color:#92400e;margin:0 0 8px;display:flex;align-items:center;gap:6px}
+.s-improve-judge{font-size:.95rem;color:#78350f;line-height:1.55;margin:0 0 8px;font-weight:650}
+.s-improve ul{margin:4px 0 8px;padding-left:18px}
+.s-improve li{margin:4px 0;font-size:.9rem;line-height:1.5;color:#451a03}
+.s-improve .s-why{color:#9a3412}
+.s-improve .s-can{color:#166534;font-weight:650}
+.s-demo{background:#ecfdf5;border:1.5px solid #6ee7b7;border-radius:10px;padding:10px 12px;margin:8px 0 6px}
+.s-demo-label{font-size:.82rem;font-weight:750;color:#047857;margin-bottom:4px}
+.s-demo-en{font-size:1.08rem;font-weight:700;color:#065f46;line-height:1.55}
+.s-demo-zh{font-size:.88rem;color:#047857;margin-top:4px}
+.s-readtip{font-size:.88rem;color:#1e3a8a;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:8px 10px;margin-top:6px;line-height:1.5}
 @media(max-width:600px){.s-annot{font-size:1.08rem}.s-diff{font-size:1.02rem}.s-chip{font-size:.9rem}}
 </style>
 <style>
@@ -1442,8 +1455,185 @@ function sBindChipClicks(root){if(!root)return;root.querySelectorAll("[data-goto
   });});}
 
 function sDedupLines(arr){const seen=new Set(),out=[];arr.forEach(x=>{const k=String(x).replace(/\s+/g," ").trim();const key=k.slice(0,40);if(!k||seen.has(key))return;seen.add(key);out.push(x);});return out;}
-function sRenderRes(r,lt,ltState,corr,sent,paintInfo){const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
+function sStressHint(enSent,w){const toks=sTokRaw(enSent||"");if(!toks.length)return "读的时候语气自然一点，句末轻轻落下。";
+ const content=toks.filter(t=>{const low=t.toLowerCase();return !S_STOP.has(low)&&low.length>2;}).slice(0,3);
+ const who=content.map(c=>"「"+c+"」").join("、")||"关键词";
+ return "朗读时把 "+who+" 说清楚一点，其他词轻轻带过；句末用降调。";}
+
+function sGlossDemo(en,w){
+ const s=String(en||"").trim();
+ if(!s)return "大意：把你想说的话用一句更清楚的英文说出来。";
+ if(/\bbecause\b/i.test(s))return "大意：先说一件事，再用 because 补上原因。";
+ if(/\band then\b|\bafter that\b|\bnext\b/i.test(s))return "大意：接着上一句，把后面发生的事说出来。";
+ if(/\b(often|usually|always|sometimes)\b/i.test(s))return "大意：说一件经常发生的小事，听起来更像日常口语。";
+ if(/\b(yesterday|last|ago)\b/i.test(s))return "大意：在讲过去发生的事，时态要跟时间对上。";
+ if(/\b(tomorrow|next|will|going to)\b/i.test(s))return "大意：在讲接下来要做的事。";
+ return "大意：把意思说完整、说顺，让听的人一下就懂。";}
+
+function sFollowUp(sent,w){const s=String(sent||"").trim().replace(/[.?!]+$/,"");
+ const low=s.toLowerCase();const toks=sTok(s);
+ // Prefer a natural NEXT sentence that continues their idea — do NOT force target word.
+ if(/\b(i am|i'm)\b/.test(low)&&/\b(student|teacher|doctor|friend)\b/.test(low))
+  return "I go to school every day.";
+ if(/\bname is\b/.test(low)||/\bfamily name\b/.test(low)||/\bmy name\b/.test(low))
+  return "Nice to meet you.";
+ if(/\b(hobby|like|love|enjoy)\b/.test(low))
+  return "I usually do it on weekends.";
+ if(/\b(visit|visited|go to|went to)\b/.test(low))
+  return "We had a really good time.";
+ if(/\b(yesterday|last\s+\w+|ago)\b/.test(low))
+  return "It was a great day.";
+ if(/\b(tomorrow|next\s+\w+|will|going to)\b/.test(low))
+  return "I hope everything goes well.";
+ if(/\b(friend|friends)\b/.test(low))
+  return "We often talk after class.";
+ if(/\b(doctor|nurse|teacher|cashier|guide)\b/.test(low))
+  return "He works hard every day.";
+ if(/\b(live|lives|lived)\b/.test(low))
+  return "I like my neighbourhood.";
+ if(toks.length<=4)return "Can you tell me a bit more?";
+ // Generic soft continuation
+ if(/\bi\b/.test(low))return "It makes me happy.";
+ return "That sounds interesting.";}
+
+function sSmoothRewrite(sent,corr,w){
+ // Prefer grammar correction if it actually changes the sentence; else lightly smooth.
+ if(corr&&String(corr).trim()&&sNormSent(corr)!==sNormSent(sent))return String(corr).trim();
+ const base=String(sent||"").trim();
+ if(!base)return "I want to say it more clearly.";
+ let out=base;
+ if(/^[a-z]/.test(out))out=out.charAt(0).toUpperCase()+out.slice(1);
+ out=out.replace(/(^|\s)i(\s|'|$)/g,function(m,a,b){return a+"I"+b;});
+ if(!/[.?!]["')]?$/.test(out))out=out.replace(/[,;:\s]*$/,"")+".";
+ return out;}
+
+function sIssueBullet(raw,sent,corr,w){const line=String(raw||"").trim();if(!line)return null;
+ // Skip pure "must include target word" from coaching bullets — those stay in 要改 list.
+ if(/没找到|要把这个词用进去|目标词/.test(line)&&/改成：/.test(line))return null;
+ let why=line,can="";
+ const m=line.match(/改成：\s*(.+)$/);
+ const m2=line.match(/→\s*建议：\s*(.+)$/);
+ if(m){why=line.slice(0,m.index).replace(/[。；;:\s]+$/,"").trim()||line;can=m[1].trim();}
+ else if(m2){why=line.slice(0,m2.index).replace(/[。；;:\s]+$/,"").trim()||line;can=m2[1].trim();}
+ if(can&&can.indexOf("——")>=0){const parts=can.split(/——/);can=(parts[1]||parts[0]).trim();}
+ else if(can&&/^例：/.test(can)){can=can.replace(/^例：/,"").trim();}
+ why=why.replace(/^[✗✘×xX]\s*/,"").replace(/^（在线语法也提到）/,"");
+ // Soften robotic phrasing
+ why=why.replace(/^句子里没找到.+$/,"这句话里还缺一点关键内容，意思不够清楚。");
+ if(!why)why="这里可以改得更清楚。";
+ // Prefer full corrected sentence over a lonely word when available
+ if(can&&corr&&corr!==sent&&can.split(/\s+/).length<=3){
+  const first=can.split(/\s*\/\s*/)[0];
+  if(corr.toLowerCase().indexOf(first.toLowerCase())>=0)can=corr;
+ }
+ if(!can||(can&&!/[.?!]/.test(can)&&can.split(/\s+/).length<=4)){
+  if(corr&&corr!==sent)can=corr;
+  else can=sFollowUp(sent,w);
+ }
+ return {why:why,can:can,kind:"fix"};}
+
+function sCoachTips(sent,w,r,corr){const tips=[];
+ const level=r.level||"mid";
+ const follow=sFollowUp(sent,w);
+ const smooth=sSmoothRewrite(sent,corr,w);
+ const toks=sTok(sent);
+ // Always offer cohesion / next-sentence coaching (NOT target-word stuffing)
+ if(level==="good"){
+  tips.push({why:"句子已经能用了。想更像真实对话，可以再接一句，把事情说完整。",can:follow,kind:"next",lead:"可以接着说："});
+  if(toks.length<=7)tips.push({why:"再加一点时间或原因（yesterday / because …），听的人会更明白。",can:smooth.replace(/[.?!]+$/,"")+" because I like it.",kind:"enrich",lead:"可以改成："});
+  else tips.push({why:"也可以把语气说得更自然一点，像跟朋友聊天。",can:smooth,kind:"smooth",lead:"可以改成："});
+ }else{
+  tips.push({why:"先把这一句说顺；说完以后，用下一句把意思接下去。",can:follow,kind:"next",lead:"可以接着说："});
+  if(corr&&sNormSent(corr)!==sNormSent(sent))tips.push({why:"你想说的意思我大概懂，这样写会更清楚。",can:smooth,kind:"smooth",lead:"可以改成："});
+ }
+ // Scene as optional soft hint — without forcing the word
+ if(w&&w.scene&&tips.length<2)tips.push({why:"想到这个场景时（"+w.scene+"），你可以再补一句发生了什么。",can:follow,kind:"next",lead:"可以接着说："});
+ return tips.slice(0,2);}
+
+function sApplyWordFix(sent,bad,fix){if(!sent||!bad||fix==null||fix==="")return "";
+ try{const esc=String(bad).replace(/[.*+?^${}()|[\]\\]/g,function(ch){return "\\"+ch;});
+  const re=new RegExp("\\b"+esc+"\\b");
+  if(re.test(sent))return sent.replace(re,fix);}catch(e){}
+ return "";}
+
+function sBuildImprove(r,lt,corr,sent,w,paintInfo){
+ const level=r.level||"mid";
+ let judge="";
+ if(level==="good"&&!(lt&&lt.length)&&!(r.fix&&r.fix.length))judge="这句基本能用，意思也清楚。接下一句，会更像真实对话。";
+ else if(level==="good")judge="句子大体没问题，还可以更顺一点。";
+ else if(level==="mid")judge="意思大概能看懂，修一两处会更清楚。";
+ else{
+  const hw=sHasWord(sent,w?w.en:"");
+  if(hw&&!hw.ok)judge="先把目标词用进你的句子（练习要求）；用上以后，我们再把话说顺、接下去。";
+  else if((r.fix||[]).some(x=>/太短/.test(x)))judge="句子有点短，意思还没说清。补全以后，还可以再接一句。";
+  else judge="意思大概对，语法再修一下会好很多。";
+ }
+ const bullets=[];const seen=new Set();
+ const pushB=function(b){if(!b)return;const k=(b.why||"").slice(0,40)+"|"+(b.can||"").slice(0,28);if(seen.has(k))return;seen.add(k);bullets.push(b);};
+ // Concrete grammar/spelling issues first (skip target-word-stuffing lines)
+ sDedupLines((r.fix||[]).concat(lt||[])).forEach(function(line){pushB(sIssueBullet(line,sent,corr,w));});
+ // Chip-driven fixes → full sentence when possible
+ (paintInfo&&paintInfo.chips||[]).forEach(function(c){
+  if(!c||(c.sev!=="bad"&&c.sev!=="warn"))return;
+  if(c.kind==="target")return;
+  const bad=c.bad||"";const lab=c.label||"这里";
+  if(/目标词/.test(lab))return;
+  const why="「"+(bad||"这里")+"」"+(/大写|标点|时态|动词|拼写|主谓|冠词/.test(lab)?"："+lab:"写得不够清楚")+"。";
+  let can=c.fix||"";
+  if(can&&corr&&corr!==sent)can=corr;
+  else if(can){const applied=sApplyWordFix(sent,bad,can);if(applied)can=applied;}
+  if(!can||(can&&!/[.?!]/.test(can)&&String(can).split(/\s+/).length<=3)){
+   can=(corr&&corr!==sent)?corr:sFollowUp(sent,w);
+  }
+  pushB({why:why,can:can,kind:"fix",lead:"可以改成："});
+ });
+ // Soft tips (not target stuffing)
+ if(bullets.length<3){(r.tips||[]).slice(0,2).forEach(function(t){
+  if(/照抄/.test(t))pushB({why:"别照抄例句，用自己的话说说身边的事。",can:sFollowUp(sent,w),kind:"next",lead:"可以接着说："});
+  else if(/动词/.test(t)||/时态|现在时|过去/.test(t))pushB({why:t,can:(corr&&corr!==sent)?corr:sSmoothRewrite(sent,corr,w),kind:"fix",lead:"可以改成："});
+  else pushB({why:t,can:sFollowUp(sent,w),kind:"next",lead:"可以接着说："});
+ });}
+ // Always ensure coaching has cohesion / follow-up advice
+ sCoachTips(sent,w,r,corr).forEach(pushB);
+ const finalBullets=bullets.slice(0,5).map(function(b){
+  if(!b.lead)b.lead=(b.kind==="next")?"可以接着说：":"可以改成：";
+  return b;
+ });
+ // Demo: prefer smoother rewrite of THEIR meaning; if already good, show follow-up as the demo "next line"
+ let demo="",demoMode="rewrite";
+ const hasHard=(r.fix&&r.fix.length)||(lt&&lt.length);
+ if(corr&&String(corr).trim()&&sNormSent(corr)!==sNormSent(sent)){demo=String(corr).trim();demoMode="rewrite";}
+ else if(level==="good"||!hasHard){demo=sFollowUp(sent,w);demoMode="next";}
+ else {demo=sSmoothRewrite(sent,corr,w);demoMode="rewrite";}
+ if(!/[.?!]["')]?$/.test(demo))demo=demo.replace(/[,;:\s]*$/,"")+".";
+ if(/^[a-z]/.test(demo))demo=demo.charAt(0).toUpperCase()+demo.slice(1);
+ const gloss=demoMode==="next"
+  ?("接上句：接在你写的那句后面说——"+sGlossDemo(demo,w).replace(/^大意：/,""))
+  :sGlossDemo(demo,w);
+ const read=sStressHint(demo,w);
+ return {judge:judge,bullets:finalBullets,demo:demo,demoMode:demoMode,gloss:gloss,read:read};
+}
+
+function sImproveHtml(info){if(!info)return "";
+ let h='<div class="s-improve" id="sImprove"><div class="s-improve-title">✏️ 怎么改更好</div>';
+ h+='<p class="s-improve-judge">'+sEsc(info.judge)+'</p>';
+ if(info.bullets&&info.bullets.length){
+  h+='<div class="s-sec"><b>逐点改进：</b><ul>'+info.bullets.map(function(b){
+   const lead=b.lead||(b.kind==="next"?"可以接着说：":"可以改成：");
+   return '<li><span class="s-why">'+sEsc(b.why)+'</span><br><span class="s-can">'+sEsc(lead)+sEsc(b.can)+'</span></li>';
+  }).join("")+'</ul></div>';
+ }
+ const demoLab=info.demoMode==="next"?"示范改写（下一句）":"示范改写";
+ h+='<div class="s-demo"><div class="s-demo-label">'+demoLab+'</div><div class="s-demo-en" id="sDemoEn">'+sEsc(info.demo)+'</div>';
+ h+='<div class="s-demo-zh">'+sEsc(info.gloss)+'</div>';
+ h+='<div style="margin-top:6px">'+spkBtns(info.demo)+' <button type="button" class="mini" id="sUseDemo">用这句</button></div></div>';
+ h+='<div class="s-readtip"><b>朗读提示：</b>'+sEsc(info.read)+' <button type="button" class="mini" id="sDemoSpeak">🔊 读示范句</button></div>';
+ h+='</div>';
+ return h;}
+
+function sRenderRes(r,lt,ltState,corr,sent,paintInfo,w){const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
  paintInfo=paintInfo||{paint:[],targets:[],chips:[]};
+ const word=w||sCurWord()||{en:"",pos:"",zh:"",scene:"",exEn:""};
  const annot=sPaintAnnotatedHtml(sent,paintInfo.paint,paintInfo.targets);
  let h='<div class="s-head fb '+cls+'">'+head+'</div>';
  h+='<div class="s-legend"><span>🟢 对的部分</span><span>🔴 要改的部分</span><span>🟢粗框 = 目标词用上了</span></div>';
@@ -1451,6 +1641,9 @@ function sRenderRes(r,lt,ltState,corr,sent,paintInfo){const head=r.level==="good
  if(corr&&corr!==sent){h+='<div class="s-annot-wrap"><div class="s-annot-label">对照改法</div><div class="s-diff" id="sDiff">'+sWordDiffHtml(sent,corr)+'</div><div style="margin-top:6px"><span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorr">用参考改法</button></div></div>';}
  else if(corr){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';}
  h+=sChipHtml(paintInfo.chips,sent);
+ // detailed Chinese coaching — always after a check run
+ const improve=sBuildImprove(r,lt,corr,sent,word,paintInfo);
+ h+=sImproveHtml(improve);
  if(r.ok.length)h+='<div class="s-sec"><b>做对了：</b><ul>'+r.ok.map(x=>"<li>✔ "+sEsc(x)+"</li>").join("")+"</ul></div>";
  const fixes=sDedupLines(r.fix.concat(lt||[]));
  if(fixes.length)h+='<div class="s-sec"><b>要改（说明）：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
@@ -1460,6 +1653,11 @@ function sRenderRes(r,lt,ltState,corr,sent,paintInfo){const head=r.level==="good
  sBindChipClicks($("sentRes"));
  const use=$("sUseCorr");
  if(use&&corr){use.onclick=()=>{$("sentIn").value=corr;$("sentIn").focus();sMsg("已填入参考改法，可再改一改再检测。");};}
+ const demo=(improve&&improve.demo)||"";
+ const useDemo=$("sUseDemo");
+ if(useDemo&&demo){useDemo.onclick=()=>{if(improve.demoMode==="next"){const cur=($("sentIn").value||"").trim();const base=cur?cur.replace(/[.?!]+$/,"" )+".":"";$("sentIn").value=(base?base+" ":"")+demo;$("sentIn").focus();sMsg("已接上下一句示范，可改一改再检测。");}else{$("sentIn").value=demo;$("sentIn").focus();sMsg("已填入示范改写，可再改一改再检测。");}};}
+ const spDemo=$("sDemoSpeak");
+ if(spDemo&&demo){spDemo.onclick=()=>{try{speak(demo);}catch(e){}};}
  if(r.level==="bad"||r.level==="mid"){try{$("sentIn").focus();}catch(e){}}}
 
 function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
@@ -1488,7 +1686,7 @@ async function sDoCheck(){const w=sCurWord();if(!w)return;let s=$("sentIn").valu
  const r=localCheck(s,w);
  const btn=$("sentChk");const oldLabel=btn.textContent;btn.disabled=true;btn.textContent="检测中…";
  const localPaint=sCollectPaint(s,w,r,[]);
- sRenderRes(r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint);
+ sRenderRes(r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,w);
  let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s,ms=[];
  const picky=sStrictOn();
  try{const ms0=await ltCheck(s,{picky:picky});ms=filterLTMatches(s,ms0,w);
@@ -1506,7 +1704,7 @@ async function sDoCheck(){const w=sCurWord();if(!w)return;let s=$("sentIn").valu
  finally{btn.disabled=false;btn.textContent=oldLabel||"检测";}
  if(sCurWord()!==w)return;
  const paintInfo=sCollectPaint(s,w,r,ms);
- sRenderRes(r,lt,state,corr,s,paintInfo);}
+ sRenderRes(r,lt,state,corr,s,paintInfo,w);}
 
 function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘贴发送");const fb=()=>{try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);const ok=document.execCommand("copy");document.body.removeChild(ta);ok?done():sMsg("复制失败，请长按下面的文字手动复制："+t);}catch(e){sMsg("复制失败，请手动复制："+t);}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();}
