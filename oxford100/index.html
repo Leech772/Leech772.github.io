@@ -109,7 +109,10 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
 .s-zh-text{font-size:1.02rem;line-height:1.55;color:var(--ink);font-weight:500}
 .s-zh-note{font-size:.72rem;color:var(--muted);margin-top:4px}
 /* RICHER_SENT_FEEDBACK_V1 · 造句「怎么改更好」 */
+/* SENT_CHECK_FAST_V1 · 造句检测：本地先出、在线语法+翻译并行、缓存、短超时、token 防串 */
+/* NAV_PREV_CONFIRM_V1 · 第3拍完成不自动跳词，点「确定」才下一词；新增「上一词」 */
 /* SENT_FOLLOWUP_RELAX_V2 · 第3拍不必再用目标词；接着上句即可；只查语法+连贯，不评「自然」；改写旁附中文 */
+/* SENT_REWRITE_FROM_USER_V1 · 「更好的改写」必须以用户原句为底稿做变换，禁止无关填词模板凑数 */
 .s-coach-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin:10px 0;border-left:3px solid var(--accent)}
 .s-coach-label{font-size:.82rem;font-weight:700;color:var(--accent2);margin-bottom:6px;letter-spacing:.01em}
 .s-coach-sum{font-size:.88rem;line-height:1.55;color:var(--ink);margin:0 0 8px}
@@ -159,6 +162,7 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
 .beat-step.beat-locked::after{content:"先完成第2拍再解锁";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.86rem;font-weight:650;color:var(--accent2);background:rgba(244,244,242,.88);border-radius:var(--radius);pointer-events:none;padding:12px;text-align:center}
 .beat-step.beat-open{opacity:1;filter:none;pointer-events:auto}
 .beat-step.beat-open::after{display:none}
+.nav-prev{min-height:44px;font-size:1rem}.nav-prev:disabled{opacity:.45}#beatConfirm{min-height:48px;font-size:1.05rem;flex:1}
 .beat-done{margin-top:10px;padding:10px 12px;border-radius:var(--radius);background:var(--accent-soft);border:1px solid #e0c8c8;color:var(--accent2);font-weight:650;font-size:.9rem;line-height:1.45;text-align:center}
 .beat-go{flex:1.2;font-weight:700}
 @media(max-width:600px){.s-annot{font-size:1.08rem}.s-diff{font-size:1.02rem}.s-chip{font-size:.9rem}}
@@ -948,11 +952,12 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
     <div class="row s-btns"><button type="button" class="b-sub" id="twistChk">检测加戏</button><button type="button" class="spk" id="twistMic">🎤 说加戏</button><button type="button" class="mini" id="twistSay">🔊</button></div>
     <div class="s-msg" id="twistMsg" aria-live="polite"></div>
     <div id="twistRes"></div>
-    <div class="beat-done" id="beatDone" style="display:none">🎉 两拍输出都完成啦！马上进入下一词…</div>
+    <div class="beat-done" id="beatDone" style="display:none"><div>🎉 两拍输出都完成啦！看完反馈后，点下面按钮进入下一词。</div><div class="row s-btns nav-row" style="justify-content:center;margin-top:8px"><button type="button" class="b-fuz nav-prev" id="beatPrev">⬅ 上一词</button><button type="button" class="b-next" id="beatConfirm">✅ 确定，进入下一词</button></div></div>
   </div>
   <div class="row s-btns"><button type="button" class="b-fuz" id="sentTeach">复制给老师看</button><button type="button" class="b-no" id="sentSkip">跳过输出 →</button></div>
 </div>
 <div id="nextArea" style="display:none"><button type="button" class="b-next" id="bNext">下一词 →</button></div>
+<div id="navPrevRow" class="row nav-row" style="display:none;margin-top:8px"><button type="button" class="b-fuz nav-prev" id="bPrev" style="flex:1;min-height:46px">⬅ 上一词</button></div>
 <div class="box done" id="done"><h2 style="margin:6px 0" id="doneTitle">本组全部拼对 🎉</h2><p class="sub" id="doneSub"></p>
 <div id="essayArea" class="essay-area" style="display:none">
   <div class="essay-title" id="essayTitle">📝 小作文 · 用上本组词</div>
@@ -1930,7 +1935,7 @@ function renderWords(){
  $("phase").textContent=(ST.theme===ALLTH?"📚 全部 200 词":"🗂️ "+ST.theme)+" · "+(ST.round==="final"?"🔁 复测轮：错过的词再来一遍":"第一轮");
  $("phase").classList.toggle("final",ST.round==="final");
  const has=!!w;$("done").classList.toggle("show",!has);
- ["card","inputArea","speakRow"].forEach(x=>$(x).style.display=has?"":"none");
+ ["card","inputArea","speakRow"].forEach(x=>$(x).style.display=has?"":"none");try{navPrevSync(has);}catch(e){}
  if(!has){$("ex").classList.remove("show");$("nextArea").style.display="none";$("fb").textContent="";$("sentArea").style.display="none";renderDone();return;}
  $("unit").textContent=(THEMES.find(t=>t.name===w.theme)||{}).icon+" "+w.theme;
  $("pos").textContent="词性 · "+w.pos;$("posTip").textContent=posUsageTip(w.pos);$("zh").textContent=w.zh;$("en").textContent=w.en;$("phon").textContent=w.ph;
@@ -1972,11 +1977,25 @@ function focusPractice(){
  }catch(e){try{window.scrollTo(0,0);}catch(e2){}}
  try{const a=$("ans");if(a&&$("inputArea")&&$("inputArea").style.display!=="none")a.focus({preventScroll:true});}catch(e){}}
 function next(){const w=cur();if(!w)return;
+ try{if(window.__autoNextTimer){clearTimeout(window.__autoNextTimer);window.__autoNextTimer=null;}}catch(e){}
+ try{navPushHist();}catch(e){}
  try{dClear();}catch(e){}
  if(ST.pending==="later")insertLater(w.id);else{ST.queue.shift();if(!ST.known.includes(w.id))ST.known.push(w.id);ST.queue=ST.queue.filter(x=>x!==w.id||(ST.reps[x]||0)>0);}
  ST.pending=null;ST.revealed=false;ST.sentOn=false;ST.hint=false;ST.lastFb=null;if($("sentArea")){const sa=$("sentArea");sa.dataset.word="";sa.dataset.beat="2";sa.dataset.beat2Level="";sa.dataset.beat3Level="";}
  $("ans").value="";$("fb").textContent="";save();renderAll();if(ST.auto&&cur())speak(cur().en);
  focusPractice();}
+
+/* NAV_PREV_CONFIRM_V1：上一词 = 回到 next() 前的快照（队列/掌握/复习次数），造句存储另存不受影响 */
+function navSnap(){return JSON.parse(JSON.stringify({queue:ST.queue,known:ST.known,reps:ST.reps,missed:ST.missed,pending:ST.pending,revealed:ST.revealed,sentOn:ST.sentOn,hint:ST.hint,lastFb:ST.lastFb,round:ST.round,theme:ST.theme}));}
+function navPushHist(){if(!Array.isArray(ST.navHist))ST.navHist=[];ST.navHist.push(navSnap());if(ST.navHist.length>40)ST.navHist=ST.navHist.slice(-40);}
+function navHasPrev(){return Array.isArray(ST.navHist)&&ST.navHist.length>0&&ST.navHist[ST.navHist.length-1].theme===ST.theme;}
+function navPrevSync(has){const row=$("navPrevRow");const ok=navHasPrev();if(row)row.style.display=has?"":"none";["bPrev","beatPrev"].forEach(id=>{const b=$(id);if(b){b.disabled=!ok;b.title=ok?"回到上一个词":"已经是第一个词";b.textContent=ok?"⬅ 上一词":"⬅ 已经是第一个词";}});}
+function prev(){if(!navHasPrev()){try{sMsg("已经是第一个词啦。");}catch(e){}return;}
+ try{if(window.__autoNextTimer){clearTimeout(window.__autoNextTimer);window.__autoNextTimer=null;}}catch(e){}
+ try{dFlushFromInput();}catch(e){}
+ const s=ST.navHist.pop();Object.assign(ST,s);
+ if($("sentArea")){const sa=$("sentArea");sa.dataset.word="";sa.dataset.beat="2";sa.dataset.beat2Level="";sa.dataset.beat3Level="";}
+ $("ans").value="";save();renderAll();focusPractice();}
 
 /* ---------- 词表 / 进度 ---------- */
 function renderList(){
@@ -2428,10 +2447,16 @@ function applyLT(text,matches,w){
  });
  return out;}
 
-async function ltCheck(text,opts){if(typeof fetch!=="function")throw new Error("nofetch");opts=opts||{};
- const once=async(extra)=>{const ctl=typeof AbortController!=="undefined"?new AbortController():null;const tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},7000);
+/* SENT_CHECK_FAST_V1：缓存 + 超时 */
+const S_LT_TIMEOUT=3500,S_TR_TIMEOUT=2500;const S_NET_CACHE=new Map();
+function sCacheKey(kind,text,mode){return kind+"|"+(mode||"")+"|"+String(text||"").replace(/\s+/g," ").trim();}
+function sCacheGet(k){if(S_NET_CACHE.has(k))return S_NET_CACHE.get(k);try{const v=sessionStorage.getItem("o100c:"+k);if(v!=null){const o=JSON.parse(v);S_NET_CACHE.set(k,o);return o;}}catch(e){}return undefined;}
+function sCacheSet(k,v){S_NET_CACHE.set(k,v);try{sessionStorage.setItem("o100c:"+k,JSON.stringify(v));}catch(e){}}
+async function ltCheck(text,opts){opts=opts||{};const ck=sCacheKey("lt",text,opts.picky?"picky":"def");const hit=sCacheGet(ck);if(hit!==undefined)return hit;const res=await ltCheck0(text,opts);sCacheSet(ck,res);return res;}
+async function ltCheck0(text,opts){if(typeof fetch!=="function")throw new Error("nofetch");opts=opts||{};
+ const once=async(extra)=>{const ctl=typeof AbortController!=="undefined"?new AbortController():null;const tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},S_LT_TIMEOUT);
   try{const body=new URLSearchParams(Object.assign({language:"en-GB",text:text,enabledOnly:"false"},extra||{}));const r=await fetch("https://api.languagetool.org/v2/check",{method:"POST",body:body,signal:ctl?ctl.signal:undefined});if(!r.ok)throw new Error("http "+r.status);const j=await r.json();return (j.matches||[]);}finally{clearTimeout(tm);}};
- if(opts.picky){try{return await once({level:"picky"});}catch(e){return await once({});}}
+ if(opts.picky){const t0=Date.now();try{return await once({level:"picky"});}catch(e){/* 超时不再重试整套；仅快速 HTTP 失败时回退一次普通模式 */if(e&&e.name==="AbortError"||Date.now()-t0>1500)throw e;return await once({});}}
  return once({});}
 function sEsc(x){return String(x).replace(/[&<>"]/g,c=>({"&":"&"+"amp;","<":"&"+"lt;",">":"&"+"gt;",'"':"&"+"quot;"}[c]));}
 function sCurWord(){try{return cur()||null;}catch(e){return null;}}
@@ -2692,10 +2717,13 @@ function sTranslateLocal(sent){
  return {zh:zh||"（暂无法翻译）",note,mode:"local"};
 }
 async function sTranslateOnline(sent){
+ const q0=String(sent||"").trim();if(!q0)return null;const ck=sCacheKey("tr",q0,"");const hit=sCacheGet(ck);if(hit!==undefined)return hit;
+ const res=await sTranslateOnline0(q0);if(res)sCacheSet(ck,res);return res;}
+async function sTranslateOnline0(sent){
  const q=String(sent||"").trim();if(!q)return null;
  try{
   const ctl=AbortController?new AbortController():null;
-  const tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},4500);
+  const tm=setTimeout(()=>{try{ctl&&ctl.abort();}catch(e){}},S_TR_TIMEOUT);
   try{
    const url="https://api.mymemory.translated.net/get?q="+encodeURIComponent(q.slice(0,450))+"&langpair=en|zh-CN";
    const r=await fetch(url,{signal:ctl?ctl.signal:undefined});
@@ -2708,74 +2736,270 @@ async function sTranslateOnline(sent){
  }catch(e){return null;}
 }
 
-/* ===== RICHER_SENT_FEEDBACK_V1：本地规则 · 怎么改更好（语音/手打共用） ===== */
+/* ===== RICHER_SENT_FEEDBACK_V1 + SENT_REWRITE_FROM_USER_V1：本地规则 · 怎么改更好（语音/手打共用）· 改写必须以用户原句为底稿 ===== */
 function sAAn(word){const w=String(word||"").toLowerCase();return /^[aeiou]/.test(w)?"an":"a";}
 function sCap1(s){s=String(s||"");return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
 function sEnsureDot(s){s=String(s||"").trim();if(!s)return s;return /[.?!]["')]*$/.test(s)?s:s+".";}
 function sPosKind(w){const p=String(w&&w.pos||"");
  if(/^动词/.test(p))return "v";if(/^形容词/.test(p))return "adj";if(/^副词/.test(p))return "adv";
  if(/^介词/.test(p))return "prep";if(/词组|短语/.test(p))return "ph";if(/^名词/.test(p))return "n";return "other";}
+function sEscRe(w){return String(w||"").replace(/[.*+?^${}()|[\]\\]/g,"\\$&");}
+function sStripEndPunct(s){return String(s||"").replace(/[.?!]+["')]*\s*$/,"").trim();}
+function sFinishSent(s){return sEnsureDot(sCap1(sStripEndPunct(s)));}
+function sSwapCaseKeep(oldW,newW){oldW=String(oldW||"");newW=String(newW||"");if(!newW)return newW;if(/^[A-Z]/.test(oldW))return newW.charAt(0).toUpperCase()+newW.slice(1);return newW;}
+function sReplaceNthWord(sent,word,newWord,nth){
+ nth=nth||1;let n=0;const nw=String(newWord==null?"":newWord);
+ return String(sent).replace(new RegExp("\\b"+sEscRe(word)+"\\b","gi"),function(m){n++;if(n!==nth)return m;return nw===""?"":sSwapCaseKeep(m,nw);}).replace(/[ \t]+/g," ").replace(/ \./g,".").trim();
+}
+/* 动词还原成原形 */
+function sBaseVerb(tok){
+ tok=String(tok||"").toLowerCase();if(!tok)return tok;
+ if(/^(am|is|are|was|were|been|being)$/.test(tok))return "be";
+ if(tok==="has")return "have";if(tok==="does")return "do";if(tok==="goes")return "go";
+ const skipNoun=/^(child|man|woman|person|foot|tooth|good|bad|well)$/;
+ for(const k in IRREG){if(skipNoun.test(k))continue;const arr=IRREG[k]||[];if(k===tok||arr.indexOf(tok)>=0)return k;}
+ // IRREG_PAST：watched→watch；值→键（跳过 goes/has 这类带 s 的键）
+ for(const k in IRREG_PAST){if(IRREG_PAST[k]===tok){if(/^(am|is|are)$/.test(k))return "be";if(/^(has|does|goes)$/.test(k))continue;if(/s$/.test(k)&&k.length>3)continue;return k;}}
+ if(/ied$/.test(tok))return tok.slice(0,-3)+"y";
+ if(/ed$/.test(tok)){let b=tok.slice(0,-2);if(b.length>=3&&b.charAt(b.length-1)===b.charAt(b.length-2))b=b.slice(0,-1);return b;}
+ if(/ing$/.test(tok))return tok.slice(0,-3)||tok;
+ if(/ies$/.test(tok))return tok.slice(0,-3)+"y";
+ if(/(?:ss|sh|ch|x|zz|o)es$/.test(tok))return tok.slice(0,-2);
+ if(/s$/.test(tok)&&!/ss$/.test(tok)&&!/(this|his|us|is|was)$/.test(tok))return tok.slice(0,-1);
+ return tok;
+}
+function sBeForSubj(subj,tense){const s=String(subj||"i").toLowerCase();
+ if(tense==="past")return (s==="i"||s==="he"||s==="she"||s==="it")?"was":"were";
+ if(s==="i")return "am";if(s==="he"||s==="she"||s==="it")return "is";return "are";}
+function sDoForSubj(subj,tense){const s=String(subj||"i").toLowerCase();
+ if(tense==="past")return "did";if(s==="he"||s==="she"||s==="it")return "does";return "do";}
+function sVerbForSubj(base,subj,tense){
+ base=sBaseVerb(base)||base;const s=String(subj||"i").toLowerCase();
+ if(base==="be")return sBeForSubj(s,tense);
+ if(tense==="past")return sPastOf(base);
+ if(tense==="future")return base;
+ if(s==="he"||s==="she"||s==="it")return s3sgOf(base);
+ return base;
+}
+function sHasTimeWord(s){return /\b(yesterday|tomorrow|today|now|every\s+(day|week|month|year|morning|evening|night)|last\s+\w+|next\s+\w+|usually|always|often|sometimes)\b/i.test(s);}
+function sHasPlaceish(s){return /\b(in|at|on|near|from)\s+[A-Za-z]|\b(Shanghai|Beijing|home|school|park|here|there)\b/i.test(s);}
+function sParseUserSent(sent){
+ const s0=String(sent||"").trim();
+ const toks=sTok(s0);const raw=sTokRaw(s0);
+ let subjIdx=-1,subjLow="",subjRaw="";
+ for(let i=0;i<toks.length;i++){if(S_SUBJ.has(toks[i])){subjIdx=i;subjLow=toks[i];subjRaw=raw[i]||toks[i];break;}}
+ if(subjIdx<0){for(let i=0;i<Math.min(toks.length,3);i++){if(S_NAMEISH.has(toks[i])){subjIdx=i;subjLow=toks[i];subjRaw=raw[i]||toks[i];break;}}}
+ const mv=sFindMainVerb(toks);
+ let verbIdx=-1,verbTok="",aux=null,base="";
+ if(mv){verbIdx=mv.idx;verbTok=mv.tok;aux=mv.aux;base=sBaseVerb(mv.tok);}
+ else if(subjIdx>=0&&toks[subjIdx+1]){verbIdx=subjIdx+1;verbTok=toks[verbIdx];base=sBaseVerb(verbTok);}
+ const time=sDetectTime(s0);
+ let tense="present";
+ if(time==="past"||(verbTok&&sIsPastForm(verbTok))||aux==="did"||aux==="was"||aux==="were")tense="past";
+ else if(time==="future"||aux==="will"||aux==="'ll")tense="future";
+ return {sent:s0,toks:toks,raw:raw,subjIdx:subjIdx,subjLow:subjLow,subjRaw:subjRaw,verbIdx:verbIdx,verbTok:verbTok,aux:aux,base:base,time:time,tense:tense};
+}
+function sRewritePerson(p,newSubj){
+ if(!p||p.subjIdx<0)return "";
+ const old=p.subjLow, ns=String(newSubj).toLowerCase();
+ if(old===ns)return "";
+ let out=sStripEndPunct(p.sent);
+ // 句首才大写；若主语前还有 Yesterday 等，she/he 用小写（I 仍大写）
+ const subjIsFirst=/^\s*[A-Za-z]/.test(out) && sTok(out)[0]===(p.subjLow||"");
+ const newDisp=ns==="i"?"I":(subjIsFirst?sCap1(ns):ns);
+ out=sReplaceNthWord(out,p.subjRaw||old,newDisp,1);
+ if(p.verbTok&&sBaseVerb(p.verbTok)==="be"){
+  out=sReplaceNthWord(out,p.verbTok,sBeForSubj(ns,p.tense==="past"?"past":"present"),1);
+ }else if(p.aux&&/^(am|is|are|was|were|do|does|did|have|has|had)$/.test(p.aux)){
+  let na=p.aux;
+  if(/^(am|is|are|was|were)$/.test(p.aux))na=sBeForSubj(ns,/was|were/.test(p.aux)?"past":"present");
+  else if(/^(do|does|did)$/.test(p.aux))na=sDoForSubj(ns,p.aux==="did"?"past":"present");
+  else if(/^(have|has|had)$/.test(p.aux))na=(p.aux==="had"?"had":((ns==="he"||ns==="she"||ns==="it")?"has":"have"));
+  out=sReplaceNthWord(out,p.aux,na,1);
+ }else if(p.verbTok&&p.base){
+  out=sReplaceNthWord(out,p.verbTok,sVerbForSubj(p.base,ns,p.tense==="past"?"past":"present"),1);
+ }
+ // I 被换成 she/he 时，sSwapCaseKeep 会因 I 大写而写成 She；非句首应小写
+ out=out.replace(/\b(Yesterday|Today|Tomorrow) (She|He|They|We|You|It)\b/g,function(m,a,b){return a+" "+b.toLowerCase();});
+ // 若显式指定了 newDisp 小写但被抬成大写，且主语不在句首，再压一次
+ if(!subjIsFirst&&ns!=="i"){out=out.replace(new RegExp("\\b"+ns.charAt(0).toUpperCase()+ns.slice(1)+"\\b"),ns);}
+ return sFinishSent(out);
+}
+function sRewriteTime(p,kind){
+ if(!p||!p.sent)return "";
+ let body=sStripEndPunct(p.sent);
+ body=body.replace(/\b(yesterday|tomorrow|today|every\s+(day|week|month|year|morning|evening|night)|last\s+\w+|next\s+\w+|usually|always|often|sometimes|now|right\s+now)\b/gi," ").replace(/\s+/g," ").trim();
+ let out=body;
+ if(kind==="past"){
+  if(p.aux==="will"||p.aux==="'ll"){out=sReplaceNthWord(out,p.aux,"",1);if(p.verbTok)out=sReplaceNthWord(out,p.verbTok,sPastOf(p.base||p.verbTok),1);}
+  else if(p.verbTok&&sBaseVerb(p.verbTok)==="be")out=sReplaceNthWord(out,p.verbTok,sBeForSubj(p.subjLow||"i","past"),1);
+  else if(p.aux&&/^(do|does|did)$/.test(p.aux))out=sReplaceNthWord(out,p.aux,"did",1);
+  else if(p.verbTok&&p.base)out=sReplaceNthWord(out,p.verbTok,sPastOf(p.base),1);
+  out="Yesterday "+out;
+  out=out.replace(/^Yesterday (She|He|They|We|You|It)\b/,function(m,p){return "Yesterday "+p.toLowerCase();});
+ }else if(kind==="habit"){
+  if(p.verbTok&&sBaseVerb(p.verbTok)==="be")out=sReplaceNthWord(out,p.verbTok,sBeForSubj(p.subjLow||"i","present"),1);
+  else if(p.aux==="will"||p.aux==="'ll"){out=sReplaceNthWord(out,p.aux,"",1);if(p.verbTok)out=sReplaceNthWord(out,p.verbTok,sVerbForSubj(p.base||p.verbTok,p.subjLow||"i","present"),1);}
+  else if(p.verbTok&&p.base)out=sReplaceNthWord(out,p.verbTok,sVerbForSubj(p.base,p.subjLow||"i","present"),1);
+  if(!/\bevery\s+day\b/i.test(out))out=out+" every day";
+ }else if(kind==="future"){
+  if(p.verbTok&&sBaseVerb(p.verbTok)==="be"&&!p.aux)out=sReplaceNthWord(out,p.verbTok,"will be",1);
+  else if(p.aux==="will"||p.aux==="'ll"){/* keep */}
+  else if(p.aux&&/^(am|is|are|was|were|do|does|did|have|has|had)$/.test(p.aux)){
+   out=sReplaceNthWord(out,p.aux,"will",1);if(p.verbTok)out=sReplaceNthWord(out,p.verbTok,sBaseVerb(p.verbTok),1);
+  }else if(p.verbTok&&p.base)out=sReplaceNthWord(out,p.verbTok,"will "+p.base,1);
+  if(!/\btomorrow\b/i.test(out))out=out+" tomorrow";
+ }
+ return sFinishSent(out.replace(/\s+/g," ").trim());
+}
+function sRewriteAddInfo(p){
+ if(!p||!p.sent)return "";
+ let body=sStripEndPunct(p.sent);const low=body.toLowerCase();let add="";
+ if(!sHasPlaceish(low))add=" at home";
+ else if(!/\bwith\b/i.test(low))add=" with my friends";
+ else if(!sHasTimeWord(low))add=" every evening";
+ else if(!/\bvery\b/i.test(low)&&/\b(am|is|are|was|were|feel|look)\b/i.test(low))add=" today";
+ else add=" too";
+ if(new RegExp("\\b"+sEscRe(add.trim()).replace(/\\ /g,"\\s+")+"\\b","i").test(body)){
+  if(/friends/.test(add))add=" after school";
+  else if(/home/.test(add))add=" in the morning";
+  else add=" in Shanghai";
+ }
+ return sFinishSent(body+add);
+}
+function sRewriteQuestion(p){
+ if(!p||!p.sent||p.subjIdx<0)return "";
+ let body=sStripEndPunct(p.sent);
+ const subj=p.subjRaw||p.subjLow||"I";
+ const subjOut=p.subjLow==="i"?"I":(S_SUBJ.has(p.subjLow)?p.subjLow:subj);
+ if(p.verbTok&&sBaseVerb(p.verbTok)==="be"&&!p.aux){
+  const be=p.verbTok;
+  body=sReplaceNthWord(body,be,"",1);body=sReplaceNthWord(body,subj,"",1);
+  return sCap1((be+" "+subjOut+" "+body).replace(/\s+/g," ").trim())+"?";
+ }
+ if(p.aux&&/^(am|is|are|was|were|do|does|did|will|can|could|should|would|have|has|had)$/.test(p.aux)){
+  const ax=p.aux;body=sReplaceNthWord(body,ax,"",1);body=sReplaceNthWord(body,subj,"",1);
+  return sCap1((ax+" "+subjOut+" "+body).replace(/\s+/g," ").trim())+"?";
+ }
+ if(p.verbTok&&p.base){
+  const d=sDoForSubj(p.subjLow||"i",p.tense==="past"?"past":"present");
+  body=sReplaceNthWord(body,p.verbTok,p.base,1);body=sReplaceNthWord(body,subj,"",1);
+  return sCap1((d+" "+subjOut+" "+body).replace(/\s+/g," ").trim())+"?";
+ }
+ return "";
+}
+function sRewriteNeg(p){
+ if(!p||!p.sent||p.subjIdx<0)return "";
+ let body=sStripEndPunct(p.sent);if(/\b(n't|not)\b/i.test(body))return "";
+ if(p.verbTok&&sBaseVerb(p.verbTok)==="be"&&!p.aux)return sFinishSent(sReplaceNthWord(body,p.verbTok,p.verbTok+" not",1));
+ if(p.aux&&/^(am|is|are|was|were|will|can|could|should|would)$/.test(p.aux))return sFinishSent(sReplaceNthWord(body,p.aux,p.aux+" not",1));
+ if(p.aux&&/^(do|does|did)$/.test(p.aux))return sFinishSent(sReplaceNthWord(body,p.aux,p.aux+"n't",1));
+ if(p.verbTok&&p.base){
+  const d=sDoForSubj(p.subjLow||"i",p.tense==="past"?"past":"present");
+  const subjDisp=p.subjLow==="i"?"I":(p.subjRaw||p.subjLow);
+  body=sReplaceNthWord(body,p.verbTok,p.base,1);
+  body=sReplaceNthWord(body,p.subjRaw||p.subjLow,subjDisp+" "+d+"n't",1);
+  return sFinishSent(body);
+ }
+ return "";
+}
 function sModelRewrites(w,r,sent){
- const en=String(w.en||""),zh=String(w.zh||"").split(/[；;，,/]/)[0],kind=sPosKind(w);
- const past=sPastOf(en.toLowerCase()),sg=s3sgOf(en.toLowerCase()),aan=sAAn(en);
+ const zh=String(w&&w.zh||"").split(/[；;，,/]/)[0];
+ const kind=sPosKind(w);
  const out=[];
- const push=function(enS,why,tag,zhCn){enS=sEnsureDot(sCap1(String(enS||"").trim()));if(!enS)return;
+ const push=function(enS,why,tag,zhCn){
+  enS=String(enS||"").trim();if(!enS)return;
+  if(/\?\s*$/.test(enS))enS=sCap1(enS.replace(/\s+/g," ").trim());
+  else enS=sEnsureDot(sCap1(sStripEndPunct(enS)));
+  if(!enS)return;
+  if(sNormSent(enS)===sNormSent(sent))return;
   if(out.some(function(x){return sNormSent(x.en)===sNormSent(enS);}))return;
+  // 过滤「自然/口语」类说明
+  why=String(why||"").replace(/自然|更口语|流畅|好听/g,"");
   var cn=String(zhCn||"").trim();
   if(!cn){try{cn=(sTranslateLocal(enS)||{}).zh||"";}catch(e){cn="";}}
-  out.push({en:enS,zh:why,tag:tag||"示范",zhCn:cn});};
+  out.push({en:enS,zh:why,tag:tag||"改写",zhCn:cn});
+ };
+ // 底稿：优先语法最小修正版，再在其上做换人称/时间等（禁止另起无关模板）
+ let draft=sFinishSent(sent);
  const fixJoin=(r&&r.fix||[]).join(" ");
- const hasTarget=!(!r||!sHasWord(sent,w.en).ok);
- // 1) Prefer correction of the user's own sentence (grammar polish only)
- if(r&&r.corrLocal){const c=sEnsureDot(r.corrLocal);if(sNormSent(c)!==sNormSent(sent)){
+
+ // 1) 语法修正版（原句底稿）
+ if(r&&r.corrLocal){const c=sFinishSent(r.corrLocal);if(sNormSent(c)!==sNormSent(sent)){
   var cn1="";try{cn1=(sTranslateLocal(c)||{}).zh||"";}catch(e){}
-  push(c,"在你原句上改了大小写/标点/时态等语法小错误，意思尽量不动。","按你的句子改",cn1);}
+  push(c,"在你原句上改了大小写/标点/时态等语法小错误，意思尽量不动。","按你的句子改",cn1);draft=c;}
+  else draft=c;
  }
- // 1b) If tense/3sg flagged, also rewrite the original verb in-place when possible
  if(r&&r.verbTok&&r.fixWord){
-  const re=new RegExp("\\b"+r.verbTok+"\\b","i");
-  if(re.test(sent)){const fixed=sEnsureDot(String(sent).replace(re,r.fixWord));
+  const re=new RegExp("\\b"+sEscRe(r.verbTok)+"\\b","i");
+  if(re.test(draft)){const fixed=sFinishSent(String(draft).replace(re,r.fixWord));
    var cn2="";try{cn2=(sTranslateLocal(fixed)||{}).zh||"";}catch(e){}
-   push(fixed,"把「"+r.verbTok+"」改成「"+r.fixWord+"」，时态/主谓就对了。","时态改写",cn2);}
+   push(fixed,"把「"+r.verbTok+"」改成「"+r.fixWord+"」，时态/主谓就对了。","时态改写",cn2);draft=fixed;}
  }
- if(/过去时间|过去式/.test(fixJoin)){
-  const m=String(sent).match(/\b(live|go|have|do|make|take|get|come|see|eat|buy|want|like|love|work|study|play|watch|help|need|call|visit)\b/i);
-  const base=m?m[1].toLowerCase():en.toLowerCase();
-  push("Yesterday I "+sPastOf(base)+" in Shanghai.","有 yesterday 等过去时间词时，动词用过去式。","时态","昨天我在上海"+((base==="go")?"去了":"做了相关动作")+"。");
+ // 形容词缺 be：最小修正后再变换
+ if(kind==="adj"&&/\b(i|you|he|she|it|we|they)\s+\w+/i.test(draft)&&!/\b(am|is|are|was|were|look|looks|feel|feels|seem|seems|be)\b/i.test(draft)){
+  const m=draft.match(/^\s*(I|You|He|She|It|We|They)\s+/i);
+  if(m){const sub=m[1];const be=sBeForSubj(sub.toLowerCase(),"present");
+   const fixed=sFinishSent(draft.replace(new RegExp("^\\s*"+sEscRe(sub)+"\\s+","i"),sCap1(sub)+" "+be+" "));
+   if(sNormSent(fixed)!==sNormSent(draft)){push(fixed,"形容词前补上 be 动词（"+be+"）。","按你的句子改");draft=fixed;}
+  }
  }
- if(/一般现在|加 -s|主谓/.test(fixJoin))push("She "+sg+" every day.","主语是 she/he/it 时，一般现在时用 "+sg+"。","主谓一致","她每天"+zh+"／做这件事。");
- if(/将来|will/.test(fixJoin))push("I will "+(kind==="v"?en:"go")+" tomorrow.","有 tomorrow/next… 时，常用 will + 动词原形。","时态","我明天会"+zh+"／去。");
- // 1c) 跑题时给 1 句能接上的示范（优先）
- if(r&&r.followDemo&&r.followDemo.en){
-  push(r.followDemo.en,r.followDemo.why||"这句能接上上一句的意思。","接上句",r.followDemo.zhCn||"");
+ const baseDraft=draft;
+ const p=sParseUserSent(baseDraft);
+ if(/过去时间|过去式/.test(fixJoin)){const t=sRewriteTime(p,"past");if(t)push(t,"有过去时间词时，动词用过去式；这里按你的原句改成过去。","时态改写");}
+ if(/一般现在|加 -s|主谓/.test(fixJoin)){
+  if(/^(i|you|we|they)$/.test(p.subjLow||"")){const pr=sRewritePerson(p,"she");if(pr)push(pr,"主语换成 she 时，一般现在时动词要加 -s；其余成分照你的原句。","换人称");}
+  else if(p.verbTok&&p.base){const nv=sVerbForSubj(p.base,p.subjLow||"she","present");
+   push(sFinishSent(sReplaceNthWord(sStripEndPunct(p.sent),p.verbTok,nv,1)),"主语是 he/she/it 时，一般现在时用 "+nv+"。","时态改写");}
  }
- // 2) 缺目标词：只给轻提示示范（可选加分），不当成必须改写；第3拍加戏则完全跳过
- if(!hasTarget&&out.length<2&&!(r&&r._twistNoTarget)){
-  if(kind==="n")push("My "+en+" is Li Ming.","可选：带上「"+en+"」会更贴本课（my + 名词）。","更贴本课（可选）","我的"+zh+"是李明。");
-  else if(kind==="v")push("I "+en+" in Shanghai.","可选：带上动词「"+en+"」会更贴本课。","更贴本课（可选）","我在上海"+zh+"。");
-  else if(kind==="adj")push("I am "+en+" now.","可选：形容词常跟 be：I am "+en+"。","更贴本课（可选）","我现在很"+zh+"。");
-  else push("I like "+en+".","可选：最短句里带上「"+en+"」更贴本课。","更贴本课（可选）","我喜欢"+zh+"。");
+ if(/将来|will/.test(fixJoin)){const t=sRewriteTime(p,"future");if(t)push(t,"有将来时间词时，常用 will + 动词原形；按你的原句改。","时态改写");}
+
+ // 2) 换人称
+ if(out.length<4){
+  let alt="";
+  if(p.subjLow==="i")alt="she";
+  else if(/^(she|he|it)$/.test(p.subjLow||""))alt="i";
+  else if(/^(we|they)$/.test(p.subjLow||""))alt="she";
+  else if(p.subjLow==="you")alt="they";
+  else if(p.subjIdx>=0)alt="i";
+  if(alt){const pr=sRewritePerson(p,alt);if(pr)push(pr,"只换主语（"+(p.subjLow||"?")+"→"+alt+"），并改好动词形式；其他词仍用你的原句。","换人称");}
  }
- if(kind==="adj"&&hasTarget&&!/\b(am|is|are|was|were|look|looks|feel|feels)\b/i.test(sent))
-  push("I am "+en+" now.","形容词前要有 be 动词，不要写成 I "+en+"。","词性／语法","我现在很"+zh+"。");
- if(kind==="n"&&hasTarget){
-  const toks=sTok(sent);const hw=sHasWord(sent,w.en);const prev=toks[hw.idx-1]||"";
-  if(hw.idx>=0&&!S_DET.has(prev)&&!S_DET.has(toks[hw.idx-2]||""))
-   push("I have "+aan+" "+en+".","名词前常加 a/an/the/my。","冠词/搭配","我有一个"+zh+"。");
+
+ // 3) 换时间（两种不同时态）
+ if(out.length<4){
+  const prefer=p.tense==="past"?"habit":(p.tense==="future"?"past":"past");
+  const t1=sRewriteTime(p,prefer);
+  if(t1)push(t1,prefer==="past"?"在原句上改成过去：加 yesterday，动词用过去式。":(prefer==="habit"?"在原句上改成习惯：用一般现在，并加 every day。":"在原句上改成将来：will + 原形，并加 tomorrow。"),"换时间");
  }
- // 3) （已去掉「可以更自然」表达润色——只查语法与是否跟上句有关）
- // 4) Fill remaining with grammar templates
- if(out.length<2){
-  if(kind==="n"){push("My "+en+" is Li Ming.","用 my + 名词，说明「是谁的、叫什么」。","语法示范","我的"+zh+"是李明。");push("I have "+aan+" "+en+".","have + a/an + 名词：说「我有一个…」。","搭配","我有一个"+zh+"。");}
-  else if(kind==="v"){push("I "+en+" in Shanghai.","主语 I + 动词原形：说自己常做的事。","一般现在","我在上海"+zh+"。");push("She "+sg+" every day.","主语 she/he/it 时动词加 -s（"+sg+"）。","主谓一致","她每天"+zh+"。");}
-  else if(kind==="adj"){push("I am "+en+" now.","形容词常跟在 am/is/are 后面。","be+形","我现在很"+zh+"。");push("I feel very "+en+".","feel/look + 形容词；注意 be/feel 别漏。","语法示范","我感觉很"+zh+"。");}
-  else if(kind==="adv"){push("I speak English "+en+".","副词常放句末修饰动词。","语序","我"+zh+"说英语。");push("Please speak "+en+".","祈使句 + 副词。","示范","请"+zh+"说。");}
-  else if(kind==="prep"){push("I am "+en+" China.","介词 "+en+" 常跟在 be 后面再说地点/来源。","搭配","我"+zh+"中国。");if(w.exEn){var cx="";try{cx=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"本课例句结构稳，可先模仿语法。","参考例句",cx||("（"+zh+"）"));}}
-  else if(kind==="ph"){push("I can "+en+".","固定词组尽量连着写。","词组","我会"+zh+"。");if(w.exEn){var cx2="";try{cx2=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"照词组完整用法说整句。","参考例句",cx2||("（"+zh+"）"));}}
-  else{if(w.exEn){var cx3="";try{cx3=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"先学例句结构（语法），再换成自己的内容。","参考例句",cx3||("（"+zh+"）"));}push("I like "+en+".","最短完整句：I + 动词 + 词。","起步","我喜欢"+zh+"。");}
+ if(out.length<4){
+  const prefer2=p.tense==="future"?"habit":"future";
+  const t2=sRewriteTime(p,prefer2);
+  if(t2)push(t2,prefer2==="future"?"在原句上改成将来：will + 动词原形，并加 tomorrow。":"在原句上改成习惯：一般现在 + every day。","换时间");
  }
- if(out.length<2&&w.exEn&&sNormSent(w.exEn)!==sNormSent(sent)){var cx4="";try{cx4=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"课本例句（"+zh+"）：结构清楚，适合先模仿语法。","课本例句",cx4||w.exZh||("（"+zh+"）"));}
- return out.slice(0,2);
+
+ // 4) 加一点信息
+ if(out.length<4){const ad=sRewriteAddInfo(p);if(ad)push(ad,"在你原句末尾补一个简单状语，语法更完整。","加一点信息");}
+
+ // 5) 问句 / 否定
+ if(out.length<4){const q=sRewriteQuestion(p);if(q)push(q,"把你的原句改成 Yes/No 问句，助动词/be 提前。","改成问句");}
+ if(out.length<4){const ng=sRewriteNeg(p);if(ng)push(ng,"在你原句上加 don't/doesn't/not，改成否定。","改成否定");}
+
+ // 6) 接上句
+ if(r&&r.followDemo&&r.followDemo.en)push(r.followDemo.en,r.followDemo.why||"这句能接上上一句的意思。","接上句",r.followDemo.zhCn||"");
+
+ // 7) 退路：仍基于原句做启发式，禁止 I {word} in Shanghai 等无关模板
+ if(out.length<3){
+  if(sNormSent(baseDraft)!==sNormSent(sent))push(baseDraft,"先把句首大写、句末句号补齐，作为底稿。","按你的句子改");
+  const core=sStripEndPunct(baseDraft);
+  if(out.length<3)push(sFinishSent(core+" every day"),"在你原句后加上时间词 every day。","换时间");
+  if(out.length<3)push(sFinishSent(core+(sHasPlaceish(core)?" with my friends":" at home")),"在你原句后补一个简单状语。","加一点信息");
+  if(out.length<3&&p.subjIdx>=0){const q=sRewriteQuestion(p);if(q)push(q,"把你的原句改成问句。","改成问句");}
+ }
+ if(out.length<3&&w&&w.exEn&&sNormSent(w.exEn)!==sNormSent(sent)){
+  var cx="";try{cx=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}
+  push(w.exEn,"推不出更多基于原句的变法时，对照课本例句的语法结构（仍请用你自己的词）。","参考例句",cx||w.exZh||("（"+zh+"）"));
+ }
+ return out.slice(0,4);
 }
 function sCoachPoints(sent,w,r){
  const good=[],prob=[],hw=sHasWord(sent,w.en),kind=sPosKind(w),toks=sTok(sent);
@@ -2829,10 +3053,11 @@ function sCoachHtml(sent,w,r,corr){
  if(!w||!sent)return "";
  const MARKER="RICHER_SENT_FEEDBACK_V1";
  const FLAG="SENT_FOLLOWUP_RELAX_V2";
+ const REWRITE_FLAG="SENT_REWRITE_FROM_USER_V1";
  const pts=sCoachPoints(sent,w,r);
  const rr=Object.assign({},r||{},{corrLocal:corr||(r&&r.corrLocal)||""});
  const rew=sModelRewrites(w,rr,sent);
- let h='<div class="s-coach-wrap" data-s-coach="'+MARKER+'" data-s-flag="'+FLAG+'"><div class="s-coach-label">✨ 怎么改更好</div>';
+ let h='<div class="s-coach-wrap" data-s-coach="'+MARKER+'" data-s-flag="'+FLAG+'" data-s-rewrite="'+REWRITE_FLAG+'"><div class="s-coach-label">✨ 怎么改更好</div>';
  if(r&&r.level==="good")h+='<div class="s-coach-sum">语法没大问题，也跟上句有关。下面标出做对的地方；若有示范句，只为对照语法。</div>';
  else if(r&&r.level==="mid")h+='<div class="s-coach-sum">大意能懂，还有语法或「跟上句」小地方。对照下面改一改。</div>';
  else h+='<div class="s-coach-sum">先看语法问题，再看「更好的改写」。改完可以再点一次检测。</div>';
@@ -2848,7 +3073,7 @@ function sCoachHtml(sent,w,r,corr){
   });
   h+="</div>";
  }
- h+='<div class="s-coach-note">本地规则 · 适合中职基础 · 只查语法对错与是否跟上句有关 · 不评「好不好听／自然不自然」· 语音与手打共用 · '+FLAG+'</div></div>';
+ h+='<div class="s-coach-note">本地规则 · 适合中职基础 · 只查语法对错与是否跟上句有关 · 不评「好不好听／自然不自然」· 改写基于你的原句 · 语音与手打共用 · '+FLAG+' · '+REWRITE_FLAG+'</div></div>';
  return h;
 }
 
@@ -2900,37 +3125,37 @@ function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
  function tipsSoft(r,line){if(!r.tips.includes(line))r.tips.push(line);}
 }
 
+/* SENT_CHECK_FAST_V1：在线语法+翻译并行；LT 回来先原地更新，翻译回来再更新；token 丢弃旧结果。过滤/合并/升降级逻辑与旧版逐行一致 */
+const S_TOK={sent:0,twist:0};
+function sOnlineRun(o){/* o:{slot,s,w,r,offMsg,render(lt,state,corr,ms,tr,final),onLevel(r)} */
+ const tok=++S_TOK[o.slot];const s=o.s,w=o.w,r=o.r;const picky=sStrictOn();const t0=Date.now();
+ const alive=()=>S_TOK[o.slot]===tok&&sCurWord()===w;
+ let tr=sTranslateLocal(s),ltDone=false,lt=[],state="",corr=r.corrLocal||s,ms=[];
+ const paint=()=>{if(!alive())return;o.render(lt,state,sPolish(corr,r),ms,tr,ltDone);};
+ const pLT=ltCheck(s,{picky:picky}).then(ms0=>{ms=filterLTMatches(s,ms0,w);
+  if(!picky){ms=ms.filter(m=>ltSev(m)!=="warn");}
+  ms=ms.filter(m=>{const cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const id=(m.rule&&m.rule.id)||"";return cat!=="STYLE"&&!/STYLE|REDUNDANCY/.test(id+cat);});
+  lt=sMergeLtMessages(ms,s,w,r);const ltCorr=applyLT(s,ms0,w);corr=ltCorr||corr;
+  corr=corr.replace(/\b([A-Z]{2,12})\b/g,(m)=>{const low=m.toLowerCase();return S_NAMEISH.has(low)?m.charAt(0)+m.slice(1).toLowerCase():m;});
+  if(lt.length&&r.level==="good")r.level="mid";
+  if(ms.some(m=>m.rule&&(m.rule.issueType==="grammar"||/AGR|SVA|VBZ|TENSE|HE_VERB/.test((m.rule.id)||"")))){if(r.level==="good")r.level="mid";}
+  if(!lt.length)state="语法检查：没发现明显语法错误"+(picky?"（严格）":"");else state="语法检查：LanguageTool"+(picky?" · 严格模式":"");
+ },e=>{ms=[];lt=[];state=(e&&e.name==="AbortError")?"⏱️ 在线检查超时，已用本地结果（反馈完整可用）":o.offMsg;})
+ .then(()=>{ltDone=true;try{window.__sTiming=window.__sTiming||[];window.__sTiming.push({slot:o.slot,s:s,lt:Date.now()-t0});}catch(e){}if(!alive())return;paint();o.onLevel(r);});
+ const pTR=sTranslateOnline(s).then(on=>{if(on&&on.zh){tr=on;if(ltDone)paint();}},()=>{});
+ return Promise.allSettled([pLT,pTR]).then(()=>{try{window.__sTiming.push({slot:o.slot,s:s,all:Date.now()-t0});}catch(e){}});}
+
 async function sDoCheck(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForCheck($("sentIn").value);let s=_prep.s;$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
  sSave(w.en,s);try{dClear();}catch(e){}$("sentLast").textContent="已保存：" + s;
  const r=localCheck(s,w,{prevSent:(w.exEn||""),mode:"sent"});
  if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
  else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}
- const btn=$("sentChk");const oldLabel=btn.textContent;btn.disabled=true;btn.textContent="检测中…";
+ const btn=$("sentChk");if(btn){btn.disabled=false;btn.textContent="检测";}
  const localPaint=sCollectPaint(s,w,r,[]);
- let tr=sTranslateLocal(s);
- sRenderRes(r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,tr);
- let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s,ms=[];
- const picky=sStrictOn();
- try{const ms0=await ltCheck(s,{picky:picky});ms=filterLTMatches(s,ms0,w);
-  if(!picky){ms=ms.filter(m=>ltSev(m)!=="warn");}
-  // 不评表达好不好：去掉 STYLE / 表达润色类
-  ms=ms.filter(m=>{const cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const id=(m.rule&&m.rule.id)||"";return cat!=="STYLE"&&!/STYLE|REDUNDANCY/.test(id+cat);});
-  lt=sMergeLtMessages(ms,s,w,r);
-  const ltCorr=applyLT(s,ms0,w);
-  corr=ltCorr||corr;
-  corr=corr.replace(/\b([A-Z]{2,12})\b/g,(m)=>{const low=m.toLowerCase();return S_NAMEISH.has(low)?m.charAt(0)+m.slice(1).toLowerCase():m;});
-  if(lt.length&&r.level==="good")r.level="mid";
-  if(ms.some(m=>m.rule&&(m.rule.issueType==="grammar"||/AGR|SVA|VBZ|TENSE|HE_VERB/.test((m.rule.id)||"")))){if(r.level==="good")r.level="mid";}
-  if(!lt.length)state="语法检查：没发现明显语法错误"+(picky?"（严格）":"");
-  else state="语法检查：LanguageTool"+(picky?" · 严格模式":"");}
- catch(e){state="⚠️ 在线语法检查没连上（可能断网或太频繁），只做了本地检查";ms=[];}
- try{const online=await sTranslateOnline(s);if(online&&online.zh)tr=online;}catch(e){}
- finally{btn.disabled=false;btn.textContent=oldLabel||"检测";}
- if(sCurWord()!==w)return;corr=sPolish(corr,r);
- const paintInfo=sCollectPaint(s,w,r,ms);
- sRenderRes(r,lt,state,corr,s,paintInfo,tr);
- const box=$("sentArea");if(box)box.dataset.beat2Level=r.level||"";
- beatTryUnlockFrom(r.level,s,w);}
+ sRenderRes(r,[],"⏳ 本地结果已出 · 补充在线检查中…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,sTranslateLocal(s));
+ return sOnlineRun({slot:"sent",s:s,w:w,r:r,offMsg:"⚠️ 在线语法检查没连上（可能断网或太频繁），只做了本地检查",
+  render:(lt,state,corr,ms,tr)=>{sRenderRes(r,lt,state,corr,s,sCollectPaint(s,w,r,ms),tr);},
+  onLevel:(r)=>{const box=$("sentArea");if(box)box.dataset.beat2Level=r.level||"";beatTryUnlockFrom(r.level,s,w);}});}
 
 function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘贴发送");const fb=()=>{try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);const ok=document.execCommand("copy");document.body.removeChild(ta);ok?done():sMsg("复制失败，请长按下面的文字手动复制："+t);}catch(e){sMsg("复制失败，请手动复制："+t);}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();}
@@ -2973,7 +3198,7 @@ $("bSub").onclick=doSubmit;
 $("bFuz").onclick=()=>{const w=cur();if(!w||ST.revealed)return;markMiss(w.id,REP_FUZZY);logIt(w.en,"fuzzy");reveal("🟡 模糊：看清 "+w.en+"，跟读一遍，稍后再拼对 "+REP_FUZZY+" 次","mid");speak(w.en);};
 $("bNo").onclick=()=>{const w=cur();if(!w||ST.revealed)return;markMiss(w.id,REP_NO);logIt(w.en,"no");reveal("🔴 不会：正确是 "+w.en+"，跟读两遍，稍后再拼对 "+REP_NO+" 次","bad");speak(w.en);};
 $("bHint").onclick=()=>{ST.hint=true;save();renderWords();try{$("ans").focus({preventScroll:true});}catch(e){}};
-$("bNext").onclick=next;
+$("bNext").onclick=next;$("bPrev").onclick=prev;{const bc=$("beatConfirm");if(bc)bc.onclick=()=>next();const bp=$("beatPrev");if(bp)bp.onclick=prev;}
 $("ans").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();doSubmit();}else if(e.key==="Escape"){e.preventDefault();$("ans").value="";}});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&ST.tab==="words"&&ST.revealed&&document.activeElement!==$("ans")&&document.activeElement!==$("sentIn")&&document.activeElement!==$("twistIn")&&!(document.activeElement&&document.activeElement.tagName==="BUTTON"&&document.activeElement!==$("bNext"))){e.preventDefault();next();}});
 $("sp").onclick=()=>{const w=cur();if(w)speak(w.en);};$("spSlow").onclick=()=>{const w=cur();if(w)speak(w.en,true);};
@@ -3055,29 +3280,18 @@ async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sent
  const prevBeat2=((($("sentIn")&&$("sentIn").value)||"").trim())||(w.exEn||"");
  const r=localCheck(s,w,{prevSent:prevBeat2,mode:"twist"});
  if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
- else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}const btn=$("twistChk");const oldLabel=btn?btn.textContent:"检测加戏";if(btn){btn.disabled=true;btn.textContent="检测中…";}
- const localPaint=sCollectPaint(s,w,r,[]);let tr=sTranslateLocal(s);
- sRenderResInto("twistRes",r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,tr);
- let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s,ms=[];const picky=sStrictOn();
- try{const ms0=await ltCheck(s,{picky:picky});ms=filterLTMatches(s,ms0,w);if(!picky)ms=ms.filter(m=>ltSev(m)!=="warn");
-  ms=ms.filter(m=>{const cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const id=(m.rule&&m.rule.id)||"";return cat!=="STYLE"&&!/STYLE|REDUNDANCY/.test(id+cat);});
-  lt=sMergeLtMessages(ms,s,w,r);const ltCorr=applyLT(s,ms0,w);corr=ltCorr||corr;
-  corr=corr.replace(/\b([A-Z]{2,12})\b/g,(m)=>{const low=m.toLowerCase();return S_NAMEISH.has(low)?m.charAt(0)+m.slice(1).toLowerCase():m;});
-  if(lt.length&&r.level==="good")r.level="mid";
-  if(ms.some(m=>m.rule&&(m.rule.issueType==="grammar"||/AGR|SVA|VBZ|TENSE|HE_VERB/.test((m.rule.id)||"")))){if(r.level==="good")r.level="mid";}
-  if(!lt.length)state="语法检查：没发现明显语法错误"+(picky?"（严格）":"");else state="语法检查：LanguageTool"+(picky?" · 严格模式":"");}
- catch(e){state="⚠️ 在线语法检查没连上，只做了本地检查";ms=[];}
- try{const online=await sTranslateOnline(s);if(online&&online.zh)tr=online;}catch(e){}
- finally{if(btn){btn.disabled=false;btn.textContent=oldLabel||"检测加戏";}}
- if(sCurWord()!==w)return;corr=sPolish(corr,r);const paintInfo=sCollectPaint(s,w,r,ms);
- sRenderResInto("twistRes",r,lt,state,corr,s,paintInfo,tr);
- if(box)box.dataset.beat3Level=r.level||"";
- if(r.level!=="bad"){beatSet("done");const done=$("beatDone");if(done)done.style.display="";
-  const relOk=!(r.related&&r.related.ok===false);
-  sMsgTwist(relOk?"🎉 加戏完成！马上进入下一词…":"🎉 语法过关已完成。刚才提示了跟上句的关系，下次注意接着说哦。马上进入下一词…");
-  try{if(window.__autoNextTimer)clearTimeout(window.__autoNextTimer);}catch(e){}
-  window.__autoNextTimer=setTimeout(()=>{try{if(sCurWord()===w&&ST.revealed)next();}catch(e){}},650);}
- else sMsgTwist("还有明显语法问题，再改一改吧。（接着上一句即可，不必再用目标词）");}
+ else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}const btn=$("twistChk");if(btn){btn.disabled=false;btn.textContent="检测加戏";}
+ const localPaint=sCollectPaint(s,w,r,[]);
+ sRenderResInto("twistRes",r,[],"⏳ 本地结果已出 · 补充在线检查中…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,sTranslateLocal(s));
+ sMsgTwist("本地检查已出，在线语法检查补充中…");
+ return sOnlineRun({slot:"twist",s:s,w:w,r:r,offMsg:"⚠️ 在线语法检查没连上，只做了本地检查",
+  render:(lt,state,corr,ms,tr)=>{sRenderResInto("twistRes",r,lt,state,corr,s,sCollectPaint(s,w,r,ms),tr);},
+  onLevel:(r)=>{if(box)box.dataset.beat3Level=r.level||"";
+   /* NAV_PREV_CONFIRM_V1：不再自动 next()，等用户点「确定，进入下一词」 */
+   if(r.level!=="bad"){beatSet("done");const done=$("beatDone");if(done)done.style.display="";try{navPrevSync(true);}catch(e){}
+    const relOk=!(r.related&&r.related.ok===false);
+    sMsgTwist(relOk?"🎉 加戏完成！看完反馈后，点下面「确定，进入下一词」":"🎉 语法过关已完成。刚才提示了跟上句的关系，下次注意接着说哦。看完反馈后，点下面「确定，进入下一词」");}
+   else sMsgTwist("还有明显语法问题，再改一改吧。（接着上一句即可，不必再用目标词）");}});}
 (function initTwistMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("twistMic");if(!b)return;
  if(!SR){b.style.display="none";return;}
  let listening=false,baseText="",committed="",interim="",wantStop=false,sRecT=null;
