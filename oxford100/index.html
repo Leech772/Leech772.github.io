@@ -1173,7 +1173,7 @@ function mLoad(){try{const o=JSON.parse(localStorage.getItem(MKEY)||"{}");return
 let MP=mLoad();["listen","speak","grammar","fill","cur"].forEach(k=>{if(!MP[k]||typeof MP[k]!=="object")MP[k]={};});
 if(typeof MP.rate!=="number")MP.rate=1;if(MP.sub===undefined)MP.sub=true;if(MP.zh===undefined)MP.zh=false;
 function mSave(){try{localStorage.setItem(MKEY,JSON.stringify(MP));}catch(e){}try{if(typeof flashSaved==="function")flashSaved();}catch(e){}}
-function mE(x){return String(x==null?"":x).replace(/[&<>"]/g,c=>({"&":"&","<":"<",">":">",'"':"""}[c]));}
+function mE(x){return String(x==null?"":x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"""}[c]));}
 function mWord(en){try{return W.find(w=>w.en.toLowerCase()===String(en).toLowerCase())||null;}catch(e){return null;}}
 /* ---- 播放器：整段播放 + 单句播放（按时间段），逐句高亮 ---- */
 const MA={a:null,id:null,seg:null,stopAt:null,host:null,single:false};
