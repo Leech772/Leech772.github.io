@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><head><meta charset="UTF-8"/>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -2321,10 +2321,24 @@ function renderMem(){const miss=ST.missed.map(i=>W[i]);let sents={},essays={};tr
   '<div class="g"><h3>🧠 错过/模糊过的词</h3>'+(miss.length?miss.map(w=>'<div class="sent">'+(ST.known.includes(w.id)?"✅":"⏳")+" <b>"+sEscH(w.en)+"</b> "+sEscH(w.ph)+" "+sEscH(w.pos)+" "+sEscH(w.zh)+spkBtns(w.en)+"</div>").join(""):"还没有错过的词 👍")+"</div>"+
   (sc?'<div class="g"><h3>✍️ 我造过的句子</h3>'+Object.keys(sents).map(k=>'<div class="sent"><b>'+sEscH(k)+"</b>："+sEscH(sents[k].s)+spkBtns(sents[k].s)+"</div>").join("")+"</div>":"")+
   (ec?'<div class="g"><h3>📝 我写过的小作文</h3>'+Object.keys(essays).map(k=>{const e=essays[k]||{};return '<div class="sent"><b>'+sEscH(k)+'</b> · '+(e.ok?'✅':'⏳')+' '+(e.used||0)+'/'+(e.total||'?')+'<div class="wex">'+sEscH(e.s||'')+spkBtns(e.s||'')+'</div></div>';}).join('')+'</div>':'')+
-  '<div class="g"><h3>💾 备份 / 重置</h3>进度只存在这台设备这个浏览器里（key：<code>'+KEY+'</code>）。换手机/电脑可以先「导出」，再在新设备「导入」。<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-pc" id="mExport">💾 导出进度</button><button type="button" class="b-pc2" id="mImport">📂 导入进度</button><button type="button" class="danger" id="mReset">⚠ 清空全部进度</button></div></div>';
+  '<div class="g" id="syncCard"><h3>☁️ 手机电脑同步</h3>'+
+  '<p class="sub" style="text-align:left;margin:0 0 8px">把进度放到云端，另一台设备输入同步码就能合并。两边都练过的词会合并，不会互相覆盖丢掉。</p>'+
+  '<div style="margin:6px 0">当前同步码：<code id="syncIdView" style="word-break:break-all">—</code> <button type="button" class="mini" id="syncCopy">复制</button></div>'+
+  '<div class="row" style="margin-top:8px;justify-content:flex-start;gap:8px">'+
+  '<button type="button" class="b-pc" id="syncGen">生成本机同步码</button>'+
+  '<button type="button" class="b-pc2" id="syncUp">上传本机进度</button>'+
+  '<button type="button" class="mini" id="syncPull">输入同步码拉取</button></div>'+
+  '<div id="syncPullBox" style="display:none;margin-top:10px">'+
+  '<input id="syncIn" type="text" placeholder="粘贴同步码，如 ec:abc123 或 jb:…" style="width:100%;max-width:420px;padding:10px 12px;border-radius:12px;border:1px solid #ddd;font-size:1rem"/>'+
+  '<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-pc2" id="syncDoPull">拉取并合并</button></div></div>'+
+  '<label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.95rem"><input type="checkbox" id="syncAuto"/> 自动同步（保存后上传；打开页面时若云端更新则合并）</label>'+
+  '<div id="syncMsg" class="m-sub" style="margin-top:8px;min-height:1.2em"></div></div>'+
+  '<div class="g"><h3>💾 备份 / 重置</h3>本机仍可用导出/导入文件。云同步码保存在本机（key：<code>oxford100_sync_id_v1</code>）。换设备输入一次同步码即可。<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-pc" id="mExport">💾 导出进度</button><button type="button" class="b-pc2" id="mImport">📂 导入进度</button><button type="button" class="danger" id="mReset">⚠ 清空全部进度</button></div></div>';
  $("mReset").onclick=()=>{if(!confirm("确定清空全部 200 词的进度吗？（造句记录也会清空）此操作不能撤销。"))return;const v=ST.voice,a=ST.auto;ST=defState();ST.voice=v;ST.auto=a;ST.tab="mem";ST.introHidden=true;buildQueue();try{localStorage.removeItem(SKEY);localStorage.removeItem(EKEY);dClear();}catch(e){}save();renderAll();$("restore").textContent="已清空，重新开始 💪";};
  $("mExport").onclick=()=>{save();let s={},es={};try{s=JSON.parse(localStorage.getItem(SKEY)||"{}");}catch(e){}try{es=JSON.parse(localStorage.getItem(EKEY)||"{}");}catch(e){}const b=new Blob([JSON.stringify({app:KEY,state:ST,sentences:s,essays:es},null,1)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);const d=new Date();a.download="oxford100_进度_"+d.getFullYear()+(d.getMonth()+1)+d.getDate()+".json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);};
- $("mImport").onclick=()=>$("fileIn").click();}
+ $("mImport").onclick=()=>$("fileIn").click();
+ try{syncBindMem();}catch(e){}
+}
 $("fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);ST=mergeState(o.state||o);if(o.sentences)try{localStorage.setItem(SKEY,JSON.stringify(o.sentences));}catch(_){}if(o.essays)try{localStorage.setItem(EKEY,JSON.stringify(o.essays));}catch(_){}if(!ST.queue.length)buildQueue();save();renderAll();$("restore").textContent="✅ 已导入进度";}catch(err){alert("文件格式不对，导入失败");}e.target.value="";};r.readAsText(f);};
 
 
@@ -3632,7 +3646,338 @@ $("sentTeach").onclick=()=>{const w=sCurWord();if(!w)return;const s=$("sentIn").
  sCopy("【造句批改】单词："+w.en+" "+w.ph+"（"+w.pos+"，"+w.zh+"）\n场景："+w.theme+"\n第2拍情景一句："+(s||"（无）")+"\n第3拍口述加戏："+(tw||"（无）")+"\n请判断对不对、哪里错、给我改正后的句子并教我读。");};
 $("sentSkip").onclick=()=>{next();};
 
+
+/* wrap save/mSave for auto sync */
+(function(){
+  try{
+    var _save=save;
+    save=function(opt){opt=opt||{};_save(opt);try{if(!opt.silent)syncSchedulePush();else if(syncAutoOn())syncSchedulePush();}catch(e){}};
+  }catch(e){}
+  try{
+    var _mSave=mSave;
+    mSave=function(){_mSave();try{syncSchedulePush();}catch(e){}};
+  }catch(e){}
+})();
+
+/* SYNC_CROSS_DEVICE_V1: 手机电脑云同步（JSONBlob 优先，失败则 ExtendsClass） */
+var SYNC_ID_KEY="oxford100_sync_id_v1";
+var SYNC_AUTO_KEY="oxford100_sync_auto_v1";
+var SYNC_META_KEY="oxford100_sync_meta_v1";
+var SYNC_BE="extendsclass"; /* 运行时探测：jsonblob | extendsclass */
+function syncGetId(){try{return localStorage.getItem(SYNC_ID_KEY)||"";}catch(e){return "";}}
+function syncSetId(id){try{if(id)localStorage.setItem(SYNC_ID_KEY,id);else localStorage.removeItem(SYNC_ID_KEY);}catch(e){}}
+function syncAutoOn(){try{return localStorage.getItem(SYNC_AUTO_KEY)==="1";}catch(e){return false;}}
+function syncSetAuto(on){try{localStorage.setItem(SYNC_AUTO_KEY,on?"1":"0");}catch(e){}}
+function syncMeta(){try{return JSON.parse(localStorage.getItem(SYNC_META_KEY)||"{}")||{};}catch(e){return {};}}
+function syncSetMeta(o){try{localStorage.setItem(SYNC_META_KEY,JSON.stringify(o||{}));}catch(e){}}
+function syncMsg(t,ok){var el=$("syncMsg");if(!el){var r=$("restore");if(r){r.textContent=t;return;}return;}el.textContent=t;el.style.color=ok===false?"#b33":(ok?"#2a7":"");}
+function syncPack(){
+  var sents={},essays={},draft=null;
+  try{sents=JSON.parse(localStorage.getItem(SKEY)||"{}")||{};}catch(e){}
+  try{essays=JSON.parse(localStorage.getItem(EKEY)||"{}")||{};}catch(e){}
+  try{draft=JSON.parse(localStorage.getItem(DRAFT_KEY)||"null");}catch(e){}
+  var meta={};
+  try{meta.sr_lang=localStorage.getItem(SR_LANG_KEY)||"";}catch(e){}
+  try{meta.strict=localStorage.getItem(SSTRICT_KEY);}catch(e){}
+  try{meta.imm=localStorage.getItem(FS_IMM_KEY);}catch(e){}
+  if(draft)meta.draft=draft;
+  return {app:"oxford100_v1",v:2,updated:Date.now(),state:ST,modules:MP,sentences:sents,essays:essays,meta:meta};
+}
+function syncUnionArr(a,b){var s={},i,out=[];a=a||[];b=b||[];for(i=0;i<a.length;i++)s[a[i]]=1;for(i=0;i<b.length;i++)s[b[i]]=1;for(i in s)if(s.hasOwnProperty(i))out.push(isNaN(+i)?i:+i);return out;}
+function syncMaxReps(a,b){var o={},k;a=a||{};b=b||{};for(k in a)if(a.hasOwnProperty(k))o[k]=a[k];for(k in b)if(b.hasOwnProperty(k))o[k]=Math.max(+o[k]||0,+b[k]||0);return o;}
+function syncBetterScore(oldA,newA){
+  /* [right,total] or [right,total,2] — 取更高正确率，同分取更多题 */
+  if(!oldA)return newA;if(!newA)return oldA;
+  var or=+oldA[0]||0,on=+oldA[1]||0,nr=+newA[0]||0,nn=+newA[1]||0;
+  var oR=on?or/on:0,nR=nn?nr/nn:0;
+  if(nR>oR)return newA;if(nR<oR)return oldA;
+  if(nr>or)return newA;if(nr<or)return oldA;
+  if((newA[2]===2)&&oldA[2]!==2)return newA;
+  return oldA;
+}
+function syncMergeMaps(localM,cloudM,scoreMode){
+  var o={},k;localM=localM||{};cloudM=cloudM||{};
+  for(k in localM)if(localM.hasOwnProperty(k))o[k]=localM[k];
+  for(k in cloudM)if(cloudM.hasOwnProperty(k)){
+    if(scoreMode)o[k]=syncBetterScore(o[k],cloudM[k]);
+    else if(o[k]==null)o[k]=cloudM[k];
+    else if(typeof cloudM[k]==="object"&&cloudM[k]&&typeof o[k]==="object"){
+      /* speak arrays etc: union */
+      if(Object.prototype.toString.call(cloudM[k])==="[object Array]"&&Object.prototype.toString.call(o[k])==="[object Array]")
+        o[k]=syncUnionArr(o[k],cloudM[k]);
+      else o[k]=cloudM[k];
+    }else o[k]=cloudM[k];
+  }
+  return o;
+}
+function syncMergeRecords(localO,cloudO){
+  var o={},k,L,C;localO=localO||{};cloudO=cloudO||{};
+  for(k in localO)if(localO.hasOwnProperty(k))o[k]=localO[k];
+  for(k in cloudO)if(cloudO.hasOwnProperty(k)){
+    L=o[k];C=cloudO[k];
+    if(!L)o[k]=C;
+    else if(!C)continue;
+    else{
+      var lt=(L&&L.t)||0,ct=(C&&C.t)||0;
+      o[k]=ct>=lt?C:L;
+    }
+  }
+  return o;
+}
+function syncApplyPack(pack,opt){
+  opt=opt||{};
+  if(!pack||pack.app!=="oxford100_v1")throw new Error("同步包无效（不是本应用的进度）");
+  var cloudST=pack.state||{};
+  var localUpdated=ST.updated||0, cloudUpdated=pack.updated||cloudST.updated||0;
+  /* 合并单词 */
+  var known=syncUnionArr(ST.known,cloudST.known);
+  var missed=syncUnionArr(ST.missed,cloudST.missed).filter(function(i){return known.indexOf(i)<0;});
+  var reps=syncMaxReps(ST.reps,cloudST.reps);
+  var pickCloudCur=cloudUpdated>localUpdated;
+  ST.known=known;ST.missed=missed;ST.reps=reps;
+  if(pickCloudCur){
+    if(cloudST.theme!=null)ST.theme=cloudST.theme;
+    if(cloudST.tab!=null)ST.tab=cloudST.tab;
+    if(cloudST.queue&&cloudST.queue.length)ST.queue=cloudST.queue.slice();
+    if(cloudST.round!=null)ST.round=cloudST.round;
+  }
+  ST=mergeState(ST);
+  /* 合并模块 */
+  var cMP=pack.modules||{};
+  MP.listen=syncMergeMaps(MP.listen,cMP.listen,true);
+  MP.speak=syncMergeMaps(MP.speak,cMP.speak,false);
+  MP.grammar=syncMergeMaps(MP.grammar,cMP.grammar,true);
+  MP.gprac=syncMergeMaps(MP.gprac||{},cMP.gprac||{},true);
+  var gw={},k;
+  var locW=MP.gwrong||{}, clW=cMP.gwrong||{};
+  for(k in locW)if(locW.hasOwnProperty(k))gw[k]=1;
+  for(k in clW)if(clW.hasOwnProperty(k))gw[k]=1;
+  /* 本机已掌握的语法点可移出错题 */
+  for(k in gw)if(gw.hasOwnProperty(k)){
+    var gid=String(k).split("|")[0];
+    var sc=MP.grammar[gid];
+    if(sc&&sc[1]&&sc[0]/sc[1]>=0.8&&sc[2]===2)delete gw[k];
+  }
+  MP.gwrong=gw;
+  MP.fill=syncMergeMaps(MP.fill||{},cMP.fill||{},false);
+  if(pickCloudCur&&cMP.cur)MP.cur=Object.assign(MP.cur||{},cMP.cur);
+  if(typeof cMP.rate==="number")MP.rate=cMP.rate;
+  if(cMP.sub!==undefined)MP.sub=cMP.sub;
+  if(cMP.zh!==undefined)MP.zh=cMP.zh;
+  /* 造句作文 */
+  var locS={},locE={};
+  try{locS=JSON.parse(localStorage.getItem(SKEY)||"{}")||{};}catch(e){}
+  try{locE=JSON.parse(localStorage.getItem(EKEY)||"{}")||{};}catch(e){}
+  var mergedS=syncMergeRecords(locS,pack.sentences||{});
+  var mergedE=syncMergeRecords(locE,pack.essays||{});
+  try{localStorage.setItem(SKEY,JSON.stringify(mergedS));}catch(e){}
+  try{localStorage.setItem(EKEY,JSON.stringify(mergedE));}catch(e){}
+  var meta=pack.meta||{};
+  if(meta.sr_lang)try{localStorage.setItem(SR_LANG_KEY,meta.sr_lang);}catch(e){}
+  if(meta.strict!=null)try{localStorage.setItem(SSTRICT_KEY,meta.strict);}catch(e){}
+  if(meta.imm!=null)try{localStorage.setItem(FS_IMM_KEY,meta.imm);}catch(e){}
+  if(meta.draft&&meta.draft.word)try{localStorage.setItem(DRAFT_KEY,JSON.stringify(meta.draft));}catch(e){}
+  ST.updated=Math.max(localUpdated,cloudUpdated,Date.now());
+  try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}
+  try{localStorage.setItem(MKEY,JSON.stringify(MP));}catch(e){}
+  syncSetMeta(Object.assign(syncMeta(),{lastPull:Date.now(),cloudUpdated:cloudUpdated}));
+  if(!opt.silent){try{if(!ST.queue.length)buildQueue();renderAll();}catch(e){}}
+  return {known:ST.known.length,cloudUpdated:cloudUpdated};
+}
+function syncFriendlyErr(e,status){
+  var m=String((e&&e.message)||e||"");
+  if(status===404||/404|not found|无效/i.test(m))return "同步码无效或已过期，请重新生成。";
+  if(/Failed to fetch|NetworkError|network|CORS|TypeError/i.test(m))return "网络不通或云端暂不可用，请稍后再试（也可先用导出/导入）。";
+  if(/quota|too large|413/i.test(m))return "进度包太大，云端放不下。请先导出备份。";
+  return m||"同步失败";
+}
+/* ---- backends ---- */
+function syncParseId(id){
+  id=String(id||"").trim();
+  if(!id)return null;
+  if(/^jb[:_/]/i.test(id))return {be:"jsonblob",id:id.replace(/^jb[:_/]/i,"")};
+  if(/^ec[:_/]/i.test(id))return {be:"extendsclass",id:id.replace(/^ec[:_/]/i,"")};
+  /* bare uuid-like → jsonblob; short hex → extendsclass */
+  if(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return {be:"jsonblob",id:id};
+  if(/^[0-9a-f]{7,32}$/i.test(id))return {be:"extendsclass",id:id};
+  return {be:"jsonblob",id:id};
+}
+function syncFmtId(be,id){return (be==="extendsclass"?"ec:":"jb:")+id;}
+function syncFetch(url,opt){
+  opt=opt||{};
+  return fetch(url,opt).then(function(r){
+    return r.text().then(function(t){
+      var j=null;try{j=t?JSON.parse(t):null;}catch(e){}
+      return {ok:r.ok,status:r.status,headers:r.headers,text:t,json:j,raw:r};
+    });
+  });
+}
+function syncJB_create(pack){
+  return syncFetch("https://jsonblob.com/api/jsonBlob",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(pack)})
+  .then(function(r){
+    if(!r.ok)throw new Error("JSONBlob 创建失败 HTTP "+r.status);
+    var loc=r.headers.get("Location")||"";
+    var id=r.headers.get("X-jsonblob-id")||"";
+    if(!id&&loc){var m=loc.match(/jsonBlob\/([^\/\?#]+)/i);if(m)id=m[1];}
+    if(!id&&r.json&&r.json.id)id=r.json.id;
+    if(!id)throw new Error("JSONBlob 未返回同步码");
+    return syncFmtId("jsonblob",id);
+  });
+}
+function syncJB_put(id,pack){
+  return syncFetch("https://jsonblob.com/api/jsonBlob/"+encodeURIComponent(id),{method:"PUT",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(pack)})
+  .then(function(r){if(!r.ok)throw new Error("JSONBlob 上传失败 HTTP "+r.status);return syncFmtId("jsonblob",id);});
+}
+function syncJB_get(id){
+  return syncFetch("https://jsonblob.com/api/jsonBlob/"+encodeURIComponent(id),{method:"GET",headers:{"Accept":"application/json"}})
+  .then(function(r){if(r.status===404)throw new Error("同步码无效");if(!r.ok)throw new Error("JSONBlob 拉取失败 HTTP "+r.status);if(!r.json)throw new Error("同步包损坏");return r.json;});
+}
+function syncEC_create(pack){
+  return syncFetch("https://extendsclass.com/api/json-storage/bin",{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(pack)})
+  .then(function(r){
+    if(!r.ok)throw new Error("云端创建失败 HTTP "+r.status);
+    var id=(r.json&&r.json.id)||"";
+    if(!id)throw new Error("云端未返回同步码");
+    return syncFmtId("extendsclass",id);
+  });
+}
+function syncEC_put(id,pack){
+  /* PUT 常因预检失败；失败则新建并返回新码 */
+  return syncFetch("https://extendsclass.com/api/json-storage/bin/"+encodeURIComponent(id),{method:"PUT",headers:{"Content-Type":"text/plain"},body:JSON.stringify(pack)})
+  .then(function(r){
+    if(r.ok)return syncFmtId("extendsclass",id);
+    return syncEC_create(pack);
+  })
+  .catch(function(){return syncEC_create(pack);});
+}
+function syncEC_get(id){
+  return syncFetch("https://extendsclass.com/api/json-storage/bin/"+encodeURIComponent(id),{method:"GET"})
+  .then(function(r){if(r.status===404)throw new Error("同步码无效");if(!r.ok)throw new Error("云端拉取失败 HTTP "+r.status);if(!r.json)throw new Error("同步包损坏");return r.json;});
+}
+function syncCreate(pack){
+  return syncJB_create(pack).catch(function(e1){
+    return syncEC_create(pack).then(function(id){SYNC_BE="extendsclass";return id;},function(e2){
+      throw new Error(syncFriendlyErr(e1)||syncFriendlyErr(e2));
+    });
+  }).then(function(id){if(/^jb:/.test(id))SYNC_BE="jsonblob";return id;});
+}
+function syncPut(fullId,pack){
+  var p=syncParseId(fullId);if(!p)return syncCreate(pack);
+  if(p.be==="jsonblob"){
+    return syncJB_put(p.id,pack).catch(function(){
+      /* JSONBlob 不通时改走 ExtendsClass 新建 */
+      return syncEC_create(pack);
+    });
+  }
+  return syncEC_put(p.id,pack);
+}
+function syncGet(fullId){
+  var p=syncParseId(fullId);if(!p)return Promise.reject(new Error("请输入同步码"));
+  if(p.be==="jsonblob"){
+    return syncJB_get(p.id).catch(function(e){
+      /* 也许用户只贴了裸 id 且实际是 ec */
+      if(/^[0-9a-f]{7,32}$/i.test(p.id))return syncEC_get(p.id);
+      throw e;
+    });
+  }
+  return syncEC_get(p.id);
+}
+var _syncUpTimer=null,_syncBusy=false,_syncLastPush=0;
+function syncPushNow(opt){
+  opt=opt||{};
+  if(_syncBusy)return Promise.resolve();
+  _syncBusy=true;
+  var pack=syncPack();
+  var id=syncGetId();
+  syncMsg(opt.creating?"正在生成同步码…":"正在上传进度…");
+  var op=id?syncPut(id,pack):syncCreate(pack);
+  return op.then(function(newId){
+    var changed=id&&newId&&newId!==id;
+    syncSetId(newId);
+    syncSetMeta(Object.assign(syncMeta(),{lastPush:Date.now(),be:syncParseId(newId).be,updated:pack.updated}));
+    _syncLastPush=Date.now();
+    var tip="✅ 已上传"+(changed?"（同步码已更新，请复制到另一台）":"");
+    if(opt.creating)tip="✅ 已生成同步码，复制到另一台设备即可拉取";
+        if(typeof renderMem==="function"&&ST.tab==="mem")try{renderMem();}catch(e){}
+    try{syncBindMem();}catch(e){}
+    syncMsg(tip,true);
+    return newId;
+  }).catch(function(e){
+    syncMsg("❌ "+syncFriendlyErr(e),false);
+    throw e;
+  }).then(function(v){_syncBusy=false;return v;},function(e){_syncBusy=false;return Promise.reject(e);});
+}
+function syncPullNow(code,opt){
+  opt=opt||{};
+  var id=(code!=null&&String(code).trim())?String(code).trim():syncGetId();
+  if(!id)return Promise.reject(new Error("还没有同步码"));
+  syncMsg("正在拉取云端进度…");
+  return syncGet(id).then(function(pack){
+    var info=syncApplyPack(pack,{});
+    syncSetId(syncFmtId(syncParseId(id).be, syncParseId(id).id));
+    /* normalize stored id */
+    var p=syncParseId(id);syncSetId(syncFmtId(p.be,p.id));
+    syncMsg("✅ 已合并云端进度（掌握 "+info.known+" 词）",true);
+    return info;
+  }).catch(function(e){
+    syncMsg("❌ "+syncFriendlyErr(e),false);
+    throw e;
+  });
+}
+function syncSchedulePush(){
+  if(!syncAutoOn()||!syncGetId())return;
+  clearTimeout(_syncUpTimer);
+  _syncUpTimer=setTimeout(function(){syncPushNow({}).catch(function(){});},2500);
+}
+function syncBootPull(){
+  if(!syncAutoOn())return;
+  var id=syncGetId();if(!id)return;
+  syncGet(id).then(function(pack){
+    var cloudU=pack.updated||(pack.state&&pack.state.updated)||0;
+    var localU=Math.max(ST.updated||0,(syncMeta().updated)||0);
+    if(cloudU>localU+500){
+      syncApplyPack(pack,{});
+      syncMsg("☁️ 已自动合并云端更新",true);
+    }
+  }).catch(function(){});
+}
+function syncBindMem(){
+  var id=syncGetId();
+  var auto=syncAutoOn();
+  var idEl=$("syncIdView");if(idEl)idEl.textContent=id||"（尚未生成）";
+  var autoEl=$("syncAuto");if(autoEl)autoEl.checked=!!auto;
+  var bCopy=$("syncCopy");if(bCopy)bCopy.onclick=function(){
+    var v=syncGetId();if(!v){syncMsg("还没有同步码，请先生成",false);return;}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(function(){syncMsg("已复制同步码",true);}).catch(function(){prompt("复制同步码：",v);});
+    else prompt("复制同步码：",v);
+  };
+  var bGen=$("syncGen");if(bGen)bGen.onclick=function(){
+    if(syncGetId()&&!confirm("将上传本机全部进度并生成/刷新同步码。另一台设备用这个码拉取即可。继续？"))return;
+    syncPushNow({creating:true}).catch(function(){});
+  };
+  var bUp=$("syncUp");if(bUp)bUp.onclick=function(){
+    if(!syncGetId()){syncMsg("请先「生成本机同步码」",false);return;}
+    syncPushNow({}).catch(function(){});
+  };
+  var bPull=$("syncPull");if(bPull)bPull.onclick=function(){
+    var box=$("syncPullBox");if(box){box.style.display=box.style.display==="none"?"block":"none";return;}
+  };
+  var bDoPull=$("syncDoPull");if(bDoPull)bDoPull.onclick=function(){
+    var inp=$("syncIn");var code=inp?inp.value.trim():"";
+    if(!code){syncMsg("请粘贴同步码",false);return;}
+    syncPullNow(code,{}).then(function(){if(inp)inp.value="";}).catch(function(){});
+  };
+  var bAuto=$("syncAuto");if(bAuto)bAuto.onchange=function(){
+    syncSetAuto(bAuto.checked);
+    syncMsg(bAuto.checked?"已开启自动同步":"已关闭自动同步",true);
+    if(bAuto.checked){if(syncGetId())syncBootPull();else syncMsg("开启后请先生成同步码",false);}
+  };
+}
+
+
 const _restored=load();renderAll();save({silent:true});
+try{setTimeout(syncBootPull,1200);}catch(e){}
+
 try{const ta=$("sentIn");if(ta){ta.addEventListener("input",()=>dSaveDebounced());ta.addEventListener("change",()=>dFlushFromInput({flash:true}));}}catch(e){}
 window.addEventListener("pagehide",()=>{try{dFlushFromInput();}catch(e){}save({silent:true});});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){try{dFlushFromInput();}catch(e){}save({silent:true});}});
