@@ -108,6 +108,19 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
 .s-zh-label{font-size:.78rem;font-weight:650;color:var(--accent2);margin-bottom:4px;letter-spacing:.01em}
 .s-zh-text{font-size:1.02rem;line-height:1.55;color:var(--ink);font-weight:500}
 .s-zh-note{font-size:.72rem;color:var(--muted);margin-top:4px}
+/* RICHER_SENT_FEEDBACK_V1 · 造句「怎么改更好」 */
+.s-coach-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin:10px 0;border-left:3px solid var(--accent)}
+.s-coach-label{font-size:.82rem;font-weight:700;color:var(--accent2);margin-bottom:6px;letter-spacing:.01em}
+.s-coach-sum{font-size:.88rem;line-height:1.55;color:var(--ink);margin:0 0 8px}
+.s-coach-sum b{font-weight:650}
+.s-coach-list{margin:4px 0 8px;padding-left:18px;font-size:.86rem;line-height:1.55}
+.s-coach-list li{margin:3px 0}
+.s-coach-rewrites{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.s-coach-item{background:rgba(127,160,120,.08);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.s-coach-en{font-size:1.02rem;line-height:1.55;font-weight:600;color:var(--ink);margin-bottom:4px}
+.s-coach-zh{font-size:.84rem;line-height:1.5;color:#6a5a48}
+.s-coach-tag{display:inline-block;font-size:.72rem;font-weight:700;color:var(--accent2);background:rgba(127,160,120,.15);border-radius:999px;padding:1px 8px;margin-right:6px;vertical-align:middle}
+.s-coach-note{font-size:.72rem;color:var(--muted);margin-top:8px}
 .s-chip-why{display:block;width:100%;margin-top:3px;font-size:.82rem;color:#6a5a48;font-weight:450;line-height:1.45}
 @media(min-width:900px){.sent-area{max-width:640px;margin:12px auto 0}}
 .s-legend{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;font-size:.92rem;font-weight:650;margin:8px 0 6px;color:var(--accent2)}
@@ -292,7 +305,7 @@ h1{
 h1::before{content:"◇ ANIMUS / MEMORY CORE";display:block;font-size:.62rem;font-weight:600;color:var(--muted);letter-spacing:.12em;margin-bottom:4px}
 .sub{font-size:.8rem;letter-spacing:.02em;color:var(--muted);text-transform:none}
 /* Soft floating paper — large ambient + contact + top rim; thin border */
-.box,.card,.g,.intro,.pc-tip,.chat-tip,.ios-banner,.sent-area,.hint,.ex,.s-annot-wrap,.s-zh-wrap,.beat-step,.counts div{
+.box,.card,.g,.intro,.pc-tip,.chat-tip,.ios-banner,.sent-area,.hint,.ex,.s-annot-wrap,.s-zh-wrap,.s-coach-wrap,.beat-step,.counts div{
   border:1px solid rgba(200,200,196,.9)!important;
   border-radius:var(--radius)!important;
   box-shadow:
@@ -713,7 +726,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 .beat-done{background:var(--accent-soft)!important;border:1px solid #e0c8c8!important;color:var(--accent2)!important}
 .counts b{color:var(--accent)!important}
 .zh{color:var(--ink)!important}
-.voice b,.sent-area .s-title,.s-zh-label,.s-annot-label,.s-legend,.s-strict,.g h3,.thgo,.big b{color:var(--accent2)!important}
+.voice b,.sent-area .s-title,.s-zh-label,.s-coach-label,.s-annot-label,.s-legend,.s-strict,.g h3,.thgo,.big b{color:var(--accent2)!important}
 .wrap::after{
   content:"◇ ANIMUS MEMORY · VOCAB / SELECT";
   display:block;text-align:right;font-size:.62rem;letter-spacing:.1em;color:var(--muted);
@@ -2644,6 +2657,147 @@ async function sTranslateOnline(sent){
   }finally{clearTimeout(tm);}
  }catch(e){return null;}
 }
+
+/* ===== RICHER_SENT_FEEDBACK_V1：本地规则 · 怎么改更好（语音/手打共用） ===== */
+function sAAn(word){const w=String(word||"").toLowerCase();return /^[aeiou]/.test(w)?"an":"a";}
+function sCap1(s){s=String(s||"");return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function sEnsureDot(s){s=String(s||"").trim();if(!s)return s;return /[.?!]["')]*$/.test(s)?s:s+".";}
+function sPosKind(w){const p=String(w&&w.pos||"");
+ if(/^动词/.test(p))return "v";if(/^形容词/.test(p))return "adj";if(/^副词/.test(p))return "adv";
+ if(/^介词/.test(p))return "prep";if(/词组|短语/.test(p))return "ph";if(/^名词/.test(p))return "n";return "other";}
+function sModelRewrites(w,r,sent){
+ const en=String(w.en||""),zh=String(w.zh||"").split(/[；;，,/]/)[0],kind=sPosKind(w);
+ const past=sPastOf(en.toLowerCase()),sg=s3sgOf(en.toLowerCase()),aan=sAAn(en);
+ const out=[];
+ const push=function(enS,why,tag){enS=sEnsureDot(sCap1(String(enS||"").trim()));if(!enS)return;
+  if(out.some(function(x){return sNormSent(x.en)===sNormSent(enS);}))return;out.push({en:enS,zh:why,tag:tag||"示范"});};
+ const fixJoin=(r&&r.fix||[]).join(" ");
+ const hasTarget=!(!r||!sHasWord(sent,w.en).ok);
+ // 1) Prefer correction of the user's own sentence (polished)
+ if(r&&r.corrLocal){const c=sEnsureDot(r.corrLocal);if(sNormSent(c)!==sNormSent(sent))push(c,"在你原句上改了大小写/标点/时态等小错误，意思尽量不动。","按你的句子改");}
+ // 1b) If tense/3sg flagged, also rewrite the original verb in-place when possible
+ if(hasTarget&&r&&r.verbTok&&r.fixWord){
+  const re=new RegExp("\\b"+r.verbTok+"\\b","i");
+  if(re.test(sent)){const fixed=sEnsureDot(String(sent).replace(re,r.fixWord));
+   push(fixed,"把「"+r.verbTok+"」改成「"+r.fixWord+"」，时态/主谓就对了。","时态改写");}
+ }
+ if(/过去时间|过去式/.test(fixJoin)){
+  const m=String(sent).match(/\b(live|go|have|do|make|take|get|come|see|eat|buy|want|like|love|work|study|play|watch|help|need|call|visit)\b/i);
+  const base=m?m[1].toLowerCase():en.toLowerCase();
+  push("Yesterday I "+sPastOf(base)+" in Shanghai.","有 yesterday 等过去时间词时，动词用过去式。","时态");
+ }
+ if(/一般现在|加 -s|主谓/.test(fixJoin))push("She "+sg+" every day.","主语是 she/he/it 时，一般现在时用 "+sg+"。","主谓一致");
+ if(/将来|will/.test(fixJoin))push("I will "+en+" tomorrow.","有 tomorrow/next… 时，常用 will + 动词原形。","时态");
+ // 2) Missing target / POS common fixes
+ if(!hasTarget||/没找到|没用上目标词/.test(fixJoin)){
+  if(kind==="n")push("My "+en+" is Li Ming.","先把目标词「"+en+"」写进句子：my + 名词。","用上目标词");
+  else if(kind==="v")push("I "+en+" in Shanghai.","先把目标词「"+en+"」当动词用上。","用上目标词");
+  else if(kind==="adj")push("I am "+en+" now.","形容词要搭配 be：I am "+en+"。","用上目标词");
+  else push("I like "+en+".","最短完整句里用上「"+en+"」。","用上目标词");
+ }
+ if(kind==="adj"&&hasTarget&&!/\b(am|is|are|was|were|look|looks|feel|feels)\b/i.test(sent))
+  push("I am "+en+" now.","形容词前要有 be 动词，不要写成 I "+en+"。","词性");
+ if(kind==="n"&&hasTarget){
+  const toks=sTok(sent);const hw=sHasWord(sent,w.en);const prev=toks[hw.idx-1]||"";
+  if(hw.idx>=0&&!S_DET.has(prev)&&!S_DET.has(toks[hw.idx-2]||""))
+   push("I have "+aan+" "+en+".","名词前常加 a/an/the/my。","冠词/搭配");
+ }
+ // 3) Natural upgrade ONLY when already good (别在病句上硬加 at school)
+ if(r&&r.level==="good"&&sent&&hasTarget){
+  const toks=sTok(sent);const base=sEnsureDot(String(sent).replace(/[.?!]+$/,""));
+  if(/^my name is\b/i.test(sent)){
+   push(base.replace(/[.?!]+$/,"")+" and I am a student.","自我介绍时再补一句身份，更自然完整。","可以更自然");
+  }else if(kind==="adj"&&/\b(am|is|are)\b/i.test(sent)&&!/\bvery\b/i.test(sent)){
+   push(base.replace(/\b(am|is|are)\s+/i,function(m){return m+"very ";}),"加上 very，程度更清楚，口语更自然。","可以更自然");
+  }else if(kind==="v"&&toks.length<=8&&!/\b(every day|yesterday|tomorrow|because)\b/i.test(sent)){
+   push(base.replace(/[.?!]+$/,"")+" every day.","补上 every day，说明这是习惯，更像完整表达。","可以更自然");
+  }else if(toks.length<=8&&!/\b(because|at school|at home)\b/i.test(sent)){
+   push(base.replace(/[.?!]+$/,"")+" because I like it.","加 because… 说明原因，表达更完整。","可以更自然");
+  }else if(w.exEn&&sNormSent(w.exEn)!==sNormSent(sent)){
+   push(w.exEn,"对照课本例句，学更稳的搭配（可再换成自己的内容）。","可以更自然");
+  }
+ }
+ // 4) Fill remaining with soft templates
+ if(out.length<2){
+  if(kind==="n"){push("My "+en+" is Li Ming.","用 my + 名词，说明「是谁的、叫什么」。","自然用法");push("I have "+aan+" "+en+".","have + a/an + 名词：说「我有一个…」。","搭配");}
+  else if(kind==="v"){push("I "+en+" in Shanghai.","主语 I + 动词原形：说自己常做的事。","一般现在");push("She "+sg+" every day.","主语 she/he/it 时动词加 -s（"+sg+"）。","主谓一致");}
+  else if(kind==="adj"){push("I am "+en+" now.","形容词常跟在 am/is/are 后面。","be+形");push("I feel very "+en+".","feel/look + 形容词更口语；very 把程度说清楚。","升级");}
+  else if(kind==="adv"){push("I speak English "+en+".","副词常放句末修饰动词。","语序");push("Please speak "+en+".","祈使句 + 副词，短而清楚。","示范");}
+  else if(kind==="prep"){push("I am "+en+" China.","介词 "+en+" 常跟在 be 后面再说地点/来源。","搭配");if(w.exEn)push(w.exEn,"本课例句结构稳，可先模仿。","参考例句");}
+  else if(kind==="ph"){push("I can "+en+".","固定词组尽量连着写。","词组");if(w.exEn)push(w.exEn,"照词组完整用法说整句。","参考例句");}
+  else{if(w.exEn)push(w.exEn,"先学例句结构，再换成自己的内容。","参考例句");push("I like "+en+".","最短完整句：I + 动词 + 目标词。","起步");}
+ }
+ if(out.length<2&&w.exEn&&sNormSent(w.exEn)!==sNormSent(sent))push(w.exEn,"课本例句（"+zh+"）：结构清楚，适合先模仿。","课本例句");
+ return out.slice(0,2);
+}
+function sCoachPoints(sent,w,r){
+ const good=[],prob=[],hw=sHasWord(sent,w.en),kind=sPosKind(w),toks=sTok(sent);
+ if(hw.ok)good.push("用上了目标词「"+w.en+"」（"+String(w.zh||"").split(/[；;，,/]/)[0]+"）");
+ else prob.push("还没用上目标词「"+w.en+"」——造句练习请把这个词写进句子里");
+ if(/^[A-Z]/.test(sent))good.push("句首大写对了");
+ if(/[.?!]["')]*$/.test(sent))good.push("句末有英文标点");
+ if(toks.length>=5)good.push("句子信息比较完整");
+ else if(toks.length>=3)good.push("已经是完整短句");
+ if(r){
+  (r.ok||[]).forEach(function(x){if(/时态/.test(x)&&!good.some(function(g){return /时态/.test(g);}))good.push(x);});
+  (r.fix||[]).forEach(function(x){
+   const s=String(x);
+   if(/没找到|没用上目标词/.test(s))return;
+   if(/开头|句首|大写/.test(s))prob.push("句首字母要大写（English 句子第一个词首字母大写）");
+   else if(/末尾|标点/.test(s))prob.push("句末请用英文 . 或 ? 或 !");
+   else if(/过去时间|过去式/.test(s))prob.push("有过去时间词时，动词要用过去式");
+   else if(/一般现在|加 -s|主谓/.test(s))prob.push("主语是 he/she/it 时，一般现在时动词常要加 -s");
+   else if(/将来|will/.test(s))prob.push("有 tomorrow/next… 时，多用 will / be going to");
+   else if(/太短/.test(s))prob.push("句子太短：至少写「谁 + 做什么/是什么」");
+   else if(/中文/.test(s))prob.push("请全部用英文写，不要夹中文");
+   else if(/冠词|a\/the\/my|名词前/.test(s))prob.push("名词前常加 a/an/the/my，再说清楚一点");
+   else if(/撇号/.test(s))prob.push(s.slice(0,60));
+   else prob.push(s.length>72?s.slice(0,70)+"…":s);
+  });
+  (r.tips||[]).forEach(function(x){
+   const s=String(x);
+   if(/缺动词|没有动词|没看到动词/.test(s))prob.push("好像缺少动词（is/am/are/like/have/go…）");
+   else if(/照抄例句/.test(s))prob.push("尽量自己造，不要几乎照抄例句");
+   else if(/固定词组|连在一起/.test(s))prob.push("「"+w.en+"」是固定说法，尽量连着写");
+   else if(/形容词前常要 be/.test(s))prob.push("形容词前常要有 be 动词，如 I am "+w.en+".");
+   else if(/偏短|加点具体/.test(s))prob.push("可以再加点具体信息（谁的、在哪、做什么）");
+  });
+ }
+ if(hw.ok&&kind==="adj"&&!/\b(am|is|are|was|were|look|looks|feel|feels|seem|seems|very|so|too)\b/i.test(sent))
+  prob.push("「"+w.en+"」是形容词，常用在 be/look/very 后面");
+ if(hw.ok&&kind==="n"){
+  const i=hw.idx,prev=(toks[i-1]||"");
+  if(i>=0&&!S_DET.has(prev)&&!S_DET.has(toks[i-2]||""))
+   prob.push("「"+w.en+"」是名词，前面常加 a/an/the/my");
+ }
+ const ded=function(arr){const s=new Set(),o=[];arr.forEach(function(x){const k=x.slice(0,36);if(s.has(k))return;s.add(k);o.push(x);});return o;};
+ return {good:ded(good).slice(0,4),prob:ded(prob).slice(0,5)};
+}
+function sCoachHtml(sent,w,r,corr){
+ if(!w||!sent)return "";
+ const MARKER="RICHER_SENT_FEEDBACK_V1";
+ const pts=sCoachPoints(sent,w,r);
+ const rr=Object.assign({},r||{},{corrLocal:corr||(r&&r.corrLocal)||""});
+ const rew=sModelRewrites(w,rr,sent);
+ let h='<div class="s-coach-wrap" data-s-coach="'+MARKER+'"><div class="s-coach-label">✨ 怎么改更好</div>';
+ if(r&&r.level==="good")h+='<div class="s-coach-sum">这句已经能用。下面告诉你：哪里不错，以及怎样说得更自然一点。</div>';
+ else if(r&&r.level==="mid")h+='<div class="s-coach-sum">大意能懂，还有小地方可以更好。对照下面改一改，会更像英语。</div>';
+ else h+='<div class="s-coach-sum">先看问题，再看「更好的改写」。改完可以再点一次检测。</div>';
+ if(pts.good.length){h+='<div class="s-coach-sum"><b>👍 哪里好</b></div><ul class="s-coach-list">'+pts.good.map(function(x){return "<li>"+sEsc(x)+"</li>";}).join("")+"</ul>";}
+ if(pts.prob.length){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list">'+pts.prob.map(function(x){return "<li>"+sEsc(x)+"</li>";}).join("")+"</ul>";}
+ else if(r&&r.level==="good"){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list"><li>语法上没有大问题；下面给你一句更自然的说法。</li></ul>';}
+ if(rew.length){
+  h+='<div class="s-coach-sum"><b>✏️ 更好的改写</b>（可点喇叭听）</div><div class="s-coach-rewrites">';
+  rew.forEach(function(it,i){
+   h+='<div class="s-coach-item"><div class="s-coach-en"><span class="s-coach-tag">'+sEsc(it.tag||("示范"+(i+1)))+"</span>"+sEsc(it.en)+(typeof spkBtns==="function"?spkBtns(it.en):"")+'</div>';
+   h+='<div class="s-coach-zh">为什么更好：'+sEsc(it.zh)+"</div></div>";
+  });
+  h+="</div>";
+ }
+ h+='<div class="s-coach-note">本地规则提示 · 适合中职基础 · 语音识别造句与手打共用同一套反馈</div></div>';
+ return h;
+}
+
 function sZhBlock(tr){
  if(!tr||!tr.zh)return "";
  return '<div class="s-zh-wrap" id="sZhBox"><div class="s-zh-label">你的句子意思（中文翻译）</div><div class="s-zh-text" id="sZhText">'+sEsc(tr.zh)+'</div><div class="s-zh-note" id="sZhNote">'+sEsc(tr.note||"")+'</div></div>';
@@ -2660,6 +2814,7 @@ function sRenderRes(r,lt,ltState,corr,sent,paintInfo,tr){const head=r.level==="g
  if(corr&&corr!==sent){h+='<div class="s-annot-wrap"><div class="s-annot-label">对照改法</div><div class="s-diff" id="sDiff">'+sWordDiffHtml(sent,corr)+'</div><div style="margin-top:6px"><span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorr">用参考改法</button></div></div>';}
  else if(corr){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';}
  h+=sChipHtml(paintInfo.chips,sent);
+ try{h+=sCoachHtml(sent,sCurWord(),r,corr);}catch(e){}
  if(r.ok.length)h+='<div class="s-sec"><b>做对了：</b><ul>'+r.ok.map(x=>"<li>✔ "+sEsc(x)+"</li>").join("")+"</ul></div>";
  const fixes=sDedupLines(r.fix.concat(lt||[]));
  if(fixes.length)h+='<div class="s-sec"><b>要改（详细原因）：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
@@ -2727,8 +2882,8 @@ function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘
 /* 本词表增强：撇号词、去重提示、参考改法里自动套用时态修正 */
 function localCheck(sent,w){const s=String(sent||"").replace(/[’‘]/g,"'");const r=localCheck0(s,w);
  if(/'/.test(w.en)){const loose=w.en.replace(/'/g,"").toLowerCase();if(sTok(s).includes(loose)){r.fix=r.fix.filter(x=>!/没找到/.test(x));r.fix.push("「"+w.en+"」要带撇号，写成 "+w.en+"（你写成了 "+loose+"）");}}
- const tf=(r.fix||[]).find(x=>/(过去时间词|一般现在时).*改成：/.test(x));
- if(tf){const m=tf.match(/改成：\s*([A-Za-z']+)/);if(m)r.fixWord=m[1];r.tips=r.tips.filter(x=>!/加 -s/.test(x));}
+ const tf=(r.fix||[]).find(x=>/(过去时间词|一般现在时|过去式|主谓).*改成[：:]/.test(x)||/把「[^」]+」改成「[A-Za-z']+」/.test(x));
+ if(tf){const m=tf.match(/改成[：:]\s*([A-Za-z']+)/)||tf.match(/改成「([A-Za-z']+)」/);if(m)r.fixWord=m[1];r.tips=r.tips.filter(x=>!/加 -s/.test(x));}
  r.corrLocal=sPolish(r.corrLocal||s,r);
  r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");return r;}
 function sPolish(c,r){c=String(c||"");c=c.replace(/(^|\s)i(?=\s|'|$)/g,(m,a)=>a+"I");
@@ -2816,6 +2971,7 @@ function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(
  if(corr&&corr!==sent){h+='<div class="s-annot-wrap"><div class="s-annot-label">对照改法</div><div class="s-diff">'+sWordDiffHtml(sent,corr)+'</div><div style="margin-top:6px"><span class="s-corr" id="sCorrTextTwist">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorrTwist">用参考改法</button></div></div>';}
  else if(corr){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';}
  h+=sChipHtml(paintInfo.chips,sent);
+ try{h+=sCoachHtml(sent,sCurWord(),r,corr);}catch(e){}
  if(r.ok.length)h+='<div class="s-sec"><b>做对了：</b><ul>'+r.ok.map(x=>"<li>✔ "+sEsc(x)+"</li>").join("")+"</ul></div>";
  const fixes=sDedupLines(r.fix.concat(lt||[]));
  if(fixes.length)h+='<div class="s-sec"><b>要改（详细原因）：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
