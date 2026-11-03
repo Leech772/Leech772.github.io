@@ -755,15 +755,22 @@ function fsLabel(){$("btnFs").textContent=(document.fullscreenElement||document.
 document.addEventListener("fullscreenchange",fsLabel);document.addEventListener("webkitfullscreenchange",fsLabel);
 
 let voice=null;
-const FEM=/female|woman|libby|sonia|maisie|hazel|susan|serena|kate|stephanie|amy|emma|fiona|martha|karen|moira|samantha|google uk english female/i;
+const FEM=/female|woman|libby|sonia|maisie|serena|hazel|susan|kate|stephanie|amy|emma|fiona|martha|karen|moira|samantha|google uk english female/i;
+const PREF_FEM=/libby|sonia|maisie|serena|hazel|susan|kate|google uk english female|microsoft.*(online|natural|neural).*uk|en[-_]gb.*female|female.*en[-_]gb/i;
 const MALE=/\bmale\b|ryan|thomas|george|daniel|arthur|oliver|google uk english male/i;
+const DEMOTE=/jessica|microsoft jessica|\bzira\b/i;
 function score(v){const l=(v.lang||"").toLowerCase(),n=v.name||"";let s=0;if(/en[-_]gb/.test(l)||/british|uk english/i.test(n))s+=50;else if(/^en/.test(l))s+=10;
- if(FEM.test(n)&&!/\bmale\b/i.test(n.replace(/female/i,"")))s+=30;if(MALE.test(n)&&!/female/i.test(n))s-=20;if(/natural|online|neural/i.test(n))s+=8;return s;}
+ if(FEM.test(n)&&!/\bmale\b/i.test(n.replace(/female/i,"")))s+=30;if(PREF_FEM.test(n)||(PREF_FEM.test(l+" "+n)))s+=40;if(MALE.test(n)&&!/female/i.test(n))s-=20;if(/natural|online|neural/i.test(n))s+=8;if(/jessica/i.test(n))s-=80;else if(DEMOTE.test(n))s-=25;return s;}
+function bestVoice(vs){return vs.slice().sort((a,b)=>score(b)-score(a))[0]||null;}
 function pickVoice(){if(!window.speechSynthesis)return;const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang||""));
- voice=vs.find(v=>v.name===ALL.voice)||vs.slice().sort((a,b)=>score(b)-score(a))[0]||null;
+ const best=bestVoice(vs);let saved=vs.find(v=>v.name===ALL.voice)||null;let switched=false;
+ if(saved&&(/jessica/i.test(saved.name)||(best&&score(best)-score(saved)>=40))){ALL.voice="";if(ALL.day)S().voice="";save();saved=null;switched=true;}
+ if(!saved&&best){ALL.voice=best.name;if(ALL.day)S().voice=ALL.voice;save();}
+ voice=vs.find(v=>v.name===ALL.voice)||best||null;
  $("vName").textContent=voice?voice.name+" ("+voice.lang+")":"无英语语音";
+ if(switched&&voice)$("vTip").textContent="已换成更好听的英式女声（可在下拉框改）";
  $("vTip").classList.add("show");
- const sel=$("vSel");sel.innerHTML="";vs.sort((a,b)=>score(b)-score(a)).forEach(v=>{const o=document.createElement("option");o.value=v.name;o.textContent=(score(v)>=70?"⭐ ":"")+v.name+" ("+v.lang+")";if(voice&&v.name===voice.name)o.selected=true;sel.appendChild(o);});}
+ const sel=$("vSel");sel.innerHTML="";vs.slice().sort((a,b)=>score(b)-score(a)).forEach(v=>{const o=document.createElement("option");o.value=v.name;o.textContent=(score(v)>=70?"⭐ ":"")+v.name+" ("+v.lang+")";if(voice&&v.name===voice.name)o.selected=true;sel.appendChild(o);});}
 $("vSel").onchange=e=>{ALL.voice=e.target.value;if(ALL.day)S().voice=ALL.voice;save();pickVoice();speak("Hello! Let's learn English.");};
 if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;warmupTTS();}
 // Always read from window.BUILTIN_AUDIO (packs mutate it via Object.assign)
