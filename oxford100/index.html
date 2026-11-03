@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><head><meta charset="UTF-8"/>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- ESSAY_V2_REF --><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -279,6 +279,63 @@ html.immersive .top{flex-wrap:nowrap;justify-content:flex-start;gap:6px}html.imm
 #essayIn{width:100%;box-sizing:border-box;font-size:16px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);resize:vertical;font-family:inherit;background:var(--card);color:var(--ink);line-height:1.55}
 #essayIn:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(139,26,26,.18)}
 #essayRes{margin-top:8px;font-size:.88rem;line-height:1.55}
+
+/* ESSAY_V2_REF styles */
+.e2-wrap{text-align:left}
+.e2-head{margin:0 0 10px}
+.e2-h1{font-weight:800;font-size:1.1rem;color:var(--accent2)}
+.e2-tag{font-size:.68rem;font-weight:700;background:#f3e6e6;color:var(--accent);padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle}
+.e2-sub{font-size:.86rem;color:var(--muted);line-height:1.55;margin:6px 0 0}
+.e2-list{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px}
+@media(min-width:720px){.e2-list{grid-template-columns:1fr 1fr}}
+.e2-card{display:block;width:100%;text-align:left;border:1px solid var(--border);background:var(--card);border-radius:var(--radius);padding:12px 14px;cursor:pointer;font:inherit;color:var(--ink);box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.e2-card:active{transform:scale(.99)}
+.e2-card-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.e2-ico{font-size:1.2rem}
+.e2-type{font-size:.72rem;font-weight:700;background:#eef2ff;color:#334;padding:2px 8px;border-radius:999px}
+.e2-badge{margin-left:auto;font-size:.72rem;font-weight:700;background:#cfe9d8;color:#1f4d36;padding:2px 8px;border-radius:999px}
+.e2-card-title{font-weight:750;font-size:.98rem;margin:2px 0}
+.e2-card-en{font-size:.82rem;color:var(--muted);line-height:1.4}
+.e2-card-meta{font-size:.75rem;color:var(--accent2);margin-top:6px;font-weight:650}
+.e2-taskcard{border:1px solid var(--border);background:var(--paper);border-radius:var(--radius);padding:12px 14px;margin:8px 0 10px}
+.e2-tc-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.e2-tc-title{font-weight:800;font-size:1.05rem;color:var(--accent2)}
+.e2-tc-en{font-size:.86rem;color:var(--muted);margin:2px 0 8px}
+.e2-tc-grid{display:grid;grid-template-columns:1fr;gap:8px;font-size:.84rem;line-height:1.45}
+@media(min-width:640px){.e2-tc-grid{grid-template-columns:1fr 1fr 1.4fr}}
+.e2-tc-grid b{color:var(--accent2)}
+.e2-steps{margin:8px 0 12px}
+.e2-ref .e2-block{margin-bottom:10px}
+.e2-ol{margin:0;padding-left:1.2em;line-height:1.55;font-size:.9rem}
+.e2-ol li{margin:6px 0}
+.e2-model{background:var(--card);border:1px dashed var(--border);border-radius:10px;padding:10px 12px}
+.e2-mp{margin:0 0 8px;line-height:1.55;font-size:.92rem}
+.e2-zhbox{margin-top:8px;font-size:.88rem;line-height:1.55;color:var(--ink)}
+.e2-zhbox summary{cursor:pointer;font-weight:700;color:var(--accent2)}
+.e2-muted{color:var(--muted);font-size:.82rem}
+.e2-zh{font-weight:500;opacity:.75;font-size:.72rem}
+.e2-go{margin:12px 0 4px}
+.e2-writebox textarea,#e2In{width:100%;box-sizing:border-box;font-size:16px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);resize:vertical;font-family:inherit;background:var(--card);color:var(--ink);line-height:1.55}
+#e2In:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px rgba(139,26,26,.18)}
+.e2-write-lab{font-size:.82rem;font-weight:700;color:var(--accent2);margin:0 0 6px}
+.e2-score{font-size:1rem;margin-bottom:8px}
+.e2-score b{font-size:1.4rem}
+.e2-fb-sec{margin:12px 0;padding-top:8px;border-top:1px solid var(--border)}
+.e2-fb-sec h4{margin:0 0 6px;font-size:.95rem;color:var(--accent2)}
+.e2-ul{margin:0;padding-left:1.1em;line-height:1.55;font-size:.88rem}
+.e2-ul li{margin:5px 0}
+.e2-ul li.ok{color:#1f4d36}
+.e2-ul li.bad{color:#7a2438}
+.e2-fix{font-size:.82rem;color:var(--muted);margin-top:2px}
+.e2-rewrite{background:#f7f3ee;border-radius:10px;padding:10px 12px}
+.e2-rw{font-weight:700;margin:6px 0;line-height:1.5}
+.e2-hist{border-top:1px solid var(--border);padding:10px 0}
+.e2-hist-h{margin-bottom:4px}
+.e2-sc{background:#eef2ff;padding:1px 8px;border-radius:999px;font-size:.78rem;font-weight:700}
+.e2-foot{font-size:.8rem;color:var(--muted);margin-top:12px;line-height:1.45}
+.e2-fb-actions{flex-wrap:wrap;gap:8px;margin-top:10px}
+.essay-chip .e2-zh{margin-left:2px}
+
 
 </style>
 <style id="animus-ac2-chrome">
@@ -1171,6 +1228,249 @@ note:[["第1段","先描述现状（busy, no time），再用 I believe… shoul
 {id:"m03",t:"Task 1 · How students travel to school",zh:"小作文：学生上学方式柱状图",chart:[["Bus",40],["Bike",25],["Walk",10],["Car",25]],p:["The chart shows how forty students in one class travel to school.","Bus was the most popular way, at 40%. Bike and car were the same, at 25% each. Only 10% of the students walk to school, so walking was the lowest.","Overall, most students take the bus, and very few students walk."],
 note:[["第1段","The chart shows… 改写图表标题，不要照抄。"],["第2段","先写最高（most popular），再写相同的（the same），最后写最低（the lowest），每个都带数字。"],["第3段","Overall 总结最明显的特点。Task 1 不写 I think！"],["用到的词库词","school, bus, bike, car, walk, student, class"]]}
 ]};
+
+/* ESSAY_V2_REF — 作文专区：选题卡 / 写前参考 / 写作 / 结构+语法反馈 / 历史 */
+const ESSAY_V2_MARK="ESSAY_V2_REF";
+const ESSAY_TASKS=[
+{id:"e01",theme:"学校与学习",icon:"🏫",type:"观点",
+ titleEn:"Is it better to study online or in a classroom?",
+ titleZh:"网上学习还是教室里学习更好？",
+ wordsMin:60,wordsMax:120,
+ must:["study","teacher","learn","school","online"],
+ focus:["结构：开头亮观点 → 1～2 个理由 → 结尾","语法：一般现在时；because / but / However","词汇：尽量用上 must 词"],
+ outline:[
+  ["开头","改写题目 + 亮明观点（In my opinion…）","Introduce the topic and give your opinion."],
+  ["理由一","观点 + because 原因 + For example 例子","Give reason 1 with because + example."],
+  ["理由二/让步","另一理由，或 It is true that… However…","Give reason 2 or a concession."],
+  ["结尾","In conclusion / To sum up 重复观点","Restate your opinion briefly."]
+ ],
+ patterns:[
+  ["I think ___ is better than ___.","我认为___比___更好。"],
+  ["This is because ___.","这是因为___。"],
+  ["For example, ___.","例如，___。"],
+  ["It is true that ___, but ___.","___确实如此，但是___。"],
+  ["In conclusion, I think ___.","总之，我认为___。"]
+ ],
+ modelEn:["Today, many students study online. Some people think online classes are better. In my opinion, classroom lessons are still better for most students.","First, students can ask the teacher questions easily in a classroom. This is because the teacher is in the same room. For example, when I do not understand a new word, I can put up my hand.","It is true that online classes are cheap and students can learn at home. However, it is difficult to stay focused, and the internet is sometimes slow.","In conclusion, I think classroom lessons are better because students can get help quickly and learn with friends at school."],
+ modelZh:"今天很多学生在网上学习。有人觉得网课更好。我认为对大多数学生来说，教室上课仍然更好。首先，教室里可以马上问老师。这是因为老师就在同一间教室。例如我不懂新词时可以举手。网课确实便宜、能在家学，但很难集中注意力，网速有时也很慢。总之，我认为教室上课更好，因为能快速得到帮助，还能和同学一起学。",
+ goodWords:[["online","在线的"],["classroom","教室"],["focused","专注的"],["cheap","便宜的"],["question","问题"],["however","然而"]]},
+
+{id:"e02",theme:"日常活动",icon:"⏰",type:"叙述",
+ titleEn:"Describe your daily routine.",
+ titleZh:"描述你的一天作息。",
+ wordsMin:60,wordsMax:100,
+ must:["get up","breakfast","study","exercise","sleep"],
+ focus:["结构：早上 → 白天 → 晚上","语法：一般现在时；时间表达 at / in the morning","词汇：用上 get up / breakfast 等"],
+ outline:[
+  ["开头","一句话总说：My day starts early.","One sentence about your day."],
+  ["早上","起床、早饭、去学校/上班","Morning: get up, breakfast, go to school."],
+  ["白天/晚上","学习/工作、锻炼、睡觉","Afternoon/evening: study, exercise, sleep."],
+  ["结尾","一句感受：I feel busy but happy.","End with how you feel."]
+ ],
+ patterns:[
+  ["I get up at ___.","我___点起床。"],
+  ["In the morning, I ___.","早上，我___。"],
+  ["After that, I ___.","然后，我___。"],
+  ["In the evening, I ___.","晚上，我___。"],
+  ["I usually ___ because ___.","我通常___，因为___。"]
+ ],
+ modelEn:["I get up at seven every morning. First, I drink some water and eat breakfast. I usually have bread and an egg.","Then I go to school. Classes start at eight and finish at four. After school, I study English for one hour.","In the evening, I exercise in the park or help my mother cook dinner. I sleep at ten because I need eight hours of sleep.","My day is busy, but I feel healthy and happy."],
+ modelZh:"我每天早上七点起床。先喝点水、吃早饭，通常吃面包和一个鸡蛋。然后去学校，八点上课四点放学。放学后我学一小时英语。晚上我在公园锻炼或帮妈妈做饭。我十点睡觉，因为需要睡八小时。我的一天很忙，但感觉健康又开心。",
+ goodWords:[["usually","通常"],["after school","放学后"],["healthy","健康的"],["busy","忙碌的"],["every morning","每天早上"]]},
+
+{id:"e03",theme:"身体与健康",icon:"🏥",type:"观点",
+ titleEn:"Should people do more exercise?",
+ titleZh:"人们应该多运动吗？",
+ wordsMin:60,wordsMax:120,
+ must:["exercise","healthy","body","walk","should"],
+ focus:["结构：观点 → 两个理由 → 结尾","语法：should；一般现在时","内容：健康 + 放松"],
+ outline:[
+  ["开头","现状（很多人忙）+ I believe people should…","Busy life + your opinion with should."],
+  ["理由一","运动让身体 healthy + 例子","Exercise keeps the body healthy + example."],
+  ["理由二","运动帮助放松 / 开心","Exercise helps people relax."],
+  ["结尾","To sum up…","Restate: people should find time."]
+ ],
+ patterns:[
+  ["I believe everyone should ___.","我相信每个人都应该___。"],
+  ["The main reason is that ___.","主要原因是___。"],
+  ["For instance, ___.","比如，___。"],
+  ["Another reason is that ___.","另一个原因是___。"],
+  ["To sum up, ___.","总的来说，___。"]
+ ],
+ modelEn:["Many people today are very busy, and they do not have time to exercise. I believe everyone should do some exercise every week.","The main reason is that exercise keeps our body healthy. People who walk or run often do not get sick easily. For instance, my father started running in the park last year, and now he feels much better.","Another reason is that exercise helps us relax. After a long day at school, playing sport with friends can make us happy again.","To sum up, exercise is important for our body and our feelings, so people should find time for it."],
+ modelZh:"现在很多人很忙，没时间运动。我相信每个人每周都应该做一些运动。主要原因是运动让身体保持健康。常走路或跑步的人不容易生病。比如我爸爸去年开始在公园跑步，现在感觉好多了。另一个原因是运动能帮我们放松。忙完一天后和好朋友运动，会重新开心起来。总之，运动对身体和心情都很重要，所以大家应该挤出时间。",
+ goodWords:[["believe","相信"],["sick","生病的"],["relax","放松"],["important","重要的"],["feel","感觉"]]},
+
+{id:"e04",theme:"交通与出行",icon:"🚌",type:"描述",
+ titleEn:"How do you usually travel to school or work?",
+ titleZh:"你通常怎么去学校或上班？",
+ wordsMin:60,wordsMax:100,
+ must:["bus","walk","take","time","usually"],
+ focus:["结构：方式 → 时间/路程 → 喜欢原因","语法：一般现在时；by bus / on foot","词汇：交通词"],
+ outline:[
+  ["开头","我通常怎么去","How you usually travel."],
+  ["细节","花多久、路上做什么","How long it takes; what you do on the way."],
+  ["比较","有时走路/地铁？为什么","Sometimes another way? Why."],
+  ["结尾","你喜欢这种出行吗","Do you like this way?"]
+ ],
+ patterns:[
+  ["I usually go to school by ___.","我通常坐___去学校。"],
+  ["It takes about ___ minutes.","大概要___分钟。"],
+  ["Sometimes I ___.","有时候我___。"],
+  ["I like this way because ___.","我喜欢这种方式，因为___。"],
+  ["Taking the bus is ___ than ___.","坐公交比___更___。"]
+ ],
+ modelEn:["I usually go to school by bus. The bus stop is near my home, so it is easy.","It takes about twenty minutes. On the bus, I often listen to English or read a short book.","Sometimes I walk when the weather is nice. Walking takes longer, but it is good exercise.","I like taking the bus because it is cheap and I can rest. In bad weather, the bus is safer than a bike."],
+ modelZh:"我通常坐公交上学。车站离家近，很方便。大概要二十分钟。车上我常听英语或看点短书。天气好时我有时走路。走路更久，但是很好的锻炼。我喜欢坐公交，因为它便宜还能休息。天气不好时，公交比自行车更安全。",
+ goodWords:[["near","靠近"],["cheap","便宜的"],["weather","天气"],["safer","更安全的"],["rest","休息"]]},
+
+{id:"e05",theme:"城市与地点",icon:"🏙️",type:"描述",
+ titleEn:"Describe your favourite place in your city.",
+ titleZh:"描述你城市里最喜欢的地方。",
+ wordsMin:60,wordsMax:110,
+ must:["city","park","library","there","like"],
+ focus:["结构：是什么 → 有什么 → 为什么喜欢","语法：There is/are；一般现在时","词汇：地点词"],
+ outline:[
+  ["开头","我最喜欢的地方是…","Name your favourite place."],
+  ["环境","There is/are… 有什么","What you can see/find there."],
+  ["活动","我在那里做什么","What you do there."],
+  ["结尾","为什么喜欢 + 感受","Why you like it."]
+ ],
+ patterns:[
+  ["My favourite place is ___.","我最喜欢的地方是___。"],
+  ["There is / There are ___.","有___。"],
+  ["I often ___ there.","我经常在那里___。"],
+  ["I like it because ___.","我喜欢它，因为___。"],
+  ["It makes me feel ___.","它让我感觉___。"]
+ ],
+ modelEn:["My favourite place in my city is a small park near the library.","There are many trees and a quiet lake. There is also a free library next to the park, so I can borrow books.","I often walk there after school. Sometimes I read on a bench or talk with my friends.","I like this place because it is quiet and free. When I feel tired, the park makes me feel happy again."],
+ modelZh:"我城市里最喜欢的地方是图书馆附近的一个小公园。那里有很多树和一个安静的湖。公园旁边还有免费图书馆，可以借书。放学后我常去那里走走。有时在长椅上看书，或和朋友聊天。我喜欢这里，因为它安静又免费。累的时候，公园会让我重新开心起来。",
+ goodWords:[["quiet","安静的"],["free","免费的"],["bench","长椅"],["borrow","借"],["tired","累的"]]},
+
+{id:"e06",theme:"工作与实习",icon:"💼",type:"观点",
+ titleEn:"Is a part-time job useful for students?",
+ titleZh:"学生做兼职有用吗？",
+ wordsMin:70,wordsMax:120,
+ must:["work","job","student","learn","money"],
+ focus:["结构：观点 → 好处 → 注意点/结尾","语法：can / should；一般现在时","内容：学技能 + 赚钱"],
+ outline:[
+  ["开头","亮观点：I think a part-time job is useful.","Give your opinion."],
+  ["好处一","可以 learn skills / meet people","Learn skills or meet people."],
+  ["好处二","可以赚一点 money","Earn some money."],
+  ["结尾","但不要影响学习 + 总结","But study comes first + conclusion."]
+ ],
+ patterns:[
+  ["I think a part-time job is useful because ___.","我认为兼职有用，因为___。"],
+  ["Students can learn ___.","学生可以学到___。"],
+  ["For example, ___.","例如，___。"],
+  ["However, students should ___.","然而，学生应该___。"],
+  ["In conclusion, ___.","总之，___。"]
+ ],
+ modelEn:["Many students want a part-time job. I think it is useful if they have enough time.","First, students can learn real skills at work. For example, they learn how to talk to customers and work in a team.","Second, a job can give them some money. They can buy books or help their family a little.","However, students should not work too many hours, because study is still the most important. In conclusion, a short part-time job is good for learning and money."],
+ modelZh:"很多学生想做兼职。我认为如果时间够，兼职是有用的。首先，学生能在工作中学到真实技能，比如怎么和顾客说话、怎么团队合作。其次，工作能赚一点钱，可以买书或稍稍帮家里。不过学生不该工时太长，因为学习仍最重要。总之，短时兼职对学习和赚钱都有好处。",
+ goodWords:[["skill","技能"],["customer","顾客"],["team","团队"],["however","然而"],["important","重要的"]]},
+
+{id:"e07",theme:"天气与季节",icon:"🌤️",type:"描述",
+ titleEn:"What is your favourite season? Why?",
+ titleZh:"你最喜欢哪个季节？为什么？",
+ wordsMin:60,wordsMax:100,
+ must:["weather","summer","winter","like","because"],
+ focus:["结构：选季节 → 两个原因 → 结尾","语法：because；形容词","词汇：天气/季节词"],
+ outline:[
+  ["开头","My favourite season is…","Name the season."],
+  ["原因一","天气怎么样","What the weather is like."],
+  ["原因二","可以做什么活动","What you can do."],
+  ["结尾","总结感受","How it makes you feel."]
+ ],
+ patterns:[
+  ["My favourite season is ___.","我最喜欢的季节是___。"],
+  ["The weather is ___ and ___.","天气___又___。"],
+  ["I like it because I can ___.","我喜欢它，因为我可以___。"],
+  ["In ___, people usually ___.","在___，人们通常___。"],
+  ["That is why I love ___.","所以我爱___。"]
+ ],
+ modelEn:["My favourite season is autumn. The weather is cool and sunny.","I like it because I can walk in the park and take photos of the trees. The air feels clean.","In summer it is too hot in my city, and in winter it is too cold. Autumn is just right.","That is why I love autumn. It makes me feel calm and happy."],
+ modelZh:"我最喜欢秋天。天气凉爽又晴朗。我喜欢秋天，因为可以在公园散步、拍树的照片，空气感觉很干净。夏天我的城市太热，冬天又太冷，秋天刚刚好。所以我爱秋天，它让我平静又开心。",
+ goodWords:[["cool","凉爽的"],["sunny","晴朗的"],["calm","平静的"],["just right","刚刚好"],["air","空气"]]},
+
+{id:"e08",theme:"食物与用餐",icon:"🍚",type:"描述",
+ titleEn:"Describe a meal you like.",
+ titleZh:"描述一顿你喜欢的饭。",
+ wordsMin:60,wordsMax:100,
+ must:["food","eat","delicious","breakfast","like"],
+ focus:["结构：什么饭 → 有什么菜 → 为什么喜欢","语法：一般现在时 / 一般过去时二选一","词汇：食物词"],
+ outline:[
+  ["开头","我喜欢的一顿饭是…","Name the meal."],
+  ["内容","吃什么、和谁一起","What you eat / who with."],
+  ["感觉","味道、为什么喜欢","Taste and why."],
+  ["结尾","你多久吃一次","How often."]
+ ],
+ patterns:[
+  ["My favourite meal is ___.","我最喜欢的一餐是___。"],
+  ["I usually eat ___.","我通常吃___。"],
+  ["The food is delicious because ___.","食物很好吃，因为___。"],
+  ["I like eating with ___.","我喜欢和___一起吃。"],
+  ["I have this meal ___ a week.","我一周吃___次这顿饭。"]
+ ],
+ modelEn:["My favourite meal is Sunday breakfast at home. I usually eat eggs, bread and some fruit.","Sometimes my mother makes noodles. The food is simple, but it is delicious and warm.","I like eating with my family. We talk about the week and feel close.","I have this meal once a week. It makes my Sunday morning slow and happy."],
+ modelZh:"我最喜欢的一餐是周日在家的早餐。我通常吃鸡蛋、面包和一些水果。有时妈妈会做面条。食物很简单，但好吃又暖。我喜欢和家人一起吃，我们聊这一周的事，感觉很亲近。我一周吃一次。它让我的周日早上又慢又开心。",
+ goodWords:[["simple","简单的"],["warm","温暖的"],["family","家人"],["fruit","水果"],["once a week","一周一次"]]},
+
+{id:"e09",theme:"个人信息与家庭",icon:"👪",type:"叙述",
+ titleEn:"Introduce yourself and your family.",
+ titleZh:"介绍你自己和你的家庭。",
+ wordsMin:60,wordsMax:100,
+ must:["name","family","live","friend","parent"],
+ focus:["结构：我是谁 → 家人 → 结尾一句","语法：I am / have；一般现在时","词汇：家庭词"],
+ outline:[
+  ["开头","名字、年龄、住哪","Name, age, where you live."],
+  ["家人","父母/兄弟姐妹做什么","Parents / brothers / sisters."],
+  ["朋友/爱好","一句补充","Friends or hobbies."],
+  ["结尾","希望认识你 / 感受","Closing sentence."]
+ ],
+ patterns:[
+  ["My name is ___. I am ___ years old.","我叫___。我___岁。"],
+  ["I live in ___.","我住在___。"],
+  ["I have a ___ family.","我有一个___的家庭。"],
+  ["My parents ___.","我的父母___。"],
+  ["I like ___ with my friends.","我喜欢和朋友一起___。"]
+ ],
+ modelEn:["My name is Li Ming. I am seventeen years old. I live in a small city in the south.","I have a small family. My parents work hard. I have one sister. She is a student too.","My best friend lives near my home. We often study English together after school.","I love my family. They always help me, and that makes me feel safe."],
+ modelZh:"我叫李明，十七岁，住在南方一个小城市。我有一个小家庭。父母工作很努力。我有一个妹妹，她也是学生。我最好的朋友住得不远，我们放学后常一起学英语。我爱我的家人，他们总是帮助我，让我感到安心。",
+ goodWords:[["years old","……岁"],["south","南方"],["together","一起"],["safe","安全的"],["always","总是"]]},
+
+{id:"e10",theme:"情感与性格",icon:"💭",type:"观点",
+ titleEn:"What makes you happy? Why?",
+ titleZh:"什么让你开心？为什么？",
+ wordsMin:60,wordsMax:110,
+ must:["happy","feel","friend","like","because"],
+ focus:["结构：是什么 → 两个原因 → 结尾","语法：because；make + 人 + 形容词","词汇：情感词"],
+ outline:[
+  ["开头","___ makes me happy.","What makes you happy."],
+  ["原因一","具体例子","One clear example."],
+  ["原因二","和人/感觉有关","People or feelings."],
+  ["结尾","总结","Short conclusion."]
+ ],
+ patterns:[
+  ["___ makes me happy.","___让我开心。"],
+  ["I feel happy when ___.","当___时我感到开心。"],
+  ["This is because ___.","这是因为___。"],
+  ["For example, ___.","例如，___。"],
+  ["In short, ___.","简言之，___。"]
+ ],
+ modelEn:["Spending time with my friends makes me happy.","I feel happy when we talk and laugh after school. This is because I can share my problems and get help.","For example, last week my friend helped me with English homework, and I felt less worried.","In short, good friends make life easier and happier. That is why I always try to be a good friend too."],
+ modelZh:"和朋友待在一起让我开心。放学后一起聊天大笑时我很开心，因为我可以分享烦恼并得到帮助。例如上周朋友帮我做英语作业，我没那么担心了。简言之，好朋友让生活更容易更快乐。所以我也总想做一个好朋友。",
+ goodWords:[["spend time","花时间"],["laugh","笑"],["worried","担心的"],["share","分享"],["in short","简言之"]]}
+];
+
+const WRITE_BANK_V2=[
+{k:"观点句",icon:"💬",zh:"开头/结尾亮明态度。",s:[["I think (that) ___.","我认为___。"],["In my opinion, ___.","在我看来，___。"],["I believe ___ is more important than ___.","我相信___比___更重要。"]]},
+{k:"原因句",icon:"🔍",zh:"观点后面给原因。",s:[["This is because ___.","这是因为___。"],["The main reason is that ___.","主要原因是___。"],["___, so ___.","___，所以___。"]]},
+{k:"举例句",icon:"🌰",zh:"给一个具体例子。",s:[["For example, ___.","例如，___。"],["For instance, ___.","比如，___。"]]},
+{k:"让步句",icon:"⚖️",zh:"先承认再转回。",s:[["It is true that ___, but ___.","___确实如此，但是___。"],["Some people think ___. However, I think ___.","有些人认为___。然而我认为___。"]]},
+{k:"结尾句",icon:"🏁",zh:"重复观点。",s:[["In conclusion, ___.","总之，___。"],["To sum up, I think ___.","总的来说，我认为___。"]]}
+];
+
 const AUDSEG={"l01": [[0, 2.71], [2.71, 7.18], [7.18, 9.93], [9.93, 13.54], [13.54, 16.9], [16.9, 20.6], [20.6, 24.31], [24.31, 26.48]], "l02": [[0, 2.53], [2.53, 6.02], [6.02, 8.36], [8.36, 11.79], [11.79, 14.6], [14.6, 18.55], [18.55, 22.78], [22.78, 26.52], [26.52, 29.68]], "l03": [[0, 3.5], [3.5, 7.86], [7.86, 9.22], [9.22, 13.33], [13.33, 15.57], [15.57, 16.81], [16.81, 20.28], [20.28, 24.16]], "l04": [[0, 2.16], [2.16, 4.97], [4.97, 6.55], [6.55, 9.71], [9.71, 13.36], [13.36, 15.45], [15.45, 21.8], [21.8, 24.72]], "l05": [[0, 2.96], [2.96, 6.42], [6.42, 9.73], [9.73, 12.62], [12.62, 14.35], [14.35, 18.36], [18.36, 21.16], [21.16, 25.92]], "l06": [[0, 2.56], [2.56, 6.58], [6.58, 11.0], [11.0, 15.47], [15.47, 18.74], [18.74, 20.52], [20.52, 24.49], [24.49, 27.31], [27.31, 30.96]], "l07": [[0, 2.44], [2.44, 6.22], [6.22, 8.14], [8.14, 11.16], [11.16, 13.81], [13.81, 16.33], [16.33, 23.22], [23.22, 25.55], [25.55, 28.8]], "l08": [[0, 2.67], [2.67, 6.48], [6.48, 8.99], [8.99, 12.46], [12.46, 15.92], [15.92, 18.98], [18.98, 24.29], [24.29, 26.46], [26.46, 31.76]], "l09": [[0, 4.36], [4.36, 8.85], [8.85, 11.15], [11.15, 16.22], [16.22, 19.23], [19.23, 23.55], [23.55, 28.54], [28.54, 30.23], [30.23, 32.64]], "l10": [[0, 3.27], [3.27, 8.99], [8.99, 14.46], [14.46, 17.27], [17.27, 20.63], [20.63, 26.22], [26.22, 28.79], [28.79, 30.48]], "l11": [[0, 2.76], [2.76, 6.55], [6.55, 11.42], [11.42, 14.88], [14.88, 18.97], [18.97, 21.33], [21.33, 25.62], [25.62, 29.44]], "l12": [[0.17, 6.13], [6.13, 12.4], [12.4, 13.75], [13.75, 21.41], [21.41, 27.73], [27.73, 33.08], [33.08, 36.48]], "s01": [[0, 3.78], [3.78, 7.0], [7.0, 11.23], [11.23, 14.08]], "s02": [[0, 3.86], [3.86, 5.61], [5.61, 9.55], [9.55, 13.2]], "s03": [[0.14, 4.51], [4.51, 8.19], [8.19, 11.27], [11.27, 15.52]], "s04": [[0, 2.65], [2.65, 6.34], [6.34, 11.29], [11.29, 14.08]], "s05": [[0, 1.94], [1.94, 5.01], [5.01, 8.39], [8.39, 12.48]], "s06": [[0, 4.2], [4.2, 6.32], [6.32, 10.19], [10.19, 13.28]], "s07": [[0, 2.26], [2.26, 4.45], [4.45, 8.45], [8.45, 11.6]], "s08": [[0, 3.48], [3.48, 5.48], [5.48, 8.5], [8.5, 12.16]], "s09": [[0, 3.27], [3.27, 7.94], [7.94, 11.36], [11.36, 14.4]], "s10": [[0, 3.7], [3.7, 7.62], [7.62, 9.43], [9.43, 12.48]], "s11": [[0, 1.06], [1.06, 3.67], [3.67, 7.26], [7.26, 10.48]], "s12": [[0, 2.2], [2.2, 4.37], [4.37, 8.25], [8.25, 12.32]], "g01": [[0.15, 2.51], [2.51, 4.36], [4.36, 6.48]], "g02": [[0, 2.17], [2.17, 4.42], [4.42, 7.12]], "g03": [[0, 2.61], [2.61, 5.2], [5.2, 7.2]], "g04": [[0, 1.73], [1.73, 4.63], [4.63, 6.96]], "g05": [[0, 1.79], [1.79, 4.07], [4.07, 5.92]], "g06": [[0.15, 2.24], [2.24, 5.17], [5.17, 8.4]], "g07": [[0, 2.41], [2.41, 4.9], [4.9, 7.44]], "g08": [[0, 2.53], [2.53, 5.23], [5.23, 7.28]], "g09": [[0, 2.24], [2.24, 4.74], [4.74, 6.72]], "g10": [[0, 1.28], [1.28, 3.16], [3.16, 4.88]], "g11": [[0, 1.87], [1.87, 3.54], [3.54, 4.88]], "g12": [[0.14, 2.68], [2.68, 5.44], [5.44, 8.32]], "m01": [[0, 11.23], [11.23, 25.24], [25.24, 35.12], [35.12, 41.92]], "m02": [[0, 8.73], [8.73, 23.17], [23.17, 32.48], [32.48, 40.16]], "m03": [[0, 4.64], [4.64, 18.52], [18.52, 23.36]]};
 /* ===== 新模块：听力 / 口语 / 语法 / 作文（原创内容，Jessica 预生成音频 audio/modules/*.mp3） ===== */
 const MKEY="oxford100_modules_v1";
@@ -1341,27 +1641,14 @@ function mListen(opts){opts=opts||{};const btn=opts.btn,live=opts.live,onFinal=o
  $("mRedo").onclick=()=>renderGrammar();
  mBindQuiz(P.querySelector(".m-qz"),qs,(r,n)=>{const old=MP.grammar[G.id];if(!old||r>=old[0])MP.grammar[G.id]=[r,n];mSave();P.querySelector(".m-score").innerHTML=(r===n?"🏆 全对！这个语法点过关了。":"得分 <b>"+r+"/"+n+"</b> · 看看错题的解析，再点「重做」。");});}
 /* ================= ⑦ 作文 ================= */
-function renderWrite(){const P=$("p-write");mStop();const sub=MP.cur.write||"bank";const subs=[["bank","💬 句型库"],["tpl","🧱 段落模板"],["fill","🧩 填空练习"],["model","📄 范文解读"]];
- let h=mHead("📝","作文 · 雅思 Task 1 / Task 2 入门","先背<b>句型</b> → 套<b>段落模板</b> → 用已背的词做<b>填空小作文</b> → 读<b>范文和中文解读</b>。（原来「练完一个场景后写小作文」的功能保持不变，仍在 ① 单词拼写 每组练完后出现。）","")+
- '<div class="chips m-subtabs">'+subs.map(s=>'<button type="button" class="chip'+(s[0]===sub?" on":"")+'" data-wsub="'+s[0]+'">'+s[1]+'</button>').join("")+'</div>';
- if(sub==="bank")h+=WRITE.bank.map(b=>'<div class="g"><h3>'+b.icon+' '+mE(b.k)+'</h3><p class="m-sub">'+mE(b.zh)+'</p>'+b.s.map(s=>'<div class="sent m-pat"><b>'+mE(s[0])+'</b><br><span class="zhl">'+mE(s[1])+'</span></div>').join("")+'</div>').join("");
- if(sub==="tpl")h+=WRITE.tpl.map(t=>'<div class="g"><h3>🧱 '+mE(t.t)+'</h3><p class="m-sub">'+mE(t.zh)+'</p>'+t.p.map(p=>'<div class="m-tpl"><div class="m-tpl-h"><span class="tag">'+mE(p[0])+'</span> '+mE(p[1])+'</div><div class="m-tpl-s">'+mE(p[2])+'</div></div>').join("")+'</div>').join("");
- if(sub==="fill")h+=WRITE.fill.map(f=>{const sv=MP.fill[f.id]||{};let k=0;const body=mE(f.txt).replace(/\{(\d)\}/g,(m,n)=>'<input class="m-blank" data-fid="'+f.id+'" data-n="'+n+'" value="'+mE((sv.a||[])[n]||"")+'" autocomplete="off" autocapitalize="off" spellcheck="false">');
-  return '<div class="g m-fill" data-fid="'+f.id+'"><h3>🧩 '+mE(f.t)+(sv.ok?' ✅':'')+'</h3><div class="m-bank">'+f.bank.map(w=>'<button type="button" class="mini m-bw">'+mE(w)+'</button>').join("")+'</div><p class="m-sub">先点空格，再点上面的词填进去（也可以直接打字）。</p><div class="m-ftxt">'+body+'</div><div class="row" style="justify-content:flex-start"><button type="button" class="b-sub" style="flex:none" data-fchk="'+f.id+'">✔ 检查</button><button type="button" class="mini" data-fclr="'+f.id+'">清空</button></div><div class="m-fres"></div></div>';}).join("");
- if(sub==="model")h+=WRITE.model.map(m=>'<div class="g m-model m-player"><h3>📄 '+mE(m.t)+'</h3><p class="m-sub">'+mE(m.zh)+' · 约 '+m.p.join(" ").split(/\s+/).length+' 词</p>'+(m.chart?mChart(m.chart):'')+
-  '<div class="row m-ctrl" style="justify-content:flex-start"><button type="button" class="spk" data-mplay="'+m.id+'" data-lbl="▶ 听范文">▶ 听范文</button>'+mRateBtns()+'</div><div class="m-lines">'+m.p.map((p,i)=>'<div class="m-line m-para" data-mline="'+i+'" data-aid="'+m.id+'" data-mseg="'+m.id+'|'+i+'"><span class="m-en">'+mE(p)+'</span></div>').join("")+'</div>'+
-  '<h3 style="margin-top:12px">🔍 中文解读</h3>'+m.note.map(n=>'<div class="sent"><span class="tag">'+mE(n[0])+'</span> '+mE(n[1])+'</div>').join("")+'</div>').join("");
- P.innerHTML=h;
- P.querySelectorAll("[data-wsub]").forEach(b=>b.onclick=()=>{MP.cur.write=b.dataset.wsub;mSave();renderWrite();});
- let lastBlank=null;P.querySelectorAll(".m-blank").forEach(inp=>{inp.onfocus=()=>{lastBlank=inp;};inp.oninput=()=>{inp.classList.remove("ok","bad");mFillSave(inp.dataset.fid);};});
- P.querySelectorAll(".m-fill").forEach(box=>{box.querySelectorAll(".m-bw").forEach(b=>b.onclick=()=>{let t=(lastBlank&&box.contains(lastBlank))?lastBlank:[...box.querySelectorAll(".m-blank")].find(x=>!x.value);if(!t)return;t.value=b.textContent;t.classList.remove("ok","bad");mFillSave(box.dataset.fid);const nx=[...box.querySelectorAll(".m-blank")].find(x=>!x.value);if(nx){nx.focus();lastBlank=nx;}});});
- P.querySelectorAll("[data-fchk]").forEach(b=>b.onclick=()=>mFillCheck(b.dataset.fchk));
- P.querySelectorAll("[data-fclr]").forEach(b=>b.onclick=()=>{delete MP.fill[b.dataset.fclr];mSave();renderWrite();});}
+/* ESSAY_V2_REF: 完整实现见 essay_v2 脚本；此处保留填空辅助与 mChart */
+function renderWrite(){if(typeof window.__essayV2Ready==="function"){return window.__essayV2Ready();}
+ const P=$("p-write");if(!P)return;P.innerHTML='<div class="g"><p>作文模块加载中…若一直如此请刷新。</p></div>';}
 function mFillSave(fid){const a=[];document.querySelectorAll('.m-blank[data-fid="'+fid+'"]').forEach(i=>a[+i.dataset.n]=i.value);MP.fill[fid]=Object.assign(MP.fill[fid]||{},{a});mSave();}
-function mFillCheck(fid){const f=WRITE.fill.find(x=>x.id===fid);let ok=0;const ins=document.querySelectorAll('.m-blank[data-fid="'+fid+'"]');
+function mFillCheck(fid){const f=WRITE.fill.find(x=>x.id===fid);if(!f)return;let ok=0;const ins=document.querySelectorAll('.m-blank[data-fid="'+fid+'"]');
  ins.forEach(i=>{const want=f.bank[+i.dataset.n];const good=i.value.trim().toLowerCase()===want.toLowerCase();i.classList.toggle("ok",good);i.classList.toggle("bad",!good);if(good)ok++;});
  const box=document.querySelector('.m-fill[data-fid="'+fid+'"]');const all=ok===ins.length;MP.fill[fid]=Object.assign(MP.fill[fid]||{},{ok:all});mSave();
- box.querySelector(".m-fres").innerHTML=all?'🎉 全对！把整段<b>抄一遍并大声读出来</b>，再试着把内容换成你自己的。<div class="wex">'+mE(f.txt.replace(/\{(\d)\}/g,(m,n)=>f.bank[+n]))+'</div>':'对了 <b>'+ok+"/"+ins.length+'</b>，红框再想想：看前后文是名词、形容词还是连接词？';}
+ if(box){const fr=box.querySelector(".m-fres");if(fr)fr.innerHTML=all?'🎉 全对！':'对了 <b>'+ok+"/"+ins.length+'</b>';}}
 function mChart(d){const mx=Math.max(...d.map(x=>x[1]));return '<div class="m-chart">'+d.map(x=>'<div class="m-bar"><span>'+mE(x[0])+'</span><i style="width:'+(x[1]/mx*100)+'%"></i><b>'+x[1]+'%</b></div>').join("")+'<div class="m-cap">How students travel to school (one class, 2024)</div></div>';}
 window.MOD_RENDER={listen:renderListen,speak:renderSpeak,grammar:function(){return renderGrammar();},write:renderWrite};
 </script>
@@ -2196,30 +2483,8 @@ function eScan(text,words){const used=[],miss=[];words.forEach(w=>{const hit=sHa
 function ePaintWords(words,scan){const box=$("essayWords");if(!box)return;const usedSet=new Set((scan.used||[]).map(w=>w.en));
  box.innerHTML=words.map(w=>{const on=usedSet.has(w.en);return '<span class="'+(on?"essay-chip on":"essay-chip miss")+'" title="'+sEscH(w.zh)+'">'+sEscH(w.en)+'</span>';}).join("");}
 function eMsg(x){const el=$("essayMsg");if(el)el.textContent=x||"";}
-function renderEssay(){const area=$("essayArea");if(!area)return;
- const th=ST.theme;const words=eThemeWords(th);
- if(!words.length){area.style.display="none";
-  if(th===ALLTH){const sub=$("doneSub");if(sub)sub.textContent=(sub.textContent||"")+" 小作文请点上面场景芯片，按每一组分别写（200 词一次写太长啦）。";}
-  return;}
- area.style.display="";
- const icon=(THEMES.find(t=>t.name===th)||{}).icon||"📝";
- $("essayTitle").textContent="📝 小作文 · "+icon+" 「"+th+"」用上本组 "+words.length+" 个词";
- $("essayHint").textContent="写一段短小英文（大概 5～8 句就够），把下面词都用进去。可以写成小故事或自我介绍，不用很长，通顺就好。";
- const last=eLoad()[th];const ta=$("essayIn");if(ta)ta.value=last&&last.s?last.s:"";
- const scan=eScan(ta?ta.value:"",words);ePaintWords(words,scan);
- $("essayStat").textContent=scan.total?("已用上 "+scan.used.length+" / "+scan.total+(scan.ok?" · 全部用上啦 ✅":" · 还差 "+scan.miss.length+" 个")):"";
- eMsg(last&&last.s?(scan.ok?"已保存过一版，且词都用上了。可继续改。":"已恢复上次草稿；点「检测用词」看看还缺哪些。"):"写完后点「检测用词」。");
- const res=$("essayRes");if(res)res.innerHTML="";}
-function eDoCheck(){const th=ST.theme;const words=eThemeWords(th);if(!words.length){eMsg("请先选一个场景组练完，再写小作文。");return;}
- const ta=$("essayIn");const text=(ta&&ta.value||"").trim();if(!text){eMsg("先写几句再检测哦。");if(ta)ta.focus();return;}
- const scan=eScan(text,words);ePaintWords(words,scan);
- $("essayStat").textContent="已用上 "+scan.used.length+" / "+scan.total+(scan.ok?" · 全部用上啦 ✅":" · 还差 "+scan.miss.length+" 个");
- eSave(th,text,{ok:scan.ok,used:scan.used.length,total:scan.total});
- const res=$("essayRes");
- if(scan.ok){eMsg("🎉 本组词都用上了！短小作文过关。");if(res)res.innerHTML='<div class="fb ok">✅ 用词检查通过</div>';}
- else{eMsg("还差这些词： "+scan.miss.map(w=>w.en).join(", ")+"。改一改再检测。");
-  if(res)res.innerHTML='<div class="fb mid">⚠️ 未用上：'+scan.miss.map(w=>'<b>'+sEscH(w.en)+'</b>（'+sEscH(w.zh)+')').join(' · ')+'</div>';}}
-try{const _ei=$("essayIn");if(_ei)_ei.addEventListener("input",()=>{const th=ST.theme;const words=eThemeWords(th);if(!words.length)return;const scan=eScan(_ei.value||"",words);ePaintWords(words,scan);$("essayStat").textContent=scan.total?("已用上 "+scan.used.length+" / "+scan.total+(scan.ok?" · 全部用上啦 ✅":" · 还差 "+scan.miss.length+" 个")):"";});}catch(e){}
+function renderEssay(){if(typeof window.__renderEssayV2==="function"){return window.__renderEssayV2();}const area=$("essayArea");if(area)area.style.display="none";}
+function eDoCheck(){if(typeof window.__renderEssayV2==="function"){try{renderEssay();}catch(e){}}}
 
 const SKEY="oxford100_sentences_v1";
 const DRAFT_KEY="oxford100_sent_draft_v1";
@@ -3755,5 +4020,502 @@ try{if(/[?&]demo=essay\b/.test(location.search)){(function(){function go(){try{c
 
 /* IOS_WHITESCREEN_FIX: 7MB 音频/立绘包改为 defer，不再阻塞首屏；包加载完后刷新立绘 */
 document.addEventListener("DOMContentLoaded",function(){try{document.querySelectorAll("img[data-slug]").forEach(function(i){delete i.dataset.slug;});updateSideChars();decorateMascots();}catch(e){}});
+</script>
+
+<script id="essay_v2">
+/* ESSAY_V2_REF implementation */
+/* ESSAY_V2_REF logic — renderWrite 专区 + 组后小作文入口 */
+function e2Esc(x){return String(x==null?"":x).replace(/[&<>"]/g,c=>({"&":"\u0026amp;","<":"\u0026lt;",">":"\u0026gt;",'"':"\u0026quot;"}[c]));}
+function e2Wc(t){const s=String(t||"").trim();if(!s)return 0;return s.split(/\s+/).filter(Boolean).length;}
+function e2LoadAll(){try{return JSON.parse(localStorage.getItem(EKEY)||"{}")||{};}catch(e){return {};}}
+function e2SaveTask(taskId,text,meta){
+  try{const o=e2LoadAll();const prev=o[taskId]||{};
+    o[taskId]=Object.assign({},prev,{
+      s:String(text||""),t:Date.now(),
+      ok:!!(meta&&meta.ok),used:(meta&&meta.used)||0,total:(meta&&meta.total)||0,
+      score:(meta&&typeof meta.score==="number")?meta.score:(prev.score||0),
+      fb:(meta&&meta.fb)||prev.fb||"",
+      seenModel:!!(meta&&meta.seenModel)||!!prev.seenModel
+    });
+    localStorage.setItem(EKEY,JSON.stringify(o));
+  }catch(e){}
+  try{if(typeof flashSaved==="function")flashSaved();}catch(e){}
+}
+function e2TaskById(id){return ESSAY_TASKS.find(t=>t.id===id)||null;}
+function e2TaskByTheme(th){return ESSAY_TASKS.find(t=>t.theme===th)||null;}
+function e2MustWords(task){
+  if(!task)return [];
+  const set=[];
+  (task.must||[]).forEach(en=>{
+    const w=(typeof W!=="undefined"&&W.find)?W.find(x=>x.en.toLowerCase()===String(en).toLowerCase()):null;
+    set.push(w||{en:en,zh:""});
+  });
+  return set;
+}
+function e2ScanMust(text,mustWords){
+  const used=[],miss=[];
+  (mustWords||[]).forEach(w=>{
+    const hit=(typeof sHasWord==="function")?sHasWord(text||"",w.en):{ok:new RegExp("\\b"+String(w.en).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","i").test(text||"")};
+    if(hit.ok)used.push(w);else miss.push(w);
+  });
+  return {used,miss,total:mustWords.length,ok:miss.length===0&&mustWords.length>0};
+}
+function e2SplitSents(text){
+  const t=String(text||"").replace(/\s+/g," ").trim();
+  if(!t)return [];
+  return t.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(Boolean);
+}
+function e2GramIssues(text){
+  const issues=[];
+  const sents=e2SplitSents(text);
+  const raw=String(text||"");
+  if(/\bi\b/.test(raw))issues.push({en:"i",zh:"代词 I 必须大写，不能写成小写 i。",fix:"把句子里的小写 i 改成 I。"});
+  if(/\s{2,}/.test(raw))issues.push({en:"spaces",zh:"有多余空格，读起来不干净。",fix:"把连续空格改成一个空格。"});
+  sents.forEach((s,i)=>{
+    if(s.length<2)return;
+    if(!/^[A-Z“"]/.test(s)&&!/^\d/.test(s))issues.push({en:"cap"+i,zh:"第 "+(i+1)+" 句开头应大写。",fix:"\""+s.slice(0,24)+(s.length>24?"…":"")+"\" 句首请大写。"});
+    if(!/[.!?]"?$/.test(s))issues.push({en:"punct"+i,zh:"第 "+(i+1)+" 句结尾缺少句号/问号/感叹号。",fix:"在句末加上合适的标点。"});
+    if(/\b(he|she|it)\s+(go|like|want|need|have|do|study|work|live|eat|play|feel|make|take|get)\b/i.test(s))
+      issues.push({en:"sva"+i,zh:"第 "+(i+1)+" 句疑似缺三单 -s（he/she/it + 动词）。",fix:"he/she/it 后一般现在时动词常要加 -s/-es，如 goes / likes / studies。"});
+    if(/\b(I|you|we|they)\s+(is|was)\b/i.test(s))
+      issues.push({en:"be"+i,zh:"第 "+(i+1)+" 句 be 动词可能配错（I/you/we/they 不用 is）。",fix:"I → am/was；you/we/they → are/were。"});
+    if(/\bam\s+(go|like|want|need|agree|think)\b/i.test(s))
+      issues.push({en:"ami"+i,zh:"第 "+(i+1)+" 句疑似 be + 动词原形叠用（✗ I am agree / I am go）。",fix:"实义动词前不要再加 am/is/are：I agree. / I go…"});
+    if(/\bbecause\b.+\bso\b|\bso\b.+\bbecause\b/i.test(s))
+      issues.push({en:"becso"+i,zh:"第 "+(i+1)+" 句 because 和 so 不要同时用。",fix:"只保留 because 或只保留 so。"});
+    if(/\ba\s+[aeiou]/i.test(s)&&!/\ba\s+uni|\ba\s+one|\ba\s+euro|\ba\s+u[bcdfgjklmnprstvwxyz]/i.test(s))
+      issues.push({en:"aan"+i,zh:"第 "+(i+1)+" 句可能该用 an（元音音开头）。",fix:"apple/egg/hour 等前用 an。"});
+  });
+  // dedupe by zh
+  const seen={};return issues.filter(x=>{if(seen[x.zh])return false;seen[x.zh]=1;return true;}).slice(0,6);
+}
+function e2StructFeedback(text,task){
+  const t=String(text||"");
+  const low=t.toLowerCase();
+  const wc=e2Wc(t);
+  const sents=e2SplitSents(t);
+  const pts=[];
+  let score=40;
+  const hasOpinion=/\b(i think|in my opinion|i believe|i feel|my favourite|i usually|my name is)\b/i.test(t);
+  const hasBecause=/\b(because|so|the main reason|another reason)\b/i.test(t);
+  const hasExample=/\b(for example|for instance|such as)\b/i.test(t);
+  const hasConcl=/\b(in conclusion|to sum up|in short|that is why|overall)\b/i.test(t);
+  const hasLinker=/\b(first|second|also|however|but|after that|then|finally)\b/i.test(t);
+  if(hasOpinion){score+=12;pts.push({ok:true,zh:"有开头立场/引入（如 I think / My favourite…），不错。"});}
+  else pts.push({ok:false,zh:"缺少明确开头观点或引入。可写：In my opinion,… / My favourite… is…"});
+  if(hasBecause){score+=12;pts.push({ok:true,zh:"有原因连接（because / so / reason），论证更完整。"});}
+  else pts.push({ok:false,zh:"建议至少用一次 because / so，把「观点」和「原因」连起来。"});
+  if(hasExample){score+=10;pts.push({ok:true,zh:"有举例（For example…），内容更具体。"});}
+  else pts.push({ok:false,zh:"可加一句 For example,… 写身边的小事，分数更稳。"});
+  if(hasLinker){score+=8;pts.push({ok:true,zh:"有顺序/转折词（First / However / Then…），结构更清楚。"});}
+  else pts.push({ok:false,zh:"可用 First,… / However,… / After that,… 给读者路标。"});
+  if(hasConcl||sents.length>=4){score+=8;pts.push({ok:true,zh:hasConcl?"有结尾总结句。":"篇幅够，可再加 In conclusion,… 更像完整作文。"});}
+  else pts.push({ok:false,zh:"结尾可加：In conclusion, I think… / To sum up,…"});
+  if(wc>= (task.wordsMin||60) && wc<= (task.wordsMax||120)+20){score+=10;pts.push({ok:true,zh:"字数约 "+wc+" 词，落在目标区间附近。"});}
+  else if(wc< (task.wordsMin||60)){score-=5;pts.push({ok:false,zh:"目前约 "+wc+" 词，目标 "+task.wordsMin+"–"+task.wordsMax+" 词，再写 1～2 句理由/例子。"});}
+  else {pts.push({ok:false,zh:"约 "+wc+" 词，略长。A2–B1 短文 60–120 词即可，删掉重复句。"});}
+  if(sents.length<3){score-=8;pts.push({ok:false,zh:"句子偏少（"+sents.length+" 句）。试着写成 4～6 句：开头 + 理由 + 例子 + 结尾。"});}
+  else {score+=5;}
+  score=Math.max(0,Math.min(100,score));
+  return {score,pts,flags:{hasOpinion,hasBecause,hasExample,hasConcl,hasLinker,wc,sents:sents.length}};
+}
+function e2RewriteSample(text,issues){
+  let s=e2SplitSents(text)[0]||String(text||"").trim().split(/[.!?]/)[0]||"";
+  if(!s)return "";
+  let out=s.trim();
+  out=out.replace(/\bi\b/g,"I");
+  out=out.replace(/\s{2,}/g," ");
+  out=out.replace(/\b(I|You|We|They)\s+is\b/gi,function(m,a){return a+" are";});
+  out=out.replace(/\bHe\s+go\b/i,"He goes").replace(/\bShe\s+go\b/i,"She goes");
+  out=out.replace(/\bHe\s+like\b/i,"He likes").replace(/\bShe\s+like\b/i,"She likes");
+  out=out.replace(/\bam\s+agree\b/i,"agree").replace(/\bam\s+go\b/i,"go");
+  out=out.replace(/\bbecause\b(.+?)\bso\b/i,"because$1");
+  if(!/^[A-Z]/.test(out))out=out.charAt(0).toUpperCase()+out.slice(1);
+  if(!/[.!?]$/.test(out))out+=".";
+  if(out===s||out===s+"."){
+    // still offer a light structural polish
+    if(!/\bbecause\b/i.test(out)&&out.length<120)out=out.replace(/\.$/," because it is important to me.");
+  }
+  return out;
+}
+function e2ModelDiff(text,task){
+  const tips=[];
+  const model=(task.modelEn||[]).join(" ");
+  const low=String(text||"").toLowerCase();
+  const checks=[
+    [/\bin my opinion\b|\bi think\b|\bi believe\b/i,"范文开头用了 I think / In my opinion 亮观点，你的作文也可以学这一句。"],
+    [/\bthis is because\b|\bbecause\b/i,"范文用 because / This is because 解释原因——对照你的第二句是否也有原因。"],
+    [/\bfor example\b|\bfor instance\b/i,"范文有 For example 举身边例子；若你还没有，补一句会更像「完整段落」。"],
+    [/\bin conclusion\b|\bto sum up\b|\bin short\b/i,"范文用 In conclusion / To sum up 收尾；对照你是否有总结句。"],
+    [/\bit is true that\b|\bhowever\b/i,"范文有让步（It is true that… However…）。想冲更高，可学这一招。"]
+  ];
+  checks.forEach(([re,zh])=>{
+    if(re.test(model)&&!re.test(low))tips.push(zh);
+  });
+  const mw=e2MustWords(task);const scan=e2ScanMust(text,mw);
+  if(scan.miss.length)tips.push("范文覆盖了必用词；你还没用上："+scan.miss.map(w=>w.en).join(", ")+"。");
+  const mS=task.modelEn?task.modelEn.length:0;
+  const uS=e2SplitSents(text).length;
+  if(mS&&uS&&uS<mS)tips.push("范文约 "+mS+" 段/层意思，你现在约 "+uS+" 句——可按提纲再补一层「例子」或「结尾」。");
+  return tips.slice(0,4);
+}
+function e2ScoreHtml(score){
+  let lvl="需加油",cls="mid";
+  if(score>=85){lvl="很棒";cls="ok";}
+  else if(score>=70){lvl="不错";cls="ok";}
+  else if(score>=55){lvl="及格线附近";cls="mid";}
+  else {lvl="再改一版";cls="bad";}
+  return '<div class="e2-score fb '+cls+'"><b>'+score+'</b> 分 · '+lvl+' <span class="e2-muted">（结构 + 必用词 + 篇幅；本地规则，供练习参考）</span></div>';
+}
+function e2FeedbackHtml(task,text){
+  const must=e2MustWords(task);
+  const scan=e2ScanMust(text,must);
+  const st=e2StructFeedback(text,task);
+  let score=st.score;
+  // must words weight
+  if(must.length){
+    const ratio=scan.used.length/must.length;
+    score=Math.round(score*0.75+ratio*100*0.25);
+  }
+  score=Math.max(0,Math.min(100,score));
+  const grams=e2GramIssues(text);
+  const rewrite=e2RewriteSample(text,grams);
+  const diffs=e2ModelDiff(text,task);
+  let h=e2ScoreHtml(score);
+  h+='<div class="e2-fb-sec"><h4>📐 结构点评</h4><ul class="e2-ul">'+st.pts.map(p=>'<li class="'+(p.ok?"ok":"bad")+'">'+(p.ok?"✅ ":"⚠️ ")+e2Esc(p.zh)+'</li>').join("")+'</ul></div>';
+  h+='<div class="e2-fb-sec"><h4>📌 必用词</h4><p>已用上 <b>'+scan.used.length+'/'+scan.total+'</b>'+(scan.ok?"（全部用上）":"。还差："+scan.miss.map(w=>"<b>"+e2Esc(w.en)+"</b>"+(w.zh?"（"+e2Esc(w.zh)+"）":"")).join(" · "))+'</p></div>';
+  h+='<div class="e2-fb-sec"><h4>🔤 语法问题</h4>';
+  if(!grams.length)h+='<p class="e2-muted">本地规则未抓到明显基础错误。仍建议对照范文检查时态和连接词。</p>';
+  else h+='<ul class="e2-ul">'+grams.map(g=>'<li class="bad">⚠️ '+e2Esc(g.zh)+(g.fix?'<div class="e2-fix">→ '+e2Esc(g.fix)+'</div>':'')+'</li>').join("")+'</ul>';
+  h+='</div>';
+  if(rewrite){h+='<div class="e2-fb-sec"><h4>✍️ 改写示例（基于你的原文）</h4><div class="e2-rewrite"><div class="e2-muted">原句首句可改为：</div><div class="e2-rw">'+e2Esc(rewrite)+'</div><button type="button" class="mini e2-ins-rw" data-rw="1">填入写作框开头参考</button></div></div>';}
+  h+='<div class="e2-fb-sec"><h4>📄 对照范文 · 差异提示</h4><ul class="e2-ul">'+(diffs.length?diffs.map(d=>'<li>💡 '+e2Esc(d)+'</li>').join(""):'<li>✅ 你的结构要素与范文较接近，可继续润色用词。</li>')+'</ul></div>';
+  h+='<div class="row e2-fb-actions"><button type="button" class="b-sub" data-e2act="again">看范文后再写一版</button><button type="button" class="b-fuz" data-e2act="ref">回写前参考</button><button type="button" class="mini" data-e2act="list">换题</button></div>';
+  return {html:h,score:score,scan:scan,ok:scan.ok&&score>=60};
+}
+function e2ChipHtml(must,scan){
+  const used=new Set((scan.used||[]).map(w=>w.en.toLowerCase()));
+  return must.map(w=>{
+    const on=used.has(String(w.en).toLowerCase());
+    return '<button type="button" class="essay-chip '+(on?"on":"miss")+'" data-e2w="'+e2Esc(w.en)+'" title="'+e2Esc(w.zh||"")+'">'+e2Esc(w.en)+(w.zh?' <span class="e2-zh">'+e2Esc(w.zh)+'</span>':'')+(on?" ✓":"")+'</button>';
+  }).join("");
+}
+
+function renderWrite(){
+  const P=$("p-write");if(!P)return;
+  try{mStop();}catch(e){}
+  MP.cur=MP.cur||{};
+  const phase=MP.cur.wphase||"list"; // list | task | write | feedback | bank
+  const tid=MP.cur.wid||"";
+  const task=e2TaskById(tid);
+
+  let h='<div class="e2-wrap" data-essay="'+ESSAY_V2_MARK+'">';
+  h+='<div class="e2-head"><div class="e2-h1">📝 作文专区 <span class="e2-tag">'+ESSAY_V2_MARK+'</span></div>';
+  h+='<p class="e2-sub">A2–B1 短作文（约 60–120 词）· 先看<strong>提纲 / 句型 / 范文</strong>，再写，再拿结构+语法反馈。贴合当前词库主题。</p></div>';
+
+  // sub nav
+  const nav=[["list","📋 选题"],["bank","💬 句型速查"],["hist","🕘 我的作文"]];
+  h+='<div class="chips m-subtabs e2-nav">'+nav.map(s=>{
+    const on=(s[0]==="list"&&(phase==="list"||phase==="task"||phase==="write"||phase==="feedback"))||(s[0]===phase)||(s[0]==="list"&&phase!=="bank"&&phase!=="hist");
+    const isOn=(s[0]==="bank"&&phase==="bank")||(s[0]==="hist"&&phase==="hist")||(s[0]==="list"&&phase!=="bank"&&phase!=="hist");
+    return '<button type="button" class="chip'+(isOn?" on":"")+'" data-e2nav="'+s[0]+'">'+s[1]+'</button>';
+  }).join("")+'</div>';
+
+  if(phase==="bank"){
+    h+=(typeof WRITE_BANK_V2!=="undefined"?WRITE_BANK_V2:(WRITE&&WRITE.bank)||[]).map(b=>'<div class="g"><h3>'+b.icon+' '+e2Esc(b.k)+'</h3><p class="m-sub">'+e2Esc(b.zh)+'</p>'+b.s.map(s=>'<div class="sent m-pat"><b>'+e2Esc(s[0])+'</b><br><span class="zhl">'+e2Esc(s[1])+'</span></div>').join("")+'</div>').join("");
+    P.innerHTML=h;e2Bind(P);return;
+  }
+  if(phase==="hist"){
+    const all=e2LoadAll();
+    const ids=Object.keys(all).filter(k=>/^e\d+/.test(k)||ESSAY_TASKS.some(t=>t.id===k||t.theme===k));
+    if(!ids.length)h+='<div class="g"><p class="m-sub">还没有保存过作文。去「选题」写一篇吧。</p></div>';
+    else{
+      h+='<div class="g"><h3>🕘 草稿与得分</h3>';
+      ids.forEach(k=>{
+        const rec=all[k]||{};const t=e2TaskById(k)||e2TaskByTheme(k)||{icon:"📝",titleZh:k,titleEn:"",id:k};
+        h+='<div class="e2-hist"><div class="e2-hist-h">'+(t.icon||"📝")+' <b>'+e2Esc(t.titleZh||k)+'</b> · '+(rec.score!=null?('<span class="e2-sc">'+rec.score+' 分</span>'):"未评分")+(rec.ok?" ✅":"")+'</div>';
+        h+='<div class="wex">'+e2Esc((rec.s||"").slice(0,180))+((rec.s||"").length>180?"…":"")+'</div>';
+        h+='<div class="row" style="justify-content:flex-start;gap:8px;margin-top:6px"><button type="button" class="mini" data-e2open="'+(t.id||k)+'">继续写</button></div></div>';
+      });
+      h+='</div>';
+    }
+    P.innerHTML=h;e2Bind(P);return;
+  }
+
+  if(phase==="list"||!task){
+    h+='<div class="e2-list">';
+    ESSAY_TASKS.forEach(t=>{
+      const rec=e2LoadAll()[t.id]||{};
+      h+='<button type="button" class="e2-card" data-e2open="'+t.id+'">';
+      h+='<div class="e2-card-top"><span class="e2-ico">'+t.icon+'</span><span class="e2-type">'+e2Esc(t.type)+'</span>';
+      if(rec.score)h+='<span class="e2-badge">'+(rec.score)+'分</span>';
+      h+='</div>';
+      h+='<div class="e2-card-title">'+e2Esc(t.titleZh)+'</div>';
+      h+='<div class="e2-card-en">'+e2Esc(t.titleEn)+'</div>';
+      h+='<div class="e2-card-meta">词库·'+e2Esc(t.theme)+' · '+t.wordsMin+'–'+t.wordsMax+' 词 · 必用 '+(t.must||[]).length+' 词</div>';
+      h+='</button>';
+    });
+    h+='</div>';
+    h+='<p class="e2-foot">提示：①单词拼写 每组练完后的「小作文」也会进入同一套流程（带本组词）。</p>';
+    P.innerHTML=h;e2Bind(P);return;
+  }
+
+  // task / write / feedback share header card
+  const must=e2MustWords(task);
+  const rec=e2LoadAll()[task.id]||{};
+  h+='<div class="e2-taskcard">';
+  h+='<div class="e2-tc-top"><button type="button" class="mini" data-e2act="list">← 选题</button> <span class="e2-type">'+e2Esc(task.type)+'</span> <span class="e2-muted">'+e2Esc(task.theme)+'</span></div>';
+  h+='<div class="e2-tc-title">'+task.icon+' '+e2Esc(task.titleZh)+'</div>';
+  h+='<div class="e2-tc-en">'+e2Esc(task.titleEn)+'</div>';
+  h+='<div class="e2-tc-grid">';
+  h+='<div><b>目标字数</b><br>'+task.wordsMin+'–'+task.wordsMax+' 词</div>';
+  h+='<div><b>必须用上</b><br>'+must.map(w=>e2Esc(w.en)).join(", ")+'</div>';
+  h+='<div><b>评分关注</b><br>'+e2Esc((task.focus||[]).join("；"))+'</div>';
+  h+='</div></div>';
+
+  // steps
+  const steps=[["task","① 写前参考"],["write","② 开始写"],["feedback","③ 反馈"]];
+  h+='<div class="chips e2-steps">'+steps.map(s=>'<button type="button" class="chip'+(phase===s[0]?" on":"")+'" data-e2phase="'+s[0]+'">'+s[1]+'</button>').join("")+'</div>';
+
+  if(phase==="task"){
+    h+='<div class="e2-ref">';
+    h+='<div class="g e2-block"><h3>🧭 写作提纲</h3><ol class="e2-ol">'+task.outline.map(o=>'<li><b>'+e2Esc(o[0])+'</b> · '+e2Esc(o[1])+'<div class="e2-muted">'+e2Esc(o[2]||"")+'</div></li>').join("")+'</ol></div>';
+    h+='<div class="g e2-block"><h3>💬 可用句型（中英）</h3>'+task.patterns.map(p=>'<div class="sent m-pat"><b>'+e2Esc(p[0])+'</b><br><span class="zhl">'+e2Esc(p[1])+'</span><button type="button" class="mini e2-use-pat" data-pat="'+e2Esc(p[0])+'" style="margin-top:4px">用这句去写</button></div>').join("")+'</div>';
+    h+='<div class="g e2-block"><h3>📄 范文 <span class="e2-muted">约 '+e2Wc(task.modelEn.join(" "))+' 词</span></h3>';
+    h+='<div class="e2-model">'+task.modelEn.map(p=>'<p class="e2-mp">'+e2Esc(p)+'</p>').join("")+'</div>';
+    h+='<details class="e2-zhbox" open><summary>中文译文 / 要点</summary><p>'+e2Esc(task.modelZh)+'</p></details>';
+    h+='<div class="row" style="justify-content:flex-start;margin-top:8px"><button type="button" class="spk" data-e2say="model">🔊 朗读范文</button></div></div>';
+    h+='<div class="g e2-block"><h3>✨ 好词好句</h3><div class="essay-words">'+task.goodWords.map(w=>'<span class="essay-chip on">'+e2Esc(w[0])+' <span class="e2-zh">'+e2Esc(w[1])+'</span></span>').join("")+'</div></div>';
+    h+='</div>';
+    h+='<div class="row e2-go"><button type="button" class="b-next" data-e2phase="write">看完参考，开始写 →</button></div>';
+  }
+
+  if(phase==="write"){
+    const draft=rec.s||"";
+    const scan=e2ScanMust(draft,must);
+    h+='<div class="g e2-writebox">';
+    h+='<div class="e2-write-lab">必用词（点击插入文末；变绿=已用上）</div>';
+    h+='<div class="essay-words" id="e2Words">'+e2ChipHtml(must,scan)+'</div>';
+    h+='<div class="essay-stat" id="e2Stat">字数 <b id="e2Wc">'+e2Wc(draft)+'</b> / 目标 '+task.wordsMin+'–'+task.wordsMax+' · 必用词 '+scan.used.length+'/'+scan.total+'</div>';
+    h+='<textarea id="e2In" rows="10" autocapitalize="sentences" spellcheck="false" placeholder="在这里写作文…可先套句型，再换成自己的事。">'+e2Esc(draft)+'</textarea>';
+    h+='<div class="row s-btns" style="margin-top:10px">';
+    h+='<button type="button" class="b-sub" data-e2act="submit">提交批改</button>';
+    h+='<button type="button" class="spk" data-e2act="say">🔊 朗读我的作文</button>';
+    h+='<button type="button" class="b-fuz" data-e2act="save">保存草稿</button>';
+    h+='<button type="button" class="mini" data-e2act="ref">看参考</button>';
+    h+='</div>';
+    h+='<div class="s-msg" id="e2Msg" aria-live="polite">'+(rec.score?("上次得分 "+rec.score+" 分，可改后再提交。"):"写完点「提交批改」。建议先过一遍写前参考。")+'</div>';
+    h+='</div>';
+  }
+
+  if(phase==="feedback"){
+    const text=rec.s||"";
+    if(!text.trim()){h+='<div class="g"><p>还没有作文。请先写一段再提交。</p><button type="button" class="b-sub" data-e2phase="write">去写作</button></div>';}
+    else{
+      const fb=e2FeedbackHtml(task,text);
+      e2SaveTask(task.id,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total,score:fb.score,fb:"1",seenModel:!!rec.seenModel});
+      h+='<div class="g e2-fb">'+fb.html+'</div>';
+      h+='<details class="g e2-block"><summary>📄 再看一遍范文</summary><div class="e2-model">'+task.modelEn.map(p=>'<p class="e2-mp">'+e2Esc(p)+'</p>').join("")+'</div><p class="zhl">'+e2Esc(task.modelZh)+'</p></details>';
+    }
+  }
+
+  h+='</div>';
+  P.innerHTML=h;
+  e2Bind(P);
+}
+
+function e2Bind(P){
+  if(!P)return;
+  P.querySelectorAll("[data-e2nav]").forEach(b=>b.onclick=()=>{
+    const v=b.dataset.e2nav;
+    if(v==="list"){MP.cur.wphase="list";MP.cur.wid="";}
+    else MP.cur.wphase=v;
+    mSave();renderWrite();window.scrollTo(0,0);
+  });
+  P.querySelectorAll("[data-e2open]").forEach(b=>b.onclick=()=>{
+    MP.cur.wid=b.dataset.e2open;MP.cur.wphase="task";mSave();renderWrite();window.scrollTo(0,0);
+  });
+  P.querySelectorAll("[data-e2phase]").forEach(b=>b.onclick=()=>{
+    if(!MP.cur.wid){MP.cur.wphase="list";mSave();renderWrite();return;}
+    MP.cur.wphase=b.dataset.e2phase;mSave();renderWrite();window.scrollTo(0,0);
+  });
+  P.querySelectorAll("[data-e2act]").forEach(b=>b.onclick=()=>e2Act(b.dataset.e2act,b));
+  P.querySelectorAll(".e2-use-pat").forEach(b=>b.onclick=()=>{
+    MP.cur.wphase="write";mSave();renderWrite();
+    setTimeout(()=>{const ta=$("e2In");if(!ta)return;const pat=b.dataset.pat||"";const cur=ta.value.trim();ta.value=(cur?cur+"\n":"")+pat+" ";ta.focus();e2RefreshStat();},30);
+  });
+  P.querySelectorAll("[data-e2w]").forEach(b=>b.onclick=()=>{
+    const ta=$("e2In");if(!ta)return;
+    const w=b.dataset.e2w||"";
+    const v=ta.value;
+    ta.value=(v&&!/\s$/.test(v)?v+" ":v)+w;
+    ta.focus();e2RefreshStat();
+  });
+  const ta=$("e2In");
+  if(ta){ta.addEventListener("input",()=>{e2RefreshStat();e2Autosave();});}
+  P.querySelectorAll("[data-e2say]").forEach(b=>b.onclick=()=>{
+    const task=e2TaskById(MP.cur.wid);if(!task)return;
+    const t=task.modelEn.join(" ");
+    if(typeof speak==="function")speak(t);
+  });
+  P.querySelectorAll(".e2-ins-rw").forEach(b=>b.onclick=()=>{
+    const rw=P.querySelector(".e2-rw");if(!rw)return;
+    MP.cur.wphase="write";mSave();renderWrite();
+    setTimeout(()=>{const ta=$("e2In");if(!ta)return;const line=rw.textContent||"";ta.value=line+(ta.value?"\n"+ta.value:"");ta.focus();e2RefreshStat();e2Autosave();},40);
+  });
+}
+let _e2Deb=null;
+function e2Autosave(){
+  clearTimeout(_e2Deb);
+  _e2Deb=setTimeout(()=>{
+    const task=e2TaskById(MP.cur&&MP.cur.wid);const ta=$("e2In");if(!task||!ta)return;
+    const prev=e2LoadAll()[task.id]||{};
+    e2SaveTask(task.id,ta.value,{ok:prev.ok,used:prev.used,total:prev.total,score:prev.score,seenModel:prev.seenModel});
+  },400);
+}
+function e2RefreshStat(){
+  const task=e2TaskById(MP.cur&&MP.cur.wid);const ta=$("e2In");if(!task||!ta)return;
+  const must=e2MustWords(task);const scan=e2ScanMust(ta.value,must);
+  const box=$("e2Words");if(box)box.innerHTML=e2ChipHtml(must,scan);
+  // rebind chips
+  if(box)box.querySelectorAll("[data-e2w]").forEach(b=>b.onclick=()=>{const w=b.dataset.e2w||"";const v=ta.value;ta.value=(v&&!/\s$/.test(v)?v+" ":v)+w;ta.focus();e2RefreshStat();});
+  const st=$("e2Stat");if(st)st.innerHTML='字数 <b id="e2Wc">'+e2Wc(ta.value)+'</b> / 目标 '+task.wordsMin+'–'+task.wordsMax+' · 必用词 '+scan.used.length+'/'+scan.total+(scan.ok?" ✅":"");
+}
+function e2Act(act){
+  const task=e2TaskById(MP.cur&&MP.cur.wid);
+  if(act==="list"){MP.cur.wphase="list";MP.cur.wid="";mSave();renderWrite();window.scrollTo(0,0);return;}
+  if(act==="ref"){MP.cur.wphase="task";mSave();renderWrite();window.scrollTo(0,0);return;}
+  if(act==="again"){
+    if(task){const prev=e2LoadAll()[task.id]||{};e2SaveTask(task.id,prev.s||"",{ok:prev.ok,used:prev.used,total:prev.total,score:prev.score,seenModel:true});}
+    MP.cur.wphase="task";mSave();renderWrite();window.scrollTo(0,0);return;
+  }
+  if(act==="say"){const ta=$("e2In");const t=(ta&&ta.value||"").trim();if(t&&typeof speak==="function")speak(t);else{const m=$("e2Msg");if(m)m.textContent="先写一段再听。";}return;}
+  if(act==="save"){
+    if(!task)return;const ta=$("e2In");if(!ta)return;
+    const must=e2MustWords(task);const scan=e2ScanMust(ta.value,must);
+    const prev=e2LoadAll()[task.id]||{};
+    e2SaveTask(task.id,ta.value,{ok:scan.ok,used:scan.used.length,total:scan.total,score:prev.score,seenModel:prev.seenModel});
+    const m=$("e2Msg");if(m)m.textContent="草稿已保存（可跨设备同步）。";
+    return;
+  }
+  if(act==="submit"){
+    if(!task)return;const ta=$("e2In");if(!ta)return;
+    const text=(ta.value||"").trim();
+    const m=$("e2Msg");
+    if(!text){if(m)m.textContent="先写几句再提交。";ta.focus();return;}
+    if(e2Wc(text)<30){if(m)m.textContent="太短了，至少写大约 30 词（目标 "+task.wordsMin+"+）再提交。";return;}
+    const must=e2MustWords(task);const scan=e2ScanMust(text,must);
+    const fb=e2FeedbackHtml(task,text);
+    e2SaveTask(task.id,text,{ok:fb.ok,used:scan.used.length,total:scan.total,score:fb.score,fb:"1"});
+    MP.cur.wphase="feedback";mSave();renderWrite();window.scrollTo(0,0);
+  }
+}
+
+/* —— 组后小作文：接入同一套任务流程 —— */
+function renderEssay(){
+  const area=$("essayArea");if(!area)return;
+  const th=ST.theme;
+  const task=e2TaskByTheme(th);
+  const words=(typeof eThemeWords==="function")?eThemeWords(th):[];
+  if(!words.length&&!task){area.style.display="none";
+    if(th===ALLTH){const sub=$("doneSub");if(sub)sub.textContent=(sub.textContent||"")+" 小作文请点上面场景芯片，按每一组分别写；或打开「⑥ 作文」选题。";}
+    return;}
+  area.style.display="";
+  const icon=(THEMES.find(t=>t.name===th)||{}).icon||"📝";
+  // Rebuild mini panel
+  let body='<div class="essay-title" id="essayTitle">📝 小作文 · '+icon+' 「'+e2Esc(th)+'」</div>';
+  if(task){
+    body+='<p class="essay-hint">本组对应作文题：<b>'+e2Esc(task.titleZh)+'</b><br><span class="e2-muted">'+e2Esc(task.titleEn)+'</span></p>';
+    body+='<div class="e2-mini-actions row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">';
+    body+='<button type="button" class="b-next" id="essayGoFull">打开完整写作流程（提纲·范文·批改）→</button>';
+    body+='<button type="button" class="mini" id="essayShowRef">先看范文提纲</button>';
+    body+='</div>';
+    body+='<div id="essayMiniRef" style="display:none;margin-top:10px"></div>';
+  }else{
+    body+='<p class="essay-hint">写一段短文（60–120 词），尽量用上本组词。也可到「⑥ 作文」选标准题。</p>';
+  }
+  // keep quick write
+  const must=task?e2MustWords(task):words.slice(0,8);
+  const lastKey=task?task.id:th;
+  const last=e2LoadAll()[lastKey]||e2LoadAll()[th]||{};
+  const scan=e2ScanMust(last.s||"",must);
+  body+='<div class="essay-words" id="essayWords">'+e2ChipHtml(must,scan)+'</div>';
+  body+='<div class="essay-stat" id="essayStat">字数 '+e2Wc(last.s||"")+' · 必用/本组词 '+scan.used.length+'/'+scan.total+(last.score!=null?(' · 上次 '+last.score+' 分'):'')+'</div>';
+  body+='<textarea id="essayIn" rows="7" autocapitalize="sentences" spellcheck="false" placeholder="用本组词写短文…">'+e2Esc(last.s||"")+'</textarea>';
+  body+='<div class="row s-btns" style="margin-top:10px">';
+  body+='<button type="button" class="b-sub" id="essayChk">'+(task?"提交批改":"检测用词")+'</button>';
+  body+='<button type="button" class="spk" id="essaySay">🔊 朗读</button>';
+  body+='<button type="button" class="b-fuz" id="essayCopy">复制给老师</button>';
+  body+='</div>';
+  body+='<div class="s-msg" id="essayMsg" aria-live="polite"></div>';
+  body+='<div id="essayRes"></div>';
+  area.innerHTML=body;
+
+  const goFull=()=>{
+    if(!task){ST.tab="write";MP.cur.wphase="list";save();mSave();renderAll();return;}
+    ST.tab="write";MP.cur.wid=task.id;MP.cur.wphase="task";
+    try{save();}catch(e){}mSave();renderAll();window.scrollTo(0,0);
+  };
+  const bref=$("essayShowRef");if(bref)bref.onclick=()=>{
+    const box=$("essayMiniRef");if(!box||!task)return;
+    if(box.style.display!=="none"&&box.innerHTML){box.style.display="none";return;}
+    box.style.display="";
+    box.innerHTML='<div class="e2-ref"><div class="g"><h3>🧭 提纲</h3><ol class="e2-ol">'+task.outline.map(o=>'<li><b>'+e2Esc(o[0])+'</b> '+e2Esc(o[1])+'</li>').join("")+'</ol></div>'+
+      '<div class="g"><h3>📄 范文</h3><div class="e2-model">'+task.modelEn.map(p=>'<p class="e2-mp">'+e2Esc(p)+'</p>').join("")+'</div><p class="zhl">'+e2Esc(task.modelZh)+'</p></div></div>';
+  };
+  const bg=$("essayGoFull");if(bg)bg.onclick=goFull;
+
+  const ta=$("essayIn");
+  const refresh=()=>{
+    const text=ta?ta.value:"";
+    const sc=e2ScanMust(text,must);
+    const box=$("essayWords");if(box){box.innerHTML=e2ChipHtml(must,sc);
+      box.querySelectorAll("[data-e2w]").forEach(b=>b.onclick=()=>{if(!ta)return;const w=b.dataset.e2w||"";const v=ta.value;ta.value=(v&&!/\s$/.test(v)?v+" ":v)+w;ta.focus();refresh();});}
+    const st=$("essayStat");if(st)st.textContent="字数 "+e2Wc(text)+" · 词 "+sc.used.length+"/"+sc.total+(sc.ok?" ✅":"");
+  };
+  if(ta)ta.oninput=refresh;
+  refresh();
+
+  $("essayChk").onclick=()=>{
+    const text=(ta&&ta.value||"").trim();
+    if(!text){eMsg("先写几句再提交。");return;}
+    if(task){
+      if(e2Wc(text)<30){eMsg("太短了，再写几句（目标 "+task.wordsMin+"+ 词）。");return;}
+      const fb=e2FeedbackHtml(task,text);
+      e2SaveTask(task.id,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total,score:fb.score,fb:"1"});
+      // also save under theme key for mem view
+      try{eSave(th,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total});}catch(e){}
+      const res=$("essayRes");if(res)res.innerHTML=fb.html;
+      eMsg("已批改 · "+fb.score+" 分。也可点「打开完整写作流程」看更大面板。");
+      // bind actions inside essayRes
+      if(res){
+        res.querySelectorAll("[data-e2act]").forEach(b=>b.onclick=()=>{
+          if(b.dataset.e2act==="again"||b.dataset.e2act==="ref"){goFull();return;}
+          if(b.dataset.e2act==="list"){ST.tab="write";MP.cur.wphase="list";save();mSave();renderAll();}
+        });
+      }
+      refresh();
+    }else{
+      const sc=e2ScanMust(text,must);ePaintWords(must,sc);
+      eSave(th,text,{ok:sc.ok,used:sc.used.length,total:sc.total});
+      const res=$("essayRes");
+      if(sc.ok){eMsg("🎉 词都用上了！");if(res)res.innerHTML='<div class="fb ok">✅ 用词检查通过。打开「⑥ 作文」可做带范文的标准题。</div>';}
+      else{eMsg("还差："+sc.miss.map(w=>w.en).join(", "));if(res)res.innerHTML='<div class="fb mid">⚠️ 未用上：'+sc.miss.map(w=>'<b>'+e2Esc(w.en)+'</b>').join(" · ")+'</div>';}
+    }
+  };
+  $("essaySay").onclick=()=>{const t=(ta&&ta.value||"").trim();if(t)speak(t);else eMsg("先写一段再听。");};
+  $("essayCopy").onclick=()=>{
+    const text=(ta&&ta.value||"").trim();if(!text){eMsg("先写一段再复制。");return;}
+    const sc=e2ScanMust(text,must);
+    if(task)e2SaveTask(task.id,text,{ok:sc.ok,used:sc.used.length,total:sc.total,score:(e2LoadAll()[task.id]||{}).score});
+    eSave(th,text,{ok:sc.ok,used:sc.used.length,total:sc.total});
+    sCopy("【小作文】"+(task?task.titleZh:th)+"\n必用词："+must.map(w=>w.en).join(", ")+"\n已用："+sc.used.length+"/"+sc.total+"\n------\n"+text+"\n------\n请帮我看结构与语法。");
+    eMsg("已复制，可以发给老师。");
+  };
+}
+
+window.__essayV2Ready=renderWrite;
+window.__renderEssayV2=renderEssay;
+if(window.MOD_RENDER){MOD_RENDER.write=renderWrite;}
 </script>
 </body></html>
