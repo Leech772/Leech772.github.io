@@ -868,9 +868,9 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 .m-sub{color:var(--muted);font-size:.86rem;margin:2px 0 6px;line-height:1.6;text-align:left}
 @media (max-width:640px){.tabs{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}.tabs button{white-space:nowrap;flex:none;padding:8px 11px!important;font-size:.84rem!important}.tabs::-webkit-scrollbar{display:none}.m-grid{grid-template-columns:1fr}.m-blank{width:6.2em}}
 </style>
-<script src="audio_modules_1.js"></script><script src="audio_modules_2.js"></script><script src="audio_modules_3.js"></script>
-<script src="assets/qchars-pack-0.js?v=20261102hd"></script>
-<script src="assets/qchars-pack-1.js?v=20261102hd"></script>
+<script defer src="audio_modules_1.js"></script><script defer src="audio_modules_2.js"></script><script defer src="audio_modules_3.js"></script>
+<script defer src="assets/qchars-pack-0.js?v=20261102hd"></script>
+<script defer src="assets/qchars-pack-1.js?v=20261102hd"></script>
 </head><body>
 <img class="char-deco left" id="charLeft" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
 <img class="char-deco right" id="charRight" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
@@ -3638,5 +3638,8 @@ window.addEventListener("pagehide",()=>{try{dFlushFromInput();}catch(e){}save({s
 document.addEventListener("visibilitychange",()=>{if(document.hidden){try{dFlushFromInput();}catch(e){}save({silent:true});}});
 try{if(/[?&]demo=essay\b/.test(location.search)){(function(){function go(){try{const intro=$("intro");if(intro)intro.style.display="none";const card=$("card");if(card)card.style.display="none";if(typeof ST!=="undefined")ST.theme=(THEMES[0]&&THEMES[0].name)||"个人信息与家庭";const done=$("done");if(done)done.style.display="block";if(typeof renderDone==="function")renderDone();setTimeout(()=>{const a=$("essayArea");if(a)a.scrollIntoView({block:"start"});},100);}catch(e){console.error(e);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();})();}}catch(e){}
 
+
+/* IOS_WHITESCREEN_FIX: 7MB 音频/立绘包改为 defer，不再阻塞首屏；包加载完后刷新立绘 */
+document.addEventListener("DOMContentLoaded",function(){try{document.querySelectorAll("img[data-slug]").forEach(function(i){delete i.dataset.slug;});updateSideChars();decorateMascots();}catch(e){}});
 </script>
 </body></html>
