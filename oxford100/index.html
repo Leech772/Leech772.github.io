@@ -109,6 +109,7 @@ html:fullscreen body,html:-webkit-full-screen body{width:100vw;min-height:100vh}
 .s-zh-text{font-size:1.02rem;line-height:1.55;color:var(--ink);font-weight:500}
 .s-zh-note{font-size:.72rem;color:var(--muted);margin-top:4px}
 /* RICHER_SENT_FEEDBACK_V1 · 造句「怎么改更好」 */
+/* SENT_FOLLOWUP_RELAX_V1 · 缺目标词不致命；要跟上句连贯；只查语法+连贯，不评「自然」；改写旁附中文 */
 .s-coach-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin:10px 0;border-left:3px solid var(--accent)}
 .s-coach-label{font-size:.82rem;font-weight:700;color:var(--accent2);margin-bottom:6px;letter-spacing:.01em}
 .s-coach-sum{font-size:.88rem;line-height:1.55;color:var(--ink);margin:0 0 8px}
@@ -928,7 +929,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   <div class="beat-banner">✅ 第1拍拼写过关啦 · 下面再做两拍主动输出（可跳过）</div>
   <div id="beat2" class="beat-step beat-open">
     <div class="s-title" id="sentTitle">第2拍 · 情景一句</div>
-    <div class="beat-hint" id="beat2Hint">用上目标词，自己编一句真事（换人/地点/时间都行），别抄上面例句。</div>
+    <div class="beat-hint" id="beat2Hint">顺着例句的意思自己编一句（换人/地点/时间都行）。不一定要再写目标词；语法要对，别跑题。</div>
     <div class="s-last" id="sentLast"></div>
     <textarea id="sentIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="自己造一句，例如换个人、换地点、换时间…"></textarea>
     <div class="s-punct-rule" id="sentPunctRule">📌 句末用英文标点 . 或 ? 或 !（中文 。？！也会自动认；缺标点时检测会自动补句号）</div>
@@ -939,10 +940,10 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   </div>
   <div id="beat3" class="beat-step beat-locked">
     <div class="s-title" id="beat3Title">第3拍 · 口述加戏</div>
-    <div class="beat-hint" id="beat3Hint">① 把第2拍那句大声说一遍（可用 🔊 读自己的句 / 🎤 再录一次）<br>② 再写/说一句「加戏」：反着来、换结果、问对方……必须还用上目标词。</div>
+    <div class="beat-hint" id="beat3Hint">① 把第2拍那句大声说一遍（可用 🔊 读自己的句 / 🎤 再录一次）<br>② 再写/说一句「加戏」：反着来、换结果、问对方……只要跟上句有关系即可，不一定再用目标词。</div>
     <div class="row s-btns" style="margin-top:0"><button type="button" class="mini" id="beat2Replay">🔊 读第2拍那句</button></div>
     <div class="s-last" id="twistLast"></div>
-    <textarea id="twistIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="加戏一句：反着来 / 换结果 / 问对方…"></textarea>
+    <textarea id="twistIn" rows="2" autocapitalize="sentences" spellcheck="false" placeholder="加戏一句（跟上句有关即可）：反着来 / 换结果 / 问对方…"></textarea>
     <div class="s-punct-rule" id="twistPunctRule">📌 句末用英文标点 . 或 ? 或 !（中文 。？！也会自动认；缺标点时检测会自动补句号）</div>
     <div class="row s-btns"><button type="button" class="b-sub" id="twistChk">检测加戏</button><button type="button" class="spk" id="twistMic">🎤 说加戏</button><button type="button" class="mini" id="twistSay">🔊</button></div>
     <div class="s-msg" id="twistMsg" aria-live="polite"></div>
@@ -2245,12 +2246,61 @@ function sPrepSentForCheck(raw){
   return {s:s,autoDot:autoDot,mapped:mapped};
 }
 
+/* ===== SENT_FOLLOWUP_RELAX_V1：缺目标词不致命；要跟上句/语境连贯；不评表达是否「自然」 ===== */
+function sContentSet(toks){return new Set((toks||[]).filter(function(t){return !S_STOP.has(t)&&t.length>1;}));}
+function sFollowDemo(prev,w){
+ const en=String(w&&w.en||"it"); const zh=String(w&&w.zh||"").split(/[；;，,/]/)[0]||en;
+ const p=String(prev||"").trim();
+ if(/[?？]\s*$/.test(p)||/^(what|where|when|why|how|who|do|does|did|is|are|can|will)\b/i.test(p))
+  return {en:"Yes, I do.",zhCn:"是的，我是／我会。",tag:"接上句",why:"上句像在提问，这句用简短回答接上。"};
+ if(/\b(he|she|his|her|him)\b/i.test(p))
+  return {en:"He likes it too.",zhCn:"他也喜欢。",tag:"接上句",why:"用 he/she 指向上句的人，继续说同一件事。"};
+ if(/\b(I|my|me)\b/i.test(p))
+  return {en:"Then I go home.",zhCn:"然后我回家。",tag:"接上句",why:"用 Then… 接着上句说下一件相关的事。"};
+ if(en&&en!=="it")
+  return {en:"So I like "+en+".",zhCn:"所以我喜欢"+zh+"。",tag:"接上句",why:"用 So… 说明结果，跟上句有因果；也可顺带用上本课词。"};
+ return {en:"So I like it.",zhCn:"所以我喜欢它。",tag:"接上句",why:"用 So… 说明结果，跟上句有因果。"};
+}
+function sRelatedPrev(sent,prev,w){
+ const cur=String(sent||"").trim();
+ const base=String(prev||"").trim()||String(w&&w.exEn||"").trim();
+ if(!cur)return {ok:true,shared:[],reason:"empty",tip:null,demo:null,okLine:null};
+ if(!base)return {ok:true,shared:[],reason:"no-prev",tip:null,demo:null,okLine:null};
+ if(sNormSent(cur)===sNormSent(base))return {ok:true,shared:[],reason:"same-as-prev",tip:"这句和上句几乎一样。加戏时请换个说法接着讲，不要原样重复。",demo:sFollowDemo(base,w),okLine:null};
+ const a=sTok(cur),b=sTok(base);
+ const setA=sContentSet(a),setB=sContentSet(b);
+ const shared=[];setA.forEach(function(x){if(setB.has(x))shared.push(x);});
+ const tp=sTargetParts(w&&w.en||"");
+ // 只有本句带上目标词才算贴题；上句有目标词不能单独算「已衔接」
+ const themeInCur=tp.some(function(p){const fs=sForms(p);return a.some(function(x){return fs.includes(x);});});
+ const hasPron=/\b(he|she|it|they|him|her|them|his|hers|their|this|that|these|those)\b/i.test(cur);
+ const hasLink=/\b(so|because|but|then|after|before|also|too|yes|no|ok|okay|sure|really)\b/i.test(cur);
+ const sameSpeaker=/\b(i|my|me|we|our|us)\b/i.test(cur)&&/\b(i|my|me|we|our|us)\b/i.test(base);
+ const isQ=/^\s*(what|where|when|why|how|who|do|does|did|is|are|am|can|will|would|could)\b/i.test(cur)||/[?？]\s*$/.test(cur);
+ const prevQ=/[?？]\s*$/.test(base)||/^(what|where|when|why|how|who|do|does|did|is|are|can|will)\b/i.test(base.trim());
+ let related=shared.length>=1||themeInCur||(hasPron&&b.length>=2)||(hasLink&&(shared.length>=1||themeInCur||hasPron||sameSpeaker))||(sameSpeaker&&hasLink)||(prevQ&&a.length>=2)||(isQ&&(shared.length>=1||sameSpeaker||hasPron));
+ // 明显跑题：两边几乎没有内容词交集，也没有指代/承接
+ if(!related){
+  return {ok:false,shared:shared,reason:"off-topic",
+   tip:"这句好像跟上句不太挨着。接着说时要同一件事/同一个人，或用 he/she/it、because/so/but/then 接上。",
+   demo:sFollowDemo(base,w),okLine:null};
+ }
+ const why=[];
+ if(shared.length)why.push("和上句有共同词："+shared.slice(0,3).join(", "));
+ if(themeInCur)why.push("本句用上了本课词，贴题");
+ if(hasPron)why.push("用了 he/she/it 等指代");
+ if(hasLink)why.push("有 because/so/but/then 等承接");
+ if(sameSpeaker&&hasLink)why.push("同一人称接着往下说");
+ if(prevQ)why.push("像在回答上句的问题");
+ return {ok:true,shared:shared,reason:why.join("；")||"related",tip:null,demo:null,okLine:"跟上句有关系（"+(why[0]||"语义能接上")+"）"};
+}
+
 function localCheck0(sent,w){const ok=[],fix=[],tips=[];const s=String(sent||"").trim();const toks=sTok(s);
  if(!s)return {ok,fix:["还没写句子哦。"],tips,level:"bad",corrLocal:null,time:null,verbTok:null,verbIdx:-1,verbNeedsFix:false};
  const hw=sHasWord(s,w.en);
- if(hw.ok){ok.push("用上了目标词「"+w.en+"」");
+ if(hw.ok){ok.push("用上了目标词「"+w.en+"」（加分，更贴本课）");
   if(sTargetParts(w.en).length>1&&hw.adj===false)tips.push("「"+w.en+"」是固定词组，尽量连在一起写，不要拆得太开。");}
- else fix.push("没用上目标词：本句要练习的词是「"+w.en+"」（"+w.zh+"）。请在句子里写进「"+hw.miss.join(" / ")+"」，例如参考：「"+w.exEn+"」。");
+ else tips.push("如果带上「"+w.en+"」（"+w.zh+"）会更贴本课，但不强制。只要语法对、能接上上句/例句意思就行。");
  if(toks.length>=3)ok.push("句子长度可以");else if(toks.length===2)tips.push("句子偏短：现在只有 2 个词，英语完整句通常至少 3 个词（主语+动词+其他）。可参考：「"+w.exEn+"」");else fix.push("太短了：请至少写 3 个英文词，组成「谁+做什么/是什么」。参考例句：「"+w.exEn+"」");
  if(/^[A-Z]/.test(s))ok.push("开头大写对了");else if(/^[a-z]/.test(s))fix.push("句首未大写：英文每个句子第一个字母必须大写。改成："+s.charAt(0).toUpperCase()+s.slice(1));
  const _ep=sEndPunctMatch(s);if(_ep)ok.push("结尾标点对了（用了 "+_ep[1]+"）");else{const got=sGotEndPunct(s);fix.push("句末标点不对：你写的是「"+got+"」，该用英文 . 或 ? 或 !（中文 。？！会自动认）。陈述用 . ，疑问用 ? ，感叹用 ! 。");}
@@ -2395,17 +2445,17 @@ function beatSet(n){const box=$("sentArea");if(!box)return;box.dataset.beat=Stri
 function beatUnlock3(opt){opt=opt||{};const box=$("sentArea");if(!box)return;if(box.dataset.beat==="done")return;
  beatSet("3");if(opt.focus){try{$("twistIn").focus({preventScroll:true});}catch(e){}}
  try{$("beat3").scrollIntoView({behavior:"smooth",block:"nearest"});}catch(e){}}
-function beatTryUnlockFrom(level,sent,w){const hw=sHasWord(sent,w.en);const ok=level==="good"||(level!=="bad"&&hw.ok);
+function beatTryUnlockFrom(level,sent,w){const ok=level!=="bad";
  if(!ok)return false;const box=$("sentArea");const was=box&&box.dataset.beat;
- if(was!=="3"&&was!=="done"){beatUnlock3({focus:true});sMsg(level==="good"?"✅ 第2拍不错！打开第3拍：口述加戏。":"✅ 已用上「"+w.en+"」，进入第3拍。想再改也可继续检测。");}
+ if(was!=="3"&&was!=="done"){beatUnlock3({focus:true});sMsg(level==="good"?"✅ 第2拍不错！打开第3拍：口述加戏（跟上句有关即可）。":"✅ 第2拍可以了，进入第3拍。想再改也可继续检测。");}
  else if(was==="3"&&level==="good")sMsg("✅ 第2拍很好，继续第3拍加戏吧。");
  return true;}
 function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWord();const ws=ST;
  const show=!!(w&&ws&&ws.revealed&&ws.sentOn);box.style.display=show?"":"none";if(!show)return;
  if(box.dataset.word===w.en)return;box.dataset.word=w.en;box.dataset.beat2Level="";box.dataset.beat3Level="";
- $("sentTitle").textContent="第2拍 · 情景一句 · 用「"+w.en+"」";
- const hint=$("beat2Hint");if(hint)hint.textContent="用上「"+w.en+"」，自己编一句真事（换人/地点/时间都行），别抄上面例句。";
- $("sentIn").placeholder="例句是："+w.exEn+"  →  试试换个人、地点或时间";
+ $("sentTitle").textContent="第2拍 · 情景一句 · 「"+w.en+"」";
+ const hint=$("beat2Hint");if(hint)hint.textContent="顺着例句编一句真事（换人/地点/时间都行）。带上「"+w.en+"」更贴本课，但不强制；语法要对，别跑题。";
+ $("sentIn").placeholder="例句是："+w.exEn+"  →  试试换个人、地点或时间（可不用原词）";
  const last=sLoad()[w.en];const draft=dLoad();
  const useDraft=draft&&draft.word===w.en&&typeof draft.text==="string";
  $("sentIn").value=useDraft?draft.text:(last?last.s:"");
@@ -2413,15 +2463,15 @@ function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWor
  $("sentRes").innerHTML="";$("sentMsg").textContent="";
  const chk=$("sentChk");if(chk){chk.disabled=false;chk.textContent="检测";}
  const twKey=beatTwistKey(w.en);const twLast=sLoad()[twKey];const tw=$("twistIn");
- if(tw){tw.value=twLast?twLast.s:"";tw.placeholder="加戏一句（还要用上「"+w.en+"」）：反着来 / 换结果 / 问对方…";}
+ if(tw){tw.value=twLast?twLast.s:"";tw.placeholder="加戏一句（跟上句有关即可，不一定用「"+w.en+"」）：反着来 / 换结果 / 问对方…";}
  const tl=$("twistLast");if(tl)tl.textContent=twLast?"上次加戏："+twLast.s:"";
  const tm=$("twistMsg");if(tm)tm.textContent="";const tr=$("twistRes");if(tr)tr.innerHTML="";
  const tc=$("twistChk");if(tc){tc.disabled=false;tc.textContent="检测加戏";}
- const b3h=$("beat3Hint");if(b3h)b3h.innerHTML="① 把第2拍那句大声说一遍（可用 🔊 读自己的句 / 🎤 再录一次）<br>② 再写/说一句「加戏」：反着来、换结果、问对方……必须还用上「"+sEsc(w.en)+"」。";
+ const b3h=$("beat3Hint");if(b3h)b3h.innerHTML="① 把第2拍那句大声说一遍（可用 🔊 读自己的句 / 🎤 再录一次）<br>② 再写/说一句「加戏」：反着来、换结果、问对方……只要跟上句有关系即可，不一定再用「"+sEsc(w.en)+"」。";
  const done=$("beatDone");if(done)done.style.display="none";
- // 若本词已有第2拍记录且用上目标词，直接解锁第3拍；两拍都有则标完成
+ // 若本词已有第2拍记录，直接解锁第3拍；两拍都有则标完成（不再要求必须含目标词）
  let startBeat="2";
- if(last&&last.s&&sHasWord(last.s,w.en).ok){startBeat=twLast&&twLast.s&&sHasWord(twLast.s,w.en).ok?"done":"3";}
+ if(last&&last.s&&String(last.s).trim()){startBeat=twLast&&twLast.s&&String(twLast.s).trim()?"done":"3";}
  beatSet(startBeat);
  if(startBeat==="done"&&done)done.style.display="";}
 function sMsg(t){$("sentMsg").textContent=t;}
@@ -2671,80 +2721,78 @@ function sModelRewrites(w,r,sent){
  const en=String(w.en||""),zh=String(w.zh||"").split(/[；;，,/]/)[0],kind=sPosKind(w);
  const past=sPastOf(en.toLowerCase()),sg=s3sgOf(en.toLowerCase()),aan=sAAn(en);
  const out=[];
- const push=function(enS,why,tag){enS=sEnsureDot(sCap1(String(enS||"").trim()));if(!enS)return;
-  if(out.some(function(x){return sNormSent(x.en)===sNormSent(enS);}))return;out.push({en:enS,zh:why,tag:tag||"示范"});};
+ const push=function(enS,why,tag,zhCn){enS=sEnsureDot(sCap1(String(enS||"").trim()));if(!enS)return;
+  if(out.some(function(x){return sNormSent(x.en)===sNormSent(enS);}))return;
+  var cn=String(zhCn||"").trim();
+  if(!cn){try{cn=(sTranslateLocal(enS)||{}).zh||"";}catch(e){cn="";}}
+  out.push({en:enS,zh:why,tag:tag||"示范",zhCn:cn});};
  const fixJoin=(r&&r.fix||[]).join(" ");
  const hasTarget=!(!r||!sHasWord(sent,w.en).ok);
- // 1) Prefer correction of the user's own sentence (polished)
- if(r&&r.corrLocal){const c=sEnsureDot(r.corrLocal);if(sNormSent(c)!==sNormSent(sent))push(c,"在你原句上改了大小写/标点/时态等小错误，意思尽量不动。","按你的句子改");}
+ // 1) Prefer correction of the user's own sentence (grammar polish only)
+ if(r&&r.corrLocal){const c=sEnsureDot(r.corrLocal);if(sNormSent(c)!==sNormSent(sent)){
+  var cn1="";try{cn1=(sTranslateLocal(c)||{}).zh||"";}catch(e){}
+  push(c,"在你原句上改了大小写/标点/时态等语法小错误，意思尽量不动。","按你的句子改",cn1);}
+ }
  // 1b) If tense/3sg flagged, also rewrite the original verb in-place when possible
- if(hasTarget&&r&&r.verbTok&&r.fixWord){
+ if(r&&r.verbTok&&r.fixWord){
   const re=new RegExp("\\b"+r.verbTok+"\\b","i");
   if(re.test(sent)){const fixed=sEnsureDot(String(sent).replace(re,r.fixWord));
-   push(fixed,"把「"+r.verbTok+"」改成「"+r.fixWord+"」，时态/主谓就对了。","时态改写");}
+   var cn2="";try{cn2=(sTranslateLocal(fixed)||{}).zh||"";}catch(e){}
+   push(fixed,"把「"+r.verbTok+"」改成「"+r.fixWord+"」，时态/主谓就对了。","时态改写",cn2);}
  }
  if(/过去时间|过去式/.test(fixJoin)){
   const m=String(sent).match(/\b(live|go|have|do|make|take|get|come|see|eat|buy|want|like|love|work|study|play|watch|help|need|call|visit)\b/i);
   const base=m?m[1].toLowerCase():en.toLowerCase();
-  push("Yesterday I "+sPastOf(base)+" in Shanghai.","有 yesterday 等过去时间词时，动词用过去式。","时态");
+  push("Yesterday I "+sPastOf(base)+" in Shanghai.","有 yesterday 等过去时间词时，动词用过去式。","时态","昨天我在上海"+((base==="go")?"去了":"做了相关动作")+"。");
  }
- if(/一般现在|加 -s|主谓/.test(fixJoin))push("She "+sg+" every day.","主语是 she/he/it 时，一般现在时用 "+sg+"。","主谓一致");
- if(/将来|will/.test(fixJoin))push("I will "+en+" tomorrow.","有 tomorrow/next… 时，常用 will + 动词原形。","时态");
- // 2) Missing target / POS common fixes
- if(!hasTarget||/没找到|没用上目标词/.test(fixJoin)){
-  if(kind==="n")push("My "+en+" is Li Ming.","先把目标词「"+en+"」写进句子：my + 名词。","用上目标词");
-  else if(kind==="v")push("I "+en+" in Shanghai.","先把目标词「"+en+"」当动词用上。","用上目标词");
-  else if(kind==="adj")push("I am "+en+" now.","形容词要搭配 be：I am "+en+"。","用上目标词");
-  else push("I like "+en+".","最短完整句里用上「"+en+"」。","用上目标词");
+ if(/一般现在|加 -s|主谓/.test(fixJoin))push("She "+sg+" every day.","主语是 she/he/it 时，一般现在时用 "+sg+"。","主谓一致","她每天"+zh+"／做这件事。");
+ if(/将来|will/.test(fixJoin))push("I will "+(kind==="v"?en:"go")+" tomorrow.","有 tomorrow/next… 时，常用 will + 动词原形。","时态","我明天会"+zh+"／去。");
+ // 1c) 跑题时给 1 句能接上的示范（优先）
+ if(r&&r.followDemo&&r.followDemo.en){
+  push(r.followDemo.en,r.followDemo.why||"这句能接上上一句的意思。","接上句",r.followDemo.zhCn||"");
+ }
+ // 2) 缺目标词：只给轻提示示范（可选加分），不当成必须改写
+ if(!hasTarget&&out.length<2){
+  if(kind==="n")push("My "+en+" is Li Ming.","可选：带上「"+en+"」会更贴本课（my + 名词）。","更贴本课（可选）","我的"+zh+"是李明。");
+  else if(kind==="v")push("I "+en+" in Shanghai.","可选：带上动词「"+en+"」会更贴本课。","更贴本课（可选）","我在上海"+zh+"。");
+  else if(kind==="adj")push("I am "+en+" now.","可选：形容词常跟 be：I am "+en+"。","更贴本课（可选）","我现在很"+zh+"。");
+  else push("I like "+en+".","可选：最短句里带上「"+en+"」更贴本课。","更贴本课（可选）","我喜欢"+zh+"。");
  }
  if(kind==="adj"&&hasTarget&&!/\b(am|is|are|was|were|look|looks|feel|feels)\b/i.test(sent))
-  push("I am "+en+" now.","形容词前要有 be 动词，不要写成 I "+en+"。","词性");
+  push("I am "+en+" now.","形容词前要有 be 动词，不要写成 I "+en+"。","词性／语法","我现在很"+zh+"。");
  if(kind==="n"&&hasTarget){
   const toks=sTok(sent);const hw=sHasWord(sent,w.en);const prev=toks[hw.idx-1]||"";
   if(hw.idx>=0&&!S_DET.has(prev)&&!S_DET.has(toks[hw.idx-2]||""))
-   push("I have "+aan+" "+en+".","名词前常加 a/an/the/my。","冠词/搭配");
+   push("I have "+aan+" "+en+".","名词前常加 a/an/the/my。","冠词/搭配","我有一个"+zh+"。");
  }
- // 3) Natural upgrade ONLY when already good (别在病句上硬加 at school)
- if(r&&r.level==="good"&&sent&&hasTarget){
-  const toks=sTok(sent);const base=sEnsureDot(String(sent).replace(/[.?!]+$/,""));
-  if(/^my name is\b/i.test(sent)){
-   push(base.replace(/[.?!]+$/,"")+" and I am a student.","自我介绍时再补一句身份，更自然完整。","可以更自然");
-  }else if(kind==="adj"&&/\b(am|is|are)\b/i.test(sent)&&!/\bvery\b/i.test(sent)){
-   push(base.replace(/\b(am|is|are)\s+/i,function(m){return m+"very ";}),"加上 very，程度更清楚，口语更自然。","可以更自然");
-  }else if(kind==="v"&&toks.length<=8&&!/\b(every day|yesterday|tomorrow|because)\b/i.test(sent)){
-   push(base.replace(/[.?!]+$/,"")+" every day.","补上 every day，说明这是习惯，更像完整表达。","可以更自然");
-  }else if(toks.length<=8&&!/\b(because|at school|at home)\b/i.test(sent)){
-   push(base.replace(/[.?!]+$/,"")+" because I like it.","加 because… 说明原因，表达更完整。","可以更自然");
-  }else if(w.exEn&&sNormSent(w.exEn)!==sNormSent(sent)){
-   push(w.exEn,"对照课本例句，学更稳的搭配（可再换成自己的内容）。","可以更自然");
-  }
- }
- // 4) Fill remaining with soft templates
+ // 3) （已去掉「可以更自然」表达润色——只查语法与是否跟上句有关）
+ // 4) Fill remaining with grammar templates
  if(out.length<2){
-  if(kind==="n"){push("My "+en+" is Li Ming.","用 my + 名词，说明「是谁的、叫什么」。","自然用法");push("I have "+aan+" "+en+".","have + a/an + 名词：说「我有一个…」。","搭配");}
-  else if(kind==="v"){push("I "+en+" in Shanghai.","主语 I + 动词原形：说自己常做的事。","一般现在");push("She "+sg+" every day.","主语 she/he/it 时动词加 -s（"+sg+"）。","主谓一致");}
-  else if(kind==="adj"){push("I am "+en+" now.","形容词常跟在 am/is/are 后面。","be+形");push("I feel very "+en+".","feel/look + 形容词更口语；very 把程度说清楚。","升级");}
-  else if(kind==="adv"){push("I speak English "+en+".","副词常放句末修饰动词。","语序");push("Please speak "+en+".","祈使句 + 副词，短而清楚。","示范");}
-  else if(kind==="prep"){push("I am "+en+" China.","介词 "+en+" 常跟在 be 后面再说地点/来源。","搭配");if(w.exEn)push(w.exEn,"本课例句结构稳，可先模仿。","参考例句");}
-  else if(kind==="ph"){push("I can "+en+".","固定词组尽量连着写。","词组");if(w.exEn)push(w.exEn,"照词组完整用法说整句。","参考例句");}
-  else{if(w.exEn)push(w.exEn,"先学例句结构，再换成自己的内容。","参考例句");push("I like "+en+".","最短完整句：I + 动词 + 目标词。","起步");}
+  if(kind==="n"){push("My "+en+" is Li Ming.","用 my + 名词，说明「是谁的、叫什么」。","语法示范","我的"+zh+"是李明。");push("I have "+aan+" "+en+".","have + a/an + 名词：说「我有一个…」。","搭配","我有一个"+zh+"。");}
+  else if(kind==="v"){push("I "+en+" in Shanghai.","主语 I + 动词原形：说自己常做的事。","一般现在","我在上海"+zh+"。");push("She "+sg+" every day.","主语 she/he/it 时动词加 -s（"+sg+"）。","主谓一致","她每天"+zh+"。");}
+  else if(kind==="adj"){push("I am "+en+" now.","形容词常跟在 am/is/are 后面。","be+形","我现在很"+zh+"。");push("I feel very "+en+".","feel/look + 形容词；注意 be/feel 别漏。","语法示范","我感觉很"+zh+"。");}
+  else if(kind==="adv"){push("I speak English "+en+".","副词常放句末修饰动词。","语序","我"+zh+"说英语。");push("Please speak "+en+".","祈使句 + 副词。","示范","请"+zh+"说。");}
+  else if(kind==="prep"){push("I am "+en+" China.","介词 "+en+" 常跟在 be 后面再说地点/来源。","搭配","我"+zh+"中国。");if(w.exEn){var cx="";try{cx=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"本课例句结构稳，可先模仿语法。","参考例句",cx||("（"+zh+"）"));}}
+  else if(kind==="ph"){push("I can "+en+".","固定词组尽量连着写。","词组","我会"+zh+"。");if(w.exEn){var cx2="";try{cx2=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"照词组完整用法说整句。","参考例句",cx2||("（"+zh+"）"));}}
+  else{if(w.exEn){var cx3="";try{cx3=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"先学例句结构（语法），再换成自己的内容。","参考例句",cx3||("（"+zh+"）"));}push("I like "+en+".","最短完整句：I + 动词 + 词。","起步","我喜欢"+zh+"。");}
  }
- if(out.length<2&&w.exEn&&sNormSent(w.exEn)!==sNormSent(sent))push(w.exEn,"课本例句（"+zh+"）：结构清楚，适合先模仿。","课本例句");
+ if(out.length<2&&w.exEn&&sNormSent(w.exEn)!==sNormSent(sent)){var cx4="";try{cx4=(sTranslateLocal(w.exEn)||{}).zh||"";}catch(e){}push(w.exEn,"课本例句（"+zh+"）：结构清楚，适合先模仿语法。","课本例句",cx4||w.exZh||("（"+zh+"）"));}
  return out.slice(0,2);
 }
 function sCoachPoints(sent,w,r){
  const good=[],prob=[],hw=sHasWord(sent,w.en),kind=sPosKind(w),toks=sTok(sent);
- if(hw.ok)good.push("用上了目标词「"+w.en+"」（"+String(w.zh||"").split(/[；;，,/]/)[0]+"）");
- else prob.push("还没用上目标词「"+w.en+"」——造句练习请把这个词写进句子里");
+ if(hw.ok)good.push("用上了目标词「"+w.en+"」（"+String(w.zh||"").split(/[；;，,/]/)[0]+"）· 加分，更贴本课");
+ // 缺目标词不再当问题：仅轻提示放在 tips，由 localCheck 处理
  if(/^[A-Z]/.test(sent))good.push("句首大写对了");
  if(/[.?!]["')]*$/.test(sent))good.push("句末有英文标点");
  if(toks.length>=5)good.push("句子信息比较完整");
  else if(toks.length>=3)good.push("已经是完整短句");
+ if(r&&r.related&&r.related.ok&&r.related.okLine)good.push(r.related.okLine);
  if(r){
-  (r.ok||[]).forEach(function(x){if(/时态/.test(x)&&!good.some(function(g){return /时态/.test(g);}))good.push(x);});
+  (r.ok||[]).forEach(function(x){if(/时态|跟上句/.test(x)&&!good.some(function(g){return g===x||(/时态/.test(x)&&/时态/.test(g));}))good.push(x);});
   (r.fix||[]).forEach(function(x){
    const s=String(x);
-   if(/没找到|没用上目标词/.test(s))return;
+   if(/没找到|没用上目标词|更贴本课|不强制/.test(s))return;
    if(/开头|句首|大写/.test(s))prob.push("句首字母要大写（English 句子第一个词首字母大写）");
    else if(/末尾|标点/.test(s))prob.push("句末请用英文 . 或 ? 或 !");
    else if(/过去时间|过去式/.test(s))prob.push("有过去时间词时，动词要用过去式");
@@ -2754,15 +2802,19 @@ function sCoachPoints(sent,w,r){
    else if(/中文/.test(s))prob.push("请全部用英文写，不要夹中文");
    else if(/冠词|a\/the\/my|名词前/.test(s))prob.push("名词前常加 a/an/the/my，再说清楚一点");
    else if(/撇号/.test(s))prob.push(s.slice(0,60));
+   else if(/自然|更口语|表达风格|STYLE/.test(s))return; // 不评表达好不好
    else prob.push(s.length>72?s.slice(0,70)+"…":s);
   });
   (r.tips||[]).forEach(function(x){
    const s=String(x);
-   if(/缺动词|没有动词|没看到动词/.test(s))prob.push("好像缺少动词（is/am/are/like/have/go…）");
-   else if(/照抄例句/.test(s))prob.push("尽量自己造，不要几乎照抄例句");
+   if(/更贴本课|不强制|带上「/.test(s))return; // 轻提示不进「问题」列表
+   if(/跟上句不太挨着|跑题|接上/.test(s))prob.push("跟上句关系不够：请顺着上一句的意思接着说");
+   else if(/缺动词|没有动词|没看到动词/.test(s))prob.push("好像缺少动词（is/am/are/like/have/go…）");
+   else if(/照抄例句|几乎一样/.test(s))prob.push("尽量自己造／换个说法，不要几乎照抄或原样重复");
    else if(/固定词组|连在一起/.test(s))prob.push("「"+w.en+"」是固定说法，尽量连着写");
    else if(/形容词前常要 be/.test(s))prob.push("形容词前常要有 be 动词，如 I am "+w.en+".");
-   else if(/偏短|加点具体/.test(s))prob.push("可以再加点具体信息（谁的、在哪、做什么）");
+   else if(/偏短|加点具体/.test(s))return; // 表达丰富度不判
+   else if(/自然|更口语|表达/.test(s))return;
   });
  }
  if(hw.ok&&kind==="adj"&&!/\b(am|is|are|was|were|look|looks|feel|feels|seem|seems|very|so|too)\b/i.test(sent))
@@ -2778,25 +2830,27 @@ function sCoachPoints(sent,w,r){
 function sCoachHtml(sent,w,r,corr){
  if(!w||!sent)return "";
  const MARKER="RICHER_SENT_FEEDBACK_V1";
+ const FLAG="SENT_FOLLOWUP_RELAX_V1";
  const pts=sCoachPoints(sent,w,r);
  const rr=Object.assign({},r||{},{corrLocal:corr||(r&&r.corrLocal)||""});
  const rew=sModelRewrites(w,rr,sent);
- let h='<div class="s-coach-wrap" data-s-coach="'+MARKER+'"><div class="s-coach-label">✨ 怎么改更好</div>';
- if(r&&r.level==="good")h+='<div class="s-coach-sum">这句已经能用。下面告诉你：哪里不错，以及怎样说得更自然一点。</div>';
- else if(r&&r.level==="mid")h+='<div class="s-coach-sum">大意能懂，还有小地方可以更好。对照下面改一改，会更像英语。</div>';
- else h+='<div class="s-coach-sum">先看问题，再看「更好的改写」。改完可以再点一次检测。</div>';
+ let h='<div class="s-coach-wrap" data-s-coach="'+MARKER+'" data-s-flag="'+FLAG+'"><div class="s-coach-label">✨ 怎么改更好</div>';
+ if(r&&r.level==="good")h+='<div class="s-coach-sum">语法没大问题，也跟上句有关。下面标出做对的地方；若有示范句，只为对照语法。</div>';
+ else if(r&&r.level==="mid")h+='<div class="s-coach-sum">大意能懂，还有语法或「跟上句」小地方。对照下面改一改。</div>';
+ else h+='<div class="s-coach-sum">先看语法问题，再看「更好的改写」。改完可以再点一次检测。</div>';
  if(pts.good.length){h+='<div class="s-coach-sum"><b>👍 哪里好</b></div><ul class="s-coach-list">'+pts.good.map(function(x){return "<li>"+sEsc(x)+"</li>";}).join("")+"</ul>";}
  if(pts.prob.length){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list">'+pts.prob.map(function(x){return "<li>"+sEsc(x)+"</li>";}).join("")+"</ul>";}
- else if(r&&r.level==="good"){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list"><li>语法上没有大问题；下面给你一句更自然的说法。</li></ul>';}
+ else if(r&&r.level==="good"){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list"><li>语法上没有大问题；与上句关系也可以。</li></ul>';}
  if(rew.length){
-  h+='<div class="s-coach-sum"><b>✏️ 更好的改写</b>（可点喇叭听）</div><div class="s-coach-rewrites">';
+  h+='<div class="s-coach-sum"><b>✏️ 更好的改写</b>（可点喇叭听；每句附中文）</div><div class="s-coach-rewrites">';
   rew.forEach(function(it,i){
    h+='<div class="s-coach-item"><div class="s-coach-en"><span class="s-coach-tag">'+sEsc(it.tag||("示范"+(i+1)))+"</span>"+sEsc(it.en)+(typeof spkBtns==="function"?spkBtns(it.en):"")+'</div>';
-   h+='<div class="s-coach-zh">为什么更好：'+sEsc(it.zh)+"</div></div>";
+   h+='<div class="s-coach-zh"><b>中文：</b>'+sEsc(it.zhCn||it.zhSent||"（暂无译文）")+"</div>";
+   h+='<div class="s-coach-zh">为什么这样改：'+sEsc(it.zh)+"</div></div>";
   });
   h+="</div>";
  }
- h+='<div class="s-coach-note">本地规则提示 · 适合中职基础 · 语音识别造句与手打共用同一套反馈</div></div>';
+ h+='<div class="s-coach-note">本地规则 · 适合中职基础 · 只查语法对错与是否跟上句有关 · 不评「好不好听／自然不自然」· 语音与手打共用 · '+FLAG+'</div></div>';
  return h;
 }
 
@@ -2811,7 +2865,7 @@ function sRenderRes(r,lt,ltState,corr,sent,paintInfo,tr){const head=r.level==="g
  const annot=sPaintAnnotatedHtml(sent,paintInfo.paint,paintInfo.targets);
  let h='<div class="s-head fb '+cls+'">'+head+'</div>';
  h+=sZhBlock(tr);
- h+='<div class="s-legend"><span>🟢 对的部分</span><span>🔴 要改的部分</span><span>🟢粗框 = 目标词用上了</span></div>';
+ h+='<div class="s-legend"><span>🟢 对的部分</span><span>🔴 要改的部分</span><span>🟢粗框 = 目标词（加分，不强制）</span></div>';
  h+='<div class="s-annot-wrap"><div class="s-annot-label">标注句</div><div class="s-annot" id="sAnnot">'+annot+'</div></div>';
  if(corr&&corr!==sent){h+='<div class="s-annot-wrap"><div class="s-annot-label">对照改法</div><div class="s-diff" id="sDiff">'+sWordDiffHtml(sent,corr)+'</div><div style="margin-top:6px"><span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorr">用参考改法</button></div></div>';}
  else if(corr){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr" id="sCorrText">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';}
@@ -2850,7 +2904,7 @@ function sMergeLtMessages(ms,sent,w,r){const lt=[],seen=new Set();
 
 async function sDoCheck(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForCheck($("sentIn").value);let s=_prep.s;$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
  sSave(w.en,s);try{dClear();}catch(e){}$("sentLast").textContent="已保存：" + s;
- const r=localCheck(s,w);
+ const r=localCheck(s,w,{prevSent:(w.exEn||""),mode:"sent"});
  if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
  else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}
  const btn=$("sentChk");const oldLabel=btn.textContent;btn.disabled=true;btn.textContent="检测中…";
@@ -2861,6 +2915,8 @@ async function sDoCheck(){const w=sCurWord();if(!w)return;const _prep=sPrepSentF
  const picky=sStrictOn();
  try{const ms0=await ltCheck(s,{picky:picky});ms=filterLTMatches(s,ms0,w);
   if(!picky){ms=ms.filter(m=>ltSev(m)!=="warn");}
+  // 不评表达好不好：去掉 STYLE / 表达润色类
+  ms=ms.filter(m=>{const cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const id=(m.rule&&m.rule.id)||"";return cat!=="STYLE"&&!/STYLE|REDUNDANCY/.test(id+cat);});
   lt=sMergeLtMessages(ms,s,w,r);
   const ltCorr=applyLT(s,ms0,w);
   corr=ltCorr||corr;
@@ -2882,10 +2938,20 @@ function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();}
 
 /* 本词表增强：撇号词、去重提示、参考改法里自动套用时态修正 */
-function localCheck(sent,w){const s=String(sent||"").replace(/[’‘]/g,"'");const r=localCheck0(s,w);
+function localCheck(sent,w,opt){opt=opt||{};const s=String(sent||"").replace(/[’‘]/g,"'");const r=localCheck0(s,w);
+ // 缺目标词绝不再进 fix（双保险）
+ r.fix=(r.fix||[]).filter(function(x){return !/没用上目标词|没找到目标/.test(String(x));});
  if(/'/.test(w.en)){const loose=w.en.replace(/'/g,"").toLowerCase();if(sTok(s).includes(loose)){r.fix=r.fix.filter(x=>!/没找到/.test(x));r.fix.push("「"+w.en+"」要带撇号，写成 "+w.en+"（你写成了 "+loose+"）");}}
  const tf=(r.fix||[]).find(x=>/(过去时间词|一般现在时|过去式|主谓).*改成[：:]/.test(x)||/把「[^」]+」改成「[A-Za-z']+」/.test(x));
  if(tf){const m=tf.match(/改成[：:]\s*([A-Za-z']+)/)||tf.match(/改成「([A-Za-z']+)」/);if(m)r.fixWord=m[1];r.tips=r.tips.filter(x=>!/加 -s/.test(x));}
+ // 跟上句／例句连贯（加戏用上一句；第2拍用例句）
+ const prev=opt.prevSent!=null?opt.prevSent:(w&&w.exEn)||"";
+ const rel=sRelatedPrev(s,prev,w);r.related=rel;
+ if(rel.ok&&rel.okLine){if(!(r.ok||[]).some(function(x){return /跟上句/.test(x);}))r.ok.push(rel.okLine);}
+ else if(!rel.ok&&rel.tip){if(!(r.tips||[]).some(function(x){return /跟上句|不太挨着/.test(x);}))r.tips.push(rel.tip);if(rel.demo)r.followDemo=rel.demo;}
+ if(rel.tip&&/几乎一样/.test(rel.tip)){if(!(r.tips||[]).some(function(x){return /几乎一样/.test(x);}))r.tips.push(rel.tip);if(rel.demo)r.followDemo=rel.demo;}
+ // 不把「表达自然」类提示当问题
+ r.tips=(r.tips||[]).filter(function(x){return !/可以更自然|更口语|表达更自然|表达风格/.test(String(x));});
  r.corrLocal=sPolish(r.corrLocal||s,r);
  r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");return r;}
 function sPolish(c,r){c=String(c||"");c=c.replace(/(^|\s)i(?=\s|'|$)/g,(m,a)=>a+"I");
@@ -2959,8 +3025,8 @@ function beat2GoNext(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForC
  $("sentIn").value=s;sSave(w.en,s);$("sentLast").textContent="已保存："+s;
  const box=$("sentArea");const lvl=(box&&box.dataset.beat2Level)||"";
  const r=localCheck(s,w);const level=lvl||r.level;if(box)box.dataset.beat2Level=level;
- if(level==="bad"||!sHasWord(s,w.en).ok){sMsg("这句还不太行：请先用上「"+w.en+"」并改掉明显错误，再进第3拍。（也可先点「检测」）");try{$("sentIn").focus();}catch(e){}return;}
- beatUnlock3({focus:true});sMsg("✅ 进入第3拍 · 口述加戏");}
+ if(level==="bad"){sMsg("这句还有明显语法问题，先改一改再进第3拍。（也可先点「检测」；目标词不强制）");try{$("sentIn").focus();}catch(e){}return;}
+ beatUnlock3({focus:true});sMsg("✅ 进入第3拍 · 口述加戏（跟上句有关即可）");}
 const b2go=$("beat2Go");if(b2go)b2go.onclick=beat2GoNext;
 function sMsgTwist(t){const el=$("twistMsg");if(el)el.textContent=t;}
 function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(resId);if(!host)return;const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
@@ -2968,7 +3034,7 @@ function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(
  const annot=sPaintAnnotatedHtml(sent,paintInfo.paint,paintInfo.targets);
  let h='<div class="s-head fb '+cls+'">'+head+'</div>';
  h+=sZhBlock(tr);
- h+='<div class="s-legend"><span>🟢 对的部分</span><span>🔴 要改的部分</span><span>🟢粗框 = 目标词用上了</span></div>';
+ h+='<div class="s-legend"><span>🟢 对的部分</span><span>🔴 要改的部分</span><span>🟢粗框 = 目标词（加分，不强制）</span></div>';
  h+='<div class="s-annot-wrap"><div class="s-annot-label">标注句</div><div class="s-annot">'+annot+'</div></div>';
  if(corr&&corr!==sent){h+='<div class="s-annot-wrap"><div class="s-annot-label">对照改法</div><div class="s-diff">'+sWordDiffHtml(sent,corr)+'</div><div style="margin-top:6px"><span class="s-corr" id="sCorrTextTwist">'+sEsc(corr)+'</span>'+spkBtns(corr)+' <button type="button" class="mini" id="sUseCorrTwist">用参考改法</button></div></div>';}
  else if(corr){h+='<div class="s-sec"><b>参考改法：</b> <span class="s-corr">'+sEsc(corr)+'</span>'+spkBtns(corr)+'</div>';}
@@ -2978,20 +3044,22 @@ function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(
  const fixes=sDedupLines(r.fix.concat(lt||[]));
  if(fixes.length)h+='<div class="s-sec"><b>要改（详细原因）：</b><ul>'+fixes.map(x=>"<li>✗ "+sEsc(x)+"</li>").join("")+"</ul></div>";
  if(r.tips.length)h+='<div class="s-sec"><b>小提示：</b><ul>'+sDedupLines(r.tips).map(x=>"<li>💡 "+sEsc(x)+"</li>").join("")+"</ul></div>";
- h+='<div class="s-note">'+sEsc(ltState)+' · 加戏句也要带目标词</div>';
+ h+='<div class="s-note">'+sEsc(ltState)+' · 加戏句要跟上句有关；语法要对；目标词可选</div>';
  host.innerHTML=h;sBindChipClicks(host);
  const use=$("sUseCorrTwist");if(use&&corr){use.onclick=()=>{$("twistIn").value=corr;$("twistIn").focus();sMsgTwist("已填入参考改法，可再改一改再检测。");};}}
 async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sentArea");
  if(box&&box.dataset.beat!=="3"&&box.dataset.beat!=="done"){sMsgTwist("请先完成第2拍（或点「我写好了，去第3拍」）。");return;}
  const _prep=sPrepSentForCheck($("twistIn").value);let s=_prep.s;$("twistIn").value=s;if(!s){sMsgTwist("先写或说一句加戏哦。");$("twistIn").focus();return;}
  const key=beatTwistKey(w.en);sSave(key,s);const tl=$("twistLast");if(tl)tl.textContent="已保存："+s;
- const r=localCheck(s,w);
+ const prevBeat2=((($("sentIn")&&$("sentIn").value)||"").trim())||(w.exEn||"");
+ const r=localCheck(s,w,{prevSent:prevBeat2,mode:"twist"});
  if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
  else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}const btn=$("twistChk");const oldLabel=btn?btn.textContent:"检测加戏";if(btn){btn.disabled=true;btn.textContent="检测中…";}
  const localPaint=sCollectPaint(s,w,r,[]);let tr=sTranslateLocal(s);
  sRenderResInto("twistRes",r,[],"⏳ 正在做语法检查…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,tr);
  let lt=[],state="语法检查：LanguageTool",corr=r.corrLocal||s,ms=[];const picky=sStrictOn();
  try{const ms0=await ltCheck(s,{picky:picky});ms=filterLTMatches(s,ms0,w);if(!picky)ms=ms.filter(m=>ltSev(m)!=="warn");
+  ms=ms.filter(m=>{const cat=(m.rule&&m.rule.category&&m.rule.category.id)||"";const id=(m.rule&&m.rule.id)||"";return cat!=="STYLE"&&!/STYLE|REDUNDANCY/.test(id+cat);});
   lt=sMergeLtMessages(ms,s,w,r);const ltCorr=applyLT(s,ms0,w);corr=ltCorr||corr;
   corr=corr.replace(/\b([A-Z]{2,12})\b/g,(m)=>{const low=m.toLowerCase();return S_NAMEISH.has(low)?m.charAt(0)+m.slice(1).toLowerCase():m;});
   if(lt.length&&r.level==="good")r.level="mid";
@@ -3003,10 +3071,12 @@ async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sent
  if(sCurWord()!==w)return;corr=sPolish(corr,r);const paintInfo=sCollectPaint(s,w,r,ms);
  sRenderResInto("twistRes",r,lt,state,corr,s,paintInfo,tr);
  if(box)box.dataset.beat3Level=r.level||"";
- if(r.level!=="bad"&&sHasWord(s,w.en).ok){beatSet("done");const done=$("beatDone");if(done)done.style.display="";sMsgTwist("🎉 加戏完成！马上进入下一词…");
+ if(r.level!=="bad"){beatSet("done");const done=$("beatDone");if(done)done.style.display="";
+  const relOk=!(r.related&&r.related.ok===false);
+  sMsgTwist(relOk?"🎉 加戏完成！马上进入下一词…":"🎉 语法过关已完成。刚才提示了跟上句的关系，下次注意接着说哦。马上进入下一词…");
   try{if(window.__autoNextTimer)clearTimeout(window.__autoNextTimer);}catch(e){}
   window.__autoNextTimer=setTimeout(()=>{try{if(sCurWord()===w&&ST.revealed)next();}catch(e){}},650);}
- else sMsgTwist("加戏句也要用上「"+w.en+"」，再改一改吧。");}
+ else sMsgTwist("还有明显语法问题，再改一改吧。（目标词不强制；请跟上句有关）");}
 (function initTwistMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("twistMic");if(!b)return;
  if(!SR){b.style.display="none";return;}
  let listening=false,baseText="",committed="",interim="",wantStop=false,sRecT=null;
