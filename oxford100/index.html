@@ -12,7 +12,7 @@
 <meta name="application-name" content="牛津200词"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%238b1a1a'/%3E%3Ctext x='50' y='66' font-size='46' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EAa%3C/text%3E%3C/svg%3E"/>
 <title>Oxford 3000 · A1→B1 核心 200 词</title>
-<!-- CLEAN_REWRITE_VOC_V1 deploy-bump 2026-11-04T16:06Z -->
+<!-- CLEAN_REWRITE_VOC_V1 · AUDIT_SENT_FIX_V1 deploy-bump 2026-11-05T00:30Z -->
 
 <style>
 :root{
@@ -919,6 +919,13 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 .m-bar i{display:block;height:16px;background:linear-gradient(90deg,var(--accent),#b54848)}
 .m-cap{font-size:.78rem;color:var(--muted);text-align:center;margin-top:4px}
 .m-sub{color:var(--muted);font-size:.86rem;margin:2px 0 6px;line-height:1.6;text-align:left}
+.today-learn{margin:8px 0 10px;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,#fff8f0,#fff);text-align:left;line-height:1.55}
+.today-learn b{color:var(--accent2)}
+.today-learn .tl-path{font-size:.88rem;color:var(--muted);margin-top:4px}
+.today-learn .tl-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.s-coach-next{margin-top:8px;padding:8px 10px;background:#eef6f0;border-left:3px solid var(--good);border-radius:4px;font-size:.9rem;line-height:1.5}
+.s-head.fb.ok{font-size:1.05rem}
+
 @media (max-width:640px){.tabs{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}.tabs button{white-space:nowrap;flex:none;padding:8px 11px!important;font-size:.84rem!important}.tabs::-webkit-scrollbar{display:none}.m-grid{grid-template-columns:1fr}.m-blank{width:6.2em}}
 </style>
 <script defer src="audio_modules_1.js"></script><script defer src="audio_modules_2.js"></script><script defer src="audio_modules_3.js"></script>
@@ -956,6 +963,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 </div>
 <div class="phase" id="restore" style="color:#3d6b4f"></div>
 <div class="envtip" id="envTip"></div>
+<div id="todayLearn" class="today-learn" style="display:none" aria-live="polite"></div>
 <input type="file" id="fileIn" accept=".json,.txt,application/json,text/plain"/>
 
 <div class="pane" id="p-words">
@@ -2461,7 +2469,32 @@ function decorateMascots(){
   });
 }
 
-function renderAll(){renderIntro();renderTabs();$("auto").checked=!!ST.auto;
+function renderTodayLearn(){
+  const el=$("todayLearn"); if(!el)return;
+  try{
+    const known=(ST.known||[]).length, total=W.length;
+    let nextW=null; try{nextW=cur();}catch(e){}
+    if(!nextW&&ST.queue&&ST.queue.length){try{nextW=W[ST.queue[0]];}catch(e){}}
+    const theme=ST.theme===ALLTH?"全部场景":(ST.theme||"");
+    const left=(ST.queue||[]).length;
+    let listenDone=0,speakDone=0; try{listenDone=Object.keys(MP.listen||{}).length; speakDone=Object.keys(MP.speak||{}).filter(function(k){return (MP.speak[k]||[]).length;}).length;}catch(e){}
+    el.style.display="";
+    el.innerHTML='<div><b>📅 今日该学</b> · 已掌握 '+known+'/'+total+' · 本组剩余 '+left+' 词'+(theme?(' · '+sEscH(theme)):'')+'</div>'+
+      (nextW?('<div class="tl-path">下一词：<b>'+sEscH(nextW.zh)+'</b>（'+sEscH(nextW.en)+'）· 路径：拼写 → 造句（第2/3拍）→ 可选听/说 1 课</div>'):('<div class="tl-path">本组练完了。可换场景，或去听力/口语/语法巩固。</div>'))+
+      '<div class="tl-actions">'+
+        '<button type="button" class="mini" id="tlWords">① 继续拼写</button>'+
+        '<button type="button" class="mini" id="tlListen">③ 听力 ('+listenDone+'/'+LISTEN.length+')</button>'+
+        '<button type="button" class="mini" id="tlSpeak">④ 口语</button>'+
+        '<button type="button" class="mini" id="tlGram">⑤ 语法</button>'+
+      '</div>';
+    const go=function(tab){return function(){ST.tab=tab;save();renderAll();try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){}};};
+    const a=$("tlWords"); if(a)a.onclick=go("words");
+    const b=$("tlListen"); if(b)b.onclick=go("listen");
+    const c=$("tlSpeak"); if(c)c.onclick=go("speak");
+    const d=$("tlGram"); if(d)d.onclick=go("grammar");
+  }catch(e){el.style.display="none";}
+}
+function renderAll(){renderIntro();renderTabs();try{renderTodayLearn();}catch(e){}$("auto").checked=!!ST.auto;
  if(ST.tab==="words"){renderChips();renderWords();}
  if(ST.tab==="list")renderList();
  if(ST.tab==="mem")renderMem();
@@ -2562,7 +2595,7 @@ function sTenseCheck(sent,w){const tips=[],fix=[];const time=sDetectTime(sent);i
    const sg=s3sgOf(useBase);fix.push("主谓/时态：有 every day / usually / always 时常用一般现在时；主语是 he/she/it 时动词要加 -s。把「"+v+"」改成「"+sg+"」。例：He "+sg+" … every day.");}
   else if(!need3&&sIsPastForm(v)&&aux!=="did"){tips.push("习惯/频率时间词常用一般现在时（不一定用过去式）。");}
  }
- if(time==="now"){tips.push("有 today/now：一般现在或现在进行时都可以。");}
+ if(time==="now"){/* AUDIT_SENT_FIX_V1：科普提示不进 tips，避免「对的判可更好」 */}
  return {tips,fix,time,verbTok:v,verbIdx:mv.idx,verbNeedsFix:(fix.length>0)};}
 
 function sPosHints(sent,w){const out=[],toks=sTok(sent),hw=sHasWord(sent,w.en);const pos=String(w.pos||"");if(!hw.ok||hw.idx<0||sTargetParts(w.en).length>1)return out;
@@ -3122,7 +3155,7 @@ function sCoachPoints(sent,w,r){
   });
   (r.tips||[]).forEach(function(x){
    const s=String(x);
-   if(/更贴本课|不强制|带上「/.test(s))return; // 轻提示不进「问题」列表
+   if(/更贴本课|不强制|带上「|^【轻提示】/.test(s))return; // 轻提示不进「问题」列表
    if(/跟上句不太挨着|跑题|接上/.test(s))prob.push("跟上句关系不够：请顺着上一句的意思接着说");
    else if(/缺动词|没有动词|没看到动词/.test(s))prob.push("好像缺少动词（is/am/are/like/have/go…）");
    else if(/照抄例句|几乎一样/.test(s))prob.push("尽量自己造／换个说法，不要几乎照抄或原样重复");
@@ -3132,12 +3165,23 @@ function sCoachPoints(sent,w,r){
    else if(/自然|更口语|表达/.test(s))return;
   });
  }
- if(hw.ok&&kind==="adj"&&!/\b(am|is|are|was|were|look|looks|feel|feels|seem|seems|very|so|too)\b/i.test(sent))
-  prob.push("「"+w.en+"」是形容词，常用在 be/look/very 后面");
+ /* AUDIT_SENT_FIX_V1：形容词 I'm/It's / tastes 等不算缺 be；名词不作笼统误杀 */
+ if(hw.ok&&kind==="adj"){
+  const hasBe=/\b(am|is|are|was|were|look|looks|feel|feels|seem|seems|taste|tastes|become|becomes|get|gets|very|so|too|quite|really)\b/i.test(sent)||/\b(i'm|you're|he's|she's|it's|we're|they're)\b/i.test(sent);
+  const nxt=toks[hw.idx+1]||"";
+  const attrib=!!nxt&&!S_VERBS.has(nxt)&&!S_SUBJ.has(nxt)&&!/^(and|or|but|because|so|then)$/.test(nxt);
+  if(!hasBe&&!attrib){ if(!(r&&r.level==="good"))prob.push("「"+w.en+"」是形容词，常用在 be/look/very 后面，或放在名词前面"); }
+ }
  if(hw.ok&&kind==="n"){
-  const i=hw.idx,prev=(toks[i-1]||"");
-  if(i>=0&&!S_DET.has(prev)&&!S_DET.has(toks[i-2]||""))
-   prob.push("「"+w.en+"」是名词，前面常加 a/an/the/my");
+  const i=hw.idx,tok=(toks[i]||""),prev=(toks[i-1]||""),prev2=(toks[i-2]||"");
+  const plural=(/s$/.test(tok)&&!/(ss|us|is|this|his)$/.test(tok))||tok==="people"||tok==="children"||tok==="men"||tok==="women";
+  const uncount=new Set(["water","milk","tea","coffee","rice","bread","money","time","homework","english","music","weather","information","food","fruit","luggage","advice"]);
+  if(i>0&&!plural&&!uncount.has(tok)&&!S_DET.has(prev)&&!S_DET.has(prev2)&&S_VERBS.has(prev)&&!/ing$/.test(prev)){
+    const line="「"+w.en+"」是名词，可数单数前常加 a/an/the/my（如 a "+w.en+"）";
+    // AUDIT_SENT_FIX_V1：本地已判 good 时不当「问题」标题刷存在感，改记轻提示
+    if(r&&r.level==="good"){ /* skip into prob */ }
+    else prob.push(line);
+  }
  }
  const ded=function(arr){const s=new Set(),o=[];arr.forEach(function(x){const k=x.slice(0,36);if(s.has(k))return;s.add(k);o.push(x);});return o;};
  return {good:ded(good).slice(0,4),prob:ded(prob).slice(0,5)};
@@ -3147,15 +3191,26 @@ function sCoachHtml(sent,w,r,corr){
  const MARKER="RICHER_SENT_FEEDBACK_V1";
  const FLAG="SENT_FOLLOWUP_RELAX_V2";
  const CLEAN="CLEAN_REWRITE_VOC_V1";
+ const AUDIT="AUDIT_SENT_FIX_V1";
  const pts=sCoachPoints(sent,w,r);
- let h='<div class="s-coach-wrap" data-s-coach="'+MARKER+'" data-s-flag="'+FLAG+'" data-s-clean="'+CLEAN+'"><div class="s-coach-label">📝 造句反馈</div>';
- if(r&&r.level==="good")h+='<div class="s-coach-sum">语法没大问题，也跟上句有关。下面标出做对的地方。</div>';
- else if(r&&r.level==="mid")h+='<div class="s-coach-sum">大意能懂，还有语法或「跟上句」小地方。对照下面改一改。</div>';
+ let h='<div class="s-coach-wrap" data-s-coach="'+MARKER+'" data-s-flag="'+FLAG+'" data-s-clean="'+CLEAN+'" data-s-audit="'+AUDIT+'"><div class="s-coach-label">📝 造句反馈</div>';
+ if(r&&r.level==="good")h+='<div class="s-coach-sum">✅ 这句可以！语法没大问题'+(r.related&&r.related.ok?", 也跟上句有关":"")+'。下面是你做对的地方。</div>';
+ else if(r&&r.level==="mid")h+='<div class="s-coach-sum">大意能懂。语法基本过关，还有一点点可改（不是全盘否定）。对照下面即可。</div>';
  else h+='<div class="s-coach-sum">先看语法问题。改完可以再点一次检测。</div>';
  if(pts.good.length){h+='<div class="s-coach-sum"><b>👍 哪里好</b></div><ul class="s-coach-list">'+pts.good.map(function(x){return "<li>"+sEsc(x)+"</li>";}).join("")+"</ul>";}
- if(pts.prob.length){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list">'+pts.prob.map(function(x){return "<li>"+sEsc(x)+"</li>";}).join("")+"</ul>";}
- else if(r&&r.level==="good"){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list"><li>语法上没有大问题；与上句关系也可以。</li></ul>';}
- h+='<div class="s-coach-note">本地规则 · A1→B1 · 只查语法对错与是否跟上句有关 · 不评「好不好听／自然不自然」· 语音与手打共用 · '+FLAG+' · '+CLEAN+'</div></div>';
+ if(pts.prob.length){h+='<div class="s-coach-sum"><b>🔧 哪里有问题 · 怎么改</b></div><ul class="s-coach-list">'+pts.prob.map(function(x){return "<li>"+sEsc(x)+"</li>";}).join("")+"</ul>";}
+ else if(r&&r.level==="good"){h+='<div class="s-coach-sum"><b>🔧 哪里有问题</b></div><ul class="s-coach-list"><li>没有语法大问题，可以进入下一步。</li></ul>';}
+ /* 学习感：对的句子给一句可执行下一步（不恢复多条改写列表） */
+ if(r&&r.level==="good"){
+  const box=typeof $==="function"?$("sentArea"):null; const beat=box&&box.dataset?box.dataset.beat:"";
+  const next=beat==="3"||beat==="done"?"换个时间或地点，把这句再说/再写一遍巩固。":"点「去第3拍」，接着上一句往下说一句（不必再用目标词）。";
+  h+='<div class="s-coach-next"><b>👉 下一步：</b>'+sEsc(next)+'</div>';
+ }else if(r&&r.level==="mid"&&corr&&corr!==sent){
+  h+='<div class="s-coach-next"><b>👉 可执行改法：</b>对照上面的「对照改法」，改一处再点检测。</div>';
+ }else if(r&&r.level==="bad"&&corr&&corr!==sent){
+  h+='<div class="s-coach-next"><b>👉 可执行改法：</b>先按红标改一处（或点「用参考改法」），再检测。</div>';
+ }
+ h+='<div class="s-coach-note">本地规则 · A1→B1 · 只查语法对错与是否跟上句有关 · 不评「自然不自然」· '+FLAG+' · '+CLEAN+' · '+AUDIT+'</div></div>';
  return h;
 }
 
@@ -3164,7 +3219,7 @@ function sZhBlock(tr){
  return '<div class="s-zh-wrap" id="sZhBox"><div class="s-zh-label">你的句子意思（中文翻译）</div><div class="s-zh-text" id="sZhText">'+sEsc(tr.zh)+'</div><div class="s-zh-note" id="sZhNote">'+sEsc(tr.note||"")+'</div></div>';
 }
 
-function sRenderRes(r,lt,ltState,corr,sent,paintInfo,tr){const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
+function sRenderRes(r,lt,ltState,corr,sent,paintInfo,tr){const head=r.level==="good"?"✅ 句子可以 · 过关":r.level==="mid"?"⚠️ 基本可以 · 还有小改":"❌ 有问题 · 先改语法";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
  paintInfo=paintInfo||{paint:[],targets:[],chips:[]};
  tr=tr||sTranslateLocal(sent);
  const annot=sPaintAnnotatedHtml(sent,paintInfo.paint,paintInfo.targets);
@@ -3230,7 +3285,7 @@ function sOnlineRun(o){/* o:{slot,s,w,r,offMsg,render(lt,state,corr,ms,tr,final)
 async function sDoCheck(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForCheck($("sentIn").value);let s=_prep.s;$("sentIn").value=s;if(!s){sMsg("先写或说一个句子哦。");$("sentIn").focus();return;}
  sSave(w.en,s);try{dClear();}catch(e){}$("sentLast").textContent="已保存：" + s;
  const r=localCheck(s,w,{prevSent:(w.exEn||""),mode:"sent"});
- if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
+ if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");sRecomputeLevel(r);}
  else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}
  const btn=$("sentChk");if(btn){btn.disabled=false;btn.textContent="检测";}
  const localPaint=sCollectPaint(s,w,r,[]);
@@ -3242,6 +3297,26 @@ async function sDoCheck(){const w=sCurWord();if(!w)return;const _prep=sPrepSentF
 function sCopy(t){const done=()=>sMsg("📋 已复制，去和老师聊天里粘贴发送");const fb=()=>{try{const ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.top="-1000px";document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);const ok=document.execCommand("copy");document.body.removeChild(ta);ok?done():sMsg("复制失败，请长按下面的文字手动复制："+t);}catch(e){sMsg("复制失败，请手动复制："+t);}};
  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(done,fb);}else fb();}
 
+/* ===== AUDIT_SENT_FIX_V1：信息性 tip 不降级；只有真问题才 mid/bad ===== */
+function sTipAffectsLevel(t){
+  const s=String(t||"");
+  if(!s)return false;
+  // 不强制目标词、时态科普、自动标点、丰富度、第2拍轻提示跑题 → 不影响对错
+  if(/^【轻提示】/.test(s))return false;
+  if(/更贴本课|不强制|带上「/.test(s))return false;
+  if(/有 today\/now|一般现在或现在进行时都可以/.test(s))return false;
+  if(/自动补上|自动换成英文标点|句末原来没有/.test(s))return false;
+  if(/偏短|加点具体|句子信息/.test(s))return false;
+  if(/^autoDot$/.test(s))return false;
+  return true;
+}
+function sRecomputeLevel(r){
+  if(!r)return "bad";
+  if((r.fix||[]).length)r.level="bad";
+  else if((r.tips||[]).some(sTipAffectsLevel))r.level="mid";
+  else r.level="good";
+  return r.level;
+}
 /* 本词表增强：撇号词、去重提示、参考改法里自动套用时态修正 */
 function localCheck(sent,w,opt){opt=opt||{};const s=String(sent||"").replace(/[’‘]/g,"'");const r=localCheck0(s,w);
  // 缺目标词绝不再进 fix（双保险）
@@ -3256,12 +3331,19 @@ function localCheck(sent,w,opt){opt=opt||{};const s=String(sent||"").replace(/[�
  const prev=opt.prevSent!=null?opt.prevSent:(w&&w.exEn)||"";
  const rel=sRelatedPrev(s,prev,w);r.related=rel;
  if(rel.ok&&rel.okLine){if(!(r.ok||[]).some(function(x){return /跟上句/.test(x);}))r.ok.push(rel.okLine);}
- else if(!rel.ok&&rel.tip){if(!(r.tips||[]).some(function(x){return /跟上句|不太挨着/.test(x);}))r.tips.push(rel.tip);if(rel.demo)r.followDemo=rel.demo;}
+ else if(!rel.ok&&rel.tip){
+  if(!(r.tips||[]).some(function(x){return /跟上句|不太挨着/.test(x);})){
+    // AUDIT_SENT_FIX_V1：第2拍情景句「跑题」只作轻提示不降级；第3拍加戏仍影响 mid（要跟上句）
+    if(opt.mode==="sent")r.tips.push("【轻提示】"+rel.tip);
+    else r.tips.push(rel.tip);
+  }
+  if(rel.demo)r.followDemo=rel.demo;
+ }
  if(rel.tip&&/几乎一样/.test(rel.tip)){if(!(r.tips||[]).some(function(x){return /几乎一样/.test(x);}))r.tips.push(rel.tip);if(rel.demo)r.followDemo=rel.demo;}
  // 不把「表达自然」类提示当问题
  r.tips=(r.tips||[]).filter(function(x){return !/可以更自然|更口语|表达更自然|表达风格/.test(String(x));});
  r.corrLocal=sPolish(r.corrLocal||s,r);
- r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");return r;}
+ sRecomputeLevel(r);return r;}
 function sPolish(c,r){c=String(c||"");c=c.replace(/(^|\s)i(?=\s|'|$)/g,(m,a)=>a+"I");
  if(r&&r.verbNeedsFix&&r.verbTok&&r.fixWord){const re=new RegExp("\\b"+r.verbTok+"\\b","i");if(re.test(c))c=c.replace(re,r.fixWord);}
  if(/'/.test(c)===false){c=c.replace(/\boclock\b/gi,"o'clock");}
@@ -3337,7 +3419,7 @@ function beat2GoNext(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForC
  beatUnlock3({focus:true});sMsg("✅ 进入第3拍 · 口述加戏（接着上一句往下说就行，不必再用目标词）");}
 const b2go=$("beat2Go");if(b2go)b2go.onclick=beat2GoNext;
 function sMsgTwist(t){const el=$("twistMsg");if(el)el.textContent=t;}
-function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(resId);if(!host)return;const head=r.level==="good"?"✅ 句子可以":r.level==="mid"?"⚠️ 可以更好":"❌ 有问题";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
+function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(resId);if(!host)return;const head=r.level==="good"?"✅ 句子可以 · 过关":r.level==="mid"?"⚠️ 基本可以 · 还有小改":"❌ 有问题 · 先改语法";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
  paintInfo=paintInfo||{paint:[],targets:[],chips:[]};tr=tr||sTranslateLocal(sent);
  const annot=sPaintAnnotatedHtml(sent,paintInfo.paint,paintInfo.targets);
  let h='<div class="s-head fb '+cls+'">'+head+'</div>';
@@ -3361,7 +3443,7 @@ async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sent
  const key=beatTwistKey(w.en);sSave(key,s);const tl=$("twistLast");if(tl)tl.textContent="已保存："+s;
  const prevBeat2=((($("sentIn")&&$("sentIn").value)||"").trim())||(w.exEn||"");
  const r=localCheck(s,w,{prevSent:prevBeat2,mode:"twist"});
- if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");r.level=r.fix.length?"bad":(r.tips.length?"mid":"good");}
+ if(_prep.autoDot){r.tips.unshift("句末原来没有 . ? !，已自动补上句号「.」。下次可自己写上英文句末标点。");sRecomputeLevel(r);}
  else if(_prep.mapped){r.tips.unshift("已把中文/全角标点自动换成英文标点（。→. ，？→? ，！→!）。");}const btn=$("twistChk");if(btn){btn.disabled=false;btn.textContent="检测加戏";}
  const localPaint=sCollectPaint(s,w,r,[]);
  sRenderResInto("twistRes",r,[],"⏳ 本地结果已出 · 补充在线检查中…",r.corrLocal&&r.corrLocal!==s?r.corrLocal:null,s,localPaint,sTranslateLocal(s));
