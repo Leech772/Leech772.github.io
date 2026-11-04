@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- ESSAY_V2_REF --><head><meta charset="UTF-8"/>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -2196,7 +2196,7 @@ function buildQueue(){
  ST.round="first";ST.revealed=false;ST.pending=null;ST.sentOn=false;ST.hint=false;ST.lastFb=null;}
 function mergeState(o){const d=defState();if(!o||typeof o!=="object")return d;const r=Object.assign(d,o);
  const ok=i=>Number.isInteger(i)&&i>=0&&i<W.length;
- r.known=[...new Set((r.known||[]).filter(ok))];r.missed=[...new Set((r.missed||[]).filter(ok))];r.queue=(r.queue||[]).filter(ok);
+ const arr=x=>Array.isArray(x)?x:[];r.known=[...new Set(arr(r.known).filter(ok))];r.missed=[...new Set(arr(r.missed).filter(ok))];r.queue=arr(r.queue).filter(ok);if(!r.reps||typeof r.reps!=="object")r.reps={};if(!Array.isArray(r.log))r.log=[];if(!TABS.some(t=>t[0]===r.tab))r.tab="words";
  const reps={};Object.keys(r.reps||{}).forEach(k=>{const n=+r.reps[k];if(ok(+k)&&n>0)reps[k]=n;});r.reps=reps;
  if(r.theme!==ALLTH&&!THEMES.some(t=>t.name===r.theme))r.theme=ALLTH;
  if(!TABS.some(t=>t[0]===r.tab))r.tab="words";
@@ -4009,7 +4009,12 @@ function syncBindMem(){
 }
 
 
-const _restored=load();renderAll();save({silent:true});
+let _restored=null;
+/* BOOT_GUARD: 启动出错不拖垮按钮 */
+try{_restored=load();}catch(e){console.error("load",e);try{ST=defState();buildQueue();}catch(e2){}}
+try{renderAll();}catch(e){console.error("renderAll",e);try{ST.tab="words";renderAll();}catch(e2){try{renderTabs();}catch(e3){}}}
+try{save({silent:true});}catch(e){}
+try{document.getElementById("tabs").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button");if(!b)return;setTimeout(function(){var i=[].indexOf.call(this.querySelectorAll("button"),b);var id=TABS[i]&&TABS[i][0];if(id&&ST.tab!==id){ST.tab=id;try{save();}catch(e){}try{renderAll();}catch(e){TABS.forEach(function(t){var el=$("p-"+t[0]);if(el)el.classList.toggle("on",t[0]===id);});}}}.bind(this),0);});}catch(e){}
 try{setTimeout(syncBootPull,1200);}catch(e){}
 
 try{const ta=$("sentIn");if(ta){ta.addEventListener("input",()=>dSaveDebounced());ta.addEventListener("change",()=>dFlushFromInput({flash:true}));}}catch(e){}
@@ -4063,7 +4068,7 @@ function e2ScanMust(text,mustWords){
 function e2SplitSents(text){
   const t=String(text||"").replace(/\s+/g," ").trim();
   if(!t)return [];
-  return t.split(/(?<=[.!?])\s+/).map(s=>s.trim()).filter(Boolean);
+  return t.replace(/([.!?])\s+/g,"$1\u0001").split("\u0001").map(s=>s.trim()).filter(Boolean);
 }
 function e2GramIssues(text){
   const issues=[];
