@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ROOTFAM_LISTEN_V2 --><head><meta charset="UTF-8"/>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -12,7 +12,7 @@
 <meta name="application-name" content="牛津200词"/>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%238b1a1a'/%3E%3Ctext x='50' y='66' font-size='46' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3EAa%3C/text%3E%3C/svg%3E"/>
 <title>Oxford 3000 · A1→B1 核心 200 词</title>
-<!-- CLEAN_REWRITE_VOC_V1 · AUDIT_SENT_FIX_V1 deploy-bump 2026-11-05T00:30Z -->
+<!-- CLEAN_REWRITE_VOC_V1 · AUDIT_SENT_FIX_V1 · ESSAY_GROUP_AI_V1 deploy-bump 2026-11-06T01:35Z -->
 
 <style>
 :root{
@@ -1027,7 +1027,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   <div class="essay-stat" id="essayStat"></div>
   <textarea id="essayIn" rows="6" autocapitalize="sentences" spellcheck="false" placeholder="用本组词写一段小短文…"></textarea>
   <div class="row s-btns" style="margin-top:10px">
-    <button type="button" class="b-sub" id="essayChk">检测用词</button>
+    <button type="button" class="b-sub" id="essayChk">提交批改</button>
     <button type="button" class="spk" id="essaySay">🔊 朗读</button>
     <button type="button" class="b-fuz" id="essayCopy">复制给老师</button>
   </div>
@@ -1464,7 +1464,145 @@ const ESSAY_TASKS=[
  ],
  modelEn:["Spending time with my friends makes me happy.","I feel happy when we talk and laugh after school. This is because I can share my problems and get help.","For example, last week my friend helped me with English homework, and I felt less worried.","In short, good friends make life easier and happier. That is why I always try to be a good friend too."],
  modelZh:"和朋友待在一起让我开心。放学后一起聊天大笑时我很开心，因为我可以分享烦恼并得到帮助。例如上周朋友帮我做英语作业，我没那么担心了。简言之，好朋友让生活更容易更快乐。所以我也总想做一个好朋友。",
- goodWords:[["spend time","花时间"],["laugh","笑"],["worried","担心的"],["share","分享"],["in short","简言之"]]}
+ goodWords:[["spend time","花时间"],["laugh","笑"],["worried","担心的"],["share","分享"],["in short","简言之"]]},
+
+{id:"e11",theme:"时间与日期",icon:"📅",type:"对话",
+ titleEn:"Talk with your teacher about being early or late.",
+ titleZh:"跟老师聊聊作息：早到、迟到与下周安排。",
+ wordsMin:60,wordsMax:120,
+ must:["time","today","tomorrow","yesterday","week","month","year","morning"],
+ focus:["结构：打招呼 → 说明习惯/原因 → 问对方 → 下周安排","语法：一般现在时；be late / on time；every day","词汇：time / today / week / morning 等"],
+ outline:[
+  ["开头","打招呼 + 说明今天来得早/晚","Greet and say you came early or late today."],
+  ["习惯","这是我的习惯 + because 原因","Explain your habit with because."],
+  ["互动","What about you? 问对方作息","Ask about the other person."],
+  ["安排/结尾","下周/这个月的计划 + 收尾","Talk about next week or this month."]
+ ],
+ patterns:[
+  ["Good morning, Mr/Ms ___.","早上好，___老师。"],
+  ["I don't like to be late for school.","我不喜欢上学迟到。"],
+  ["This is because ___.","这是因为___。"],
+  ["What about you?","你呢？"],
+  ["Next week I will ___.","下周我会___。"]
+ ],
+ modelEn:["Good morning, Mr Jordan. Today I came to school early.","This is my habit. I don't like to be late for class. Now eight o'clock is fine for me.","What about you, though? Next week I will try not to be late every day.","Yesterday I had no time, but this month I need to help my dad. Thank you for your time."],
+ modelZh:"早上好，Jordan 老师。今天我很早就到学校了。这是我的习惯。我不喜欢上课迟到。现在八点对我来说刚刚好。不过你呢？下周我会尽量每天都不迟到。昨天我没有时间，但这个月我需要帮我爸爸。谢谢您抽出时间。",
+ goodWords:[["habit","习惯"],["on time","准时"],["be late","迟到"],["every day","每天"],["though","不过"]]},
+
+{id:"e12",theme:"购物与金钱",icon:"🛍️",type:"叙述",
+ titleEn:"Describe a time you went shopping.",
+ titleZh:"描述一次你去购物的经历。",
+ wordsMin:60,wordsMax:110,
+ must:["shop","buy","price","cheap","money"],
+ focus:["结构：去哪买 → 看价格 → 买了什么 → 感受","语法：一般过去时或一般现在时；want to buy","词汇：shop / buy / price / cheap / money"],
+ outline:[
+  ["开头","我去了哪家店","Where you went shopping."],
+  ["价格","问价 / 贵还是便宜","Ask about price: cheap or expensive."],
+  ["购买","买了什么、怎么付款","What you bought and how you paid."],
+  ["结尾","满不满意","How you feel about it."]
+ ],
+ patterns:[
+  ["I went to a shop near ___.","我去了___附近的一家店。"],
+  ["I wanted to buy ___.","我想买___。"],
+  ["The price was ___ / It was cheap.","价格是___ / 很便宜。"],
+  ["I paid by phone / cash.","我用手机/现金付款。"],
+  ["I was happy because ___.","我很开心，因为___。"]
+ ],
+ modelEn:["Last Saturday I went to a shop near my school. I wanted to buy a bag.","First I asked about the price. One bag was expensive, but another one was cheap.","I did not have much money, so I chose the cheap bag and paid by phone.","I was happy because I got what I need. Next month I may buy a bigger bag."],
+ modelZh:"上周六我去了学校附近的一家店。我想买一个包。我先问了价格。有一个很贵，另一个很便宜。我钱不多，所以选了便宜的那个，用手机付了款。我很开心，因为买到了需要的东西。下个月我可能再买一个更大的包。",
+ goodWords:[["choose","选择"],["paid","付了款"],["expensive","昂贵的"],["need","需要"],["last Saturday","上周六"]]},
+
+{id:"e13",theme:"简单描述与感受",icon:"😊",type:"描述",
+ titleEn:"Describe how you feel today and why.",
+ titleZh:"描述你今天的感受，并说明为什么。",
+ wordsMin:60,wordsMax:110,
+ must:["happy","tired","easy","difficult","because"],
+ focus:["结构：感受 → because 原因 → 例子 → 小结","语法：I feel / I am + 形容词；because","词汇：happy / tired / easy / difficult / because"],
+ outline:[
+  ["开头","今天我感觉…","Say how you feel today."],
+  ["原因","because + 原因","Give a clear because reason."],
+  ["例子","一件具体的小事","One small example."],
+  ["结尾","希望/小结","A short closing wish."]
+ ],
+ patterns:[
+  ["Today I feel ___.","今天我感觉___。"],
+  ["I am happy / tired because ___.","我开心/累，因为___。"],
+  ["For example, ___.","例如，___。"],
+  ["It is easy / difficult to ___.","___很容易/很难。"],
+  ["That is why I feel ___.","所以我感觉___。"]
+ ],
+ modelEn:["Today I feel happy, but also a little tired.","I am happy because my English class was interesting. It was not too difficult.","For example, I answered an easy question and my teacher said well done.","That is why I feel good today. Rest is important, so I will sleep early this evening."],
+ modelZh:"今天我感觉开心，但也有点累。我开心是因为英语课很有趣，也不太难。例如我答对了一道简单的题，老师说做得好。所以我今天感觉不错。休息很重要，所以今晚我会早点睡。",
+ goodWords:[["feel","感觉"],["interesting","有趣的"],["well done","做得好"],["rest","休息"],["a little","有一点"]]},
+
+{id:"e14",theme:"家居与居住",icon:"🏠",type:"描述",
+ titleEn:"Describe your home or room.",
+ titleZh:"描述你的家或房间。",
+ wordsMin:60,wordsMax:110,
+ must:["home","room","live","door","window"],
+ focus:["结构：住哪 → 房间有什么 → 喜欢哪里 → 结尾","语法：There is/are；一般现在时","词汇：home / room / live"],
+ outline:[
+  ["开头","我住在…","Where you live."],
+  ["房间","There is/are…","What is in your room."],
+  ["喜欢","最喜欢家里的哪里","What you like most."],
+  ["结尾","感受","How home makes you feel."]
+ ],
+ patterns:[
+  ["I live in a ___.","我住在___。"],
+  ["There is / There are ___.","有___。"],
+  ["My favourite place at home is ___.","家里我最喜欢的地方是___。"],
+  ["I like my room because ___.","我喜欢我的房间，因为___。"],
+  ["Home makes me feel ___.","家让我感觉___。"]
+ ],
+ modelEn:["I live in a small flat with my family. My room is not big, but it is clean.","There is a desk near the window, and there is a door to the living room.","My favourite place at home is my desk. I study English there every evening.","I like my room because it is quiet. Home makes me feel safe and happy."],
+ modelZh:"我和家人住在一套小公寓里。我的房间不大，但很干净。窗边有一张桌子，还有一扇通往客厅的门。家里我最喜欢的是书桌，我每天晚上在那里学英语。我喜欢我的房间，因为它安静。家让我感到安心又开心。",
+ goodWords:[["flat","公寓"],["clean","干净的"],["quiet","安静的"],["desk","书桌"],["safe","安心的"]]},
+
+{id:"e15",theme:"衣服与外表",icon:"👕",type:"描述",
+ titleEn:"What do you usually wear? Why?",
+ titleZh:"你平时穿什么？为什么？",
+ wordsMin:60,wordsMax:100,
+ must:["wear","clothes","shirt","colour","like"],
+ focus:["结构：常穿什么 → 颜色 → 原因 → 结尾","语法：一般现在时；wear","词汇：wear / clothes / colour"],
+ outline:[
+  ["开头","我通常穿…","What you usually wear."],
+  ["细节","颜色/场合","Colour or when you wear it."],
+  ["原因","why you like it","Why you like these clothes."],
+  ["结尾","一句小结","Short closing."]
+ ],
+ patterns:[
+  ["I usually wear ___.","我通常穿___。"],
+  ["My favourite colour is ___.","我最喜欢的颜色是___。"],
+  ["I like these clothes because ___.","我喜欢这些衣服，因为___。"],
+  ["On weekends I wear ___.","周末我穿___。"],
+  ["Looking neat is important to me.","对我来说穿着整洁很重要。"]
+ ],
+ modelEn:["I usually wear a simple shirt and jeans to school.","My favourite colour is blue, so many of my clothes are blue.","I like these clothes because they are comfortable and not expensive.","On weekends I wear a T-shirt. Looking neat is important to me, but I also want to feel free."],
+ modelZh:"我上学通常穿简单的衬衫和牛仔裤。我最喜欢蓝色，所以很多衣服都是蓝色的。我喜欢这些衣服，因为舒服又不贵。周末我穿 T 恤。对我来说穿着整洁很重要，但也想感觉自在。",
+ goodWords:[["jeans","牛仔裤"],["comfortable","舒服的"],["simple","简单的"],["weekend","周末"],["neat","整洁的"]]},
+
+{id:"e16",theme:"数字与通讯",icon:"📱",type:"观点",
+ titleEn:"Are phones useful for students?",
+ titleZh:"手机对学生有用吗？",
+ wordsMin:60,wordsMax:120,
+ must:["phone","call","message","number","use"],
+ focus:["结构：观点 → 好处 → 注意点 → 结尾","语法：can / should；一般现在时","词汇：phone / call / message"],
+ outline:[
+  ["开头","亮观点：手机有用/要小心用","Give your opinion."],
+  ["好处","可以 call / message / 查资料","Useful for call, message, study."],
+  ["注意","不要玩太久","Don't use it too long."],
+  ["结尾","总结","Short conclusion."]
+ ],
+ patterns:[
+  ["I think phones are useful because ___.","我认为手机有用，因为___。"],
+  ["Students can call / send a message to ___.","学生可以给___打电话/发消息。"],
+  ["For example, ___.","例如，___。"],
+  ["However, we should not ___.","然而，我们不该___。"],
+  ["In conclusion, ___.","总之，___。"]
+ ],
+ modelEn:["I think phones are useful for students if they use them well.","Students can call their parents or send a message when they need help. They can also look up a new word.","For example, I saved my teacher's number, so I can ask about homework.","However, we should not play on the phone for too long. In conclusion, a phone is a good tool, but study comes first."],
+ modelZh:"我认为学生如果用得好，手机是有用的。需要帮助时可以给父母打电话或发消息，也可以查生词。例如我存了老师的号码，就能问作业。不过我们不该玩手机太久。总之，手机是好工具，但学习仍最重要。",
+ goodWords:[["useful","有用的"],["look up","查阅"],["tool","工具"],["homework","作业"],["save","保存"]]}
 ];
 
 const WRITE_BANK_V2=[
@@ -2506,7 +2644,7 @@ function renderAll(){renderIntro();renderTabs();try{renderTodayLearn();}catch(e)
 /* ===== 造句检测 Sentence check (smarter) ===== */
 const EKEY="oxford100_essays_v1";
 function eLoad(){try{return JSON.parse(localStorage.getItem(EKEY)||"{}")||{};}catch(e){return {};}}
-function eSave(theme,text,meta){try{const o=eLoad();o[theme]={s:String(text||""),t:Date.now(),ok:!!(meta&&meta.ok),used:(meta&&meta.used)||0,total:(meta&&meta.total)||0};localStorage.setItem(EKEY,JSON.stringify(o));}catch(e){}}
+function eSave(theme,text,meta){try{const o=eLoad();const prev=o[theme]||{};o[theme]={s:String(text||""),t:Date.now(),ok:!!(meta&&meta.ok),used:(meta&&meta.used)||0,total:(meta&&meta.total)||0,score:(meta&&typeof meta.score==="number")?meta.score:(prev.score||0),fb:(meta&&meta.fb)||prev.fb||""};localStorage.setItem(EKEY,JSON.stringify(o));}catch(e){}}
 function eThemeWords(th){if(!th||th===ALLTH)return [];return W.filter(w=>w.theme===th);}
 function eScan(text,words){const used=[],miss=[];words.forEach(w=>{const hit=sHasWord(text||"",w.en);if(hit.ok)used.push(w);else miss.push(w);});return {used,miss,total:words.length,ok:miss.length===0&&words.length>0};}
 function ePaintWords(words,scan){const box=$("essayWords");if(!box)return;const usedSet=new Set((scan.used||[]).map(w=>w.en));
@@ -3879,28 +4017,69 @@ function e2SplitSents(text){
   return t.replace(/([.!?])\s+/g,"$1\u0001").split("\u0001").map(s=>s.trim()).filter(Boolean);
 }
 function e2GramIssues(text){
+  /* ESSAY_GROUP_AI_V1: 加强典型中式英语/拼写/语序抓错 */
   const issues=[];
-  const sents=e2SplitSents(text);
   const raw=String(text||"");
-  if(/\bi\b/.test(raw))issues.push({en:"i",zh:"代词 I 必须大写，不能写成小写 i。",fix:"把句子里的小写 i 改成 I。"});
-  if(/\s{2,}/.test(raw))issues.push({en:"spaces",zh:"有多余空格，读起来不干净。",fix:"把连续空格改成一个空格。"});
+  const low=raw.toLowerCase();
+  const sents=e2SplitSents(text);
+  const push=(en,zh,fix)=>{if(!issues.some(x=>x.zh===zh))issues.push({en,zh,fix});};
+
+  if(/\bi\b/.test(raw))push("i","代词 I 必须大写，不能写成小写 i。","把句子里的小写 i 改成 I。");
+  if(/\s{2,}/.test(raw))push("spaces","有多余空格，读起来不干净。","把连续空格改成一个空格。");
+
+  // What bout → What about
+  if(/\bbout\b/i.test(raw))push("bout","What bout 应为 What about（bout 是 about 的误拼）。","改成 What about you…？");
+  // through 误用作 though
+  if(/\bwhat about you through\b|\byou through\b|\bthrough\s*[.?!,]?\s*$/im.test(raw) || /\b(what about you|how about you)\s+through\b/i.test(raw))
+    push("through","这里的 through 多半想说 though（不过）。","改成 What about you, though?");
+  else if(/\bthrough\b/i.test(raw) && !/\b(go|walk|pass|drive|come)\s+through\b/i.test(raw) && !/\bthrough the\b/i.test(raw))
+    push("through2","through（穿过）在此可能用错；若表「不过」请用 though。","口语收尾可用 …, though?");
+  // everyday vs every day
+  if(/\beveryday\b/i.test(raw))push("everyday","作状语表示「每天」要用 every day（两词）；everyday 是形容词「日常的」。","例如：I am late every day. / everyday clothes");
+  // I had not time → didn't have / had no
+  if(/\bhad not time\b|\bhave not time\b|\bhas not time\b/i.test(raw))
+    push("hadnottime","I had not time 不自然。","改成 I didn't have time 或 I had no time。");
+  // I need you help → need you to help / your help
+  if(/\bneed you help\b|\bneed him help\b|\bneed her help\b|\bneed them help\b/i.test(raw))
+    push("needyouhelp","I need you help 缺 to / 物主代词。","改成 I need you to help… 或 I need your help…");
+  // to late come / like to late come → come late / be late
+  if(/\bto late come\b|\blate come\b|\blike to late\b|\bdon't like to late\b/i.test(raw))
+    push("latecome","副词 late 位置不对：不要说 to late come。","改成 to come late，或 I don't like to be late。");
+  // don't like to late（缺 be）
+  if(/\b(don't|do not|doesn't|does not)\s+like to late\b/i.test(raw))
+    push("likebelate","don't like to late 缺 be。","改成 don't like to be late。");
+  // today came this early（语序/缺主语 I）
+  if(/\btoday came\b/i.test(raw))
+    push("todaycame","today came… 语序不自然，且常缺主语 I。","改成 Today I came… early. 或 I came early today.");
+  // Good morning Mr X today… run-on
+  if(/\bgood morning\b[^.!?\n]{0,40}\btoday\b/i.test(raw) && !/\bgood morning[,!.]/i.test(raw.split(/\btoday\b/i)[0]||""))
+    push("runongreet","打招呼后缺少逗号/句号，和下文黏在一起（run-on）。","写成 Good morning, Mr Jordan. Today I came…");
+  // next week 句首小写 — also covered by sent loop
+  if(/(?:^|[.!?]\s+)[a-z]/.test(raw.trim()))
+    push("lowstart","有句子开头是小写。","句首单词请大写，如 Next week…");
+
   sents.forEach((s,i)=>{
     if(s.length<2)return;
-    if(!/^[A-Z“"]/.test(s)&&!/^\d/.test(s))issues.push({en:"cap"+i,zh:"第 "+(i+1)+" 句开头应大写。",fix:"\""+s.slice(0,24)+(s.length>24?"…":"")+"\" 句首请大写。"});
-    if(!/[.!?]"?$/.test(s))issues.push({en:"punct"+i,zh:"第 "+(i+1)+" 句结尾缺少句号/问号/感叹号。",fix:"在句末加上合适的标点。"});
+    if(!/^[A-Z“"‘']/.test(s)&&!/^\d/.test(s))
+      push("cap"+i,"第 "+(i+1)+" 句开头应大写。","\""+s.slice(0,28)+(s.length>28?"…":"")+"\" 句首请大写。");
+    if(!/[.!?]"?$/.test(s))
+      push("punct"+i,"第 "+(i+1)+" 句结尾缺少句号/问号/感叹号。","在句末加上合适的标点。");
     if(/\b(he|she|it)\s+(go|like|want|need|have|do|study|work|live|eat|play|feel|make|take|get)\b/i.test(s))
-      issues.push({en:"sva"+i,zh:"第 "+(i+1)+" 句疑似缺三单 -s（he/she/it + 动词）。",fix:"he/she/it 后一般现在时动词常要加 -s/-es，如 goes / likes / studies。"});
+      push("sva"+i,"第 "+(i+1)+" 句疑似缺三单 -s（he/she/it + 动词）。","he/she/it 后一般现在时动词常要加 -s/-es，如 goes / likes / studies。");
     if(/\b(I|you|we|they)\s+(is|was)\b/i.test(s))
-      issues.push({en:"be"+i,zh:"第 "+(i+1)+" 句 be 动词可能配错（I/you/we/they 不用 is）。",fix:"I → am/was；you/we/they → are/were。"});
+      push("be"+i,"第 "+(i+1)+" 句 be 动词可能配错（I/you/we/they 不用 is）。","I → am/was；you/we/they → are/were。");
     if(/\bam\s+(go|like|want|need|agree|think)\b/i.test(s))
-      issues.push({en:"ami"+i,zh:"第 "+(i+1)+" 句疑似 be + 动词原形叠用（✗ I am agree / I am go）。",fix:"实义动词前不要再加 am/is/are：I agree. / I go…"});
+      push("ami"+i,"第 "+(i+1)+" 句疑似 be + 动词原形叠用（✗ I am agree / I am go）。","实义动词前不要再加 am/is/are：I agree. / I go…");
     if(/\bbecause\b.+\bso\b|\bso\b.+\bbecause\b/i.test(s))
-      issues.push({en:"becso"+i,zh:"第 "+(i+1)+" 句 because 和 so 不要同时用。",fix:"只保留 because 或只保留 so。"});
+      push("becso"+i,"第 "+(i+1)+" 句 because 和 so 不要同时用。","只保留 because 或只保留 so。");
     if(/\ba\s+[aeiou]/i.test(s)&&!/\ba\s+uni|\ba\s+one|\ba\s+euro|\ba\s+u[bcdfgjklmnprstvwxyz]/i.test(s))
-      issues.push({en:"aan"+i,zh:"第 "+(i+1)+" 句可能该用 an（元音音开头）。",fix:"apple/egg/hour 等前用 an。"});
+      push("aan"+i,"第 "+(i+1)+" 句可能该用 an（元音音开头）。","apple/egg/hour 等前用 an。");
+    // long run-on without comma after greeting name
+    if(/\b(mr|mrs|ms|miss)\s+[A-Z][a-z]+\s+\w+/i.test(s) && s.split(/\s+/).length>=10 && !/,/.test(s))
+      push("runon"+i,"第 "+(i+1)+" 句较长且缺逗号，读起来像两句黏在一起。","称呼后加逗号，或拆成两句。");
   });
-  // dedupe by zh
-  const seen={};return issues.filter(x=>{if(seen[x.zh])return false;seen[x.zh]=1;return true;}).slice(0,6);
+
+  return issues.slice(0,10);
 }
 function e2StructFeedback(text,task){
   const t=String(text||"");
@@ -3909,7 +4088,7 @@ function e2StructFeedback(text,task){
   const sents=e2SplitSents(t);
   const pts=[];
   let score=40;
-  const hasOpinion=/\b(i think|in my opinion|i believe|i feel|my favourite|i usually|my name is)\b/i.test(t);
+  const hasOpinion=/\b(i think|in my opinion|i believe|i feel|my favourite|i usually|my name is|good morning|good afternoon|hello|hi[, ]|this is my habit)\b/i.test(t);
   const hasBecause=/\b(because|so|the main reason|another reason)\b/i.test(t);
   const hasExample=/\b(for example|for instance|such as)\b/i.test(t);
   const hasConcl=/\b(in conclusion|to sum up|in short|that is why|overall)\b/i.test(t);
@@ -3933,20 +4112,29 @@ function e2StructFeedback(text,task){
   return {score,pts,flags:{hasOpinion,hasBecause,hasExample,hasConcl,hasLinker,wc,sents:sents.length}};
 }
 function e2RewriteSample(text,issues){
+  /* ESSAY_GROUP_AI_V1: 基于原句的一句轻量改写示例（轻量一句，非大板块改写区） */
   let s=e2SplitSents(text)[0]||String(text||"").trim().split(/[.!?]/)[0]||"";
   if(!s)return "";
   let out=s.trim();
   out=out.replace(/\bi\b/g,"I");
   out=out.replace(/\s{2,}/g," ");
+  out=out.replace(/\bbout\b/gi,"about");
+  out=out.replace(/\beveryday\b/gi,"every day");
+  out=out.replace(/\bhad not time\b/gi,"didn't have time").replace(/\bhave not time\b/gi,"don't have time");
+  out=out.replace(/\bneed you help\b/gi,"need you to help");
+  out=out.replace(/\bto late come\b/gi,"to come late").replace(/\blate come\b/gi,"come late");
+  out=out.replace(/\bdon'?t like to late\b/gi,"don't like to be late");
+  out=out.replace(/\btoday came\b/gi,"Today I came");
+  out=out.replace(/\bwhat about you through\b/gi,"What about you, though");
   out=out.replace(/\b(I|You|We|They)\s+is\b/gi,function(m,a){return a+" are";});
   out=out.replace(/\bHe\s+go\b/i,"He goes").replace(/\bShe\s+go\b/i,"She goes");
   out=out.replace(/\bHe\s+like\b/i,"He likes").replace(/\bShe\s+like\b/i,"She likes");
   out=out.replace(/\bam\s+agree\b/i,"agree").replace(/\bam\s+go\b/i,"go");
   out=out.replace(/\bbecause\b(.+?)\bso\b/i,"because$1");
+  out=out.replace(/\bGood morning\s+(Mr|Mrs|Ms)\s+([A-Za-z]+)\s+/i,"Good morning, $1 $2. ");
   if(!/^[A-Z]/.test(out))out=out.charAt(0).toUpperCase()+out.slice(1);
   if(!/[.!?]$/.test(out))out+=".";
   if(out===s||out===s+"."){
-    // still offer a light structural polish
     if(!/\bbecause\b/i.test(out)&&out.length<120)out=out.replace(/\.$/," because it is important to me.");
   }
   return out;
@@ -3980,31 +4168,46 @@ function e2ScoreHtml(score){
   else {lvl="再改一版";cls="bad";}
   return '<div class="e2-score fb '+cls+'"><b>'+score+'</b> 分 · '+lvl+' <span class="e2-muted">（结构 + 必用词 + 篇幅；本地规则，供练习参考）</span></div>';
 }
-function e2FeedbackHtml(task,text){
-  const must=e2MustWords(task);
+/* ESSAY_GROUP_AI_V1: 组后小作文与专区共用批改；无标准题也可打分 */
+function e2FeedbackForGroup(text,mustWords,theme,optionalTask){
+  const task=optionalTask||null;
+  const must=(mustWords&&mustWords.length)?mustWords:(task?e2MustWords(task):[]);
+  const fakeTask=task||{wordsMin:60,wordsMax:120,theme:theme||"",titleZh:theme||"组后小作文",modelEn:[],must:(must||[]).map(w=>w.en||w)};
   const scan=e2ScanMust(text,must);
-  const st=e2StructFeedback(text,task);
+  const st=e2StructFeedback(text,fakeTask);
   let score=st.score;
-  // must words weight
   if(must.length){
     const ratio=scan.used.length/must.length;
     score=Math.round(score*0.75+ratio*100*0.25);
   }
-  score=Math.max(0,Math.min(100,score));
   const grams=e2GramIssues(text);
+  if(grams.length)score=Math.max(0,score-Math.min(18,grams.length*2));
+  score=Math.max(0,Math.min(100,score));
   const rewrite=e2RewriteSample(text,grams);
-  const diffs=e2ModelDiff(text,task);
   let h=e2ScoreHtml(score);
   h+='<div class="e2-fb-sec"><h4>📐 结构点评</h4><ul class="e2-ul">'+st.pts.map(p=>'<li class="'+(p.ok?"ok":"bad")+'">'+(p.ok?"✅ ":"⚠️ ")+e2Esc(p.zh)+'</li>').join("")+'</ul></div>';
-  h+='<div class="e2-fb-sec"><h4>📌 必用词</h4><p>已用上 <b>'+scan.used.length+'/'+scan.total+'</b>'+(scan.ok?"（全部用上）":"。还差："+scan.miss.map(w=>"<b>"+e2Esc(w.en)+"</b>"+(w.zh?"（"+e2Esc(w.zh)+"）":"")).join(" · "))+'</p></div>';
-  h+='<div class="e2-fb-sec"><h4>🔤 语法问题</h4>';
-  if(!grams.length)h+='<p class="e2-muted">本地规则未抓到明显基础错误。仍建议对照范文检查时态和连接词。</p>';
+  h+='<div class="e2-fb-sec"><h4>📌 必用词</h4><p>已用上 <b>'+scan.used.length+'/'+scan.total+'</b>'+(scan.ok?"（全部用上）✅":(scan.total?( "。还差："+scan.miss.map(w=>"<b>"+e2Esc(w.en)+"</b>"+(w.zh?"（"+e2Esc(w.zh)+"）":"")).join(" · ")):"（本组暂无必用词清单）"))+'</p></div>';
+  h+='<div class="e2-fb-sec"><h4>🔤 语法问题 · 哪里要改</h4>';
+  if(!grams.length)h+='<p class="e2-muted">本地规则未抓到明显基础错误。仍建议检查时态、标点和连接词。</p>';
   else h+='<ul class="e2-ul">'+grams.map(g=>'<li class="bad">⚠️ '+e2Esc(g.zh)+(g.fix?'<div class="e2-fix">→ '+e2Esc(g.fix)+'</div>':'')+'</li>').join("")+'</ul>';
   h+='</div>';
   if(rewrite){h+='<div class="e2-fb-sec"><h4>✍️ 改写示例（基于你的原文）</h4><div class="e2-rewrite"><div class="e2-muted">原句首句可改为：</div><div class="e2-rw">'+e2Esc(rewrite)+'</div><button type="button" class="mini e2-ins-rw" data-rw="1">填入写作框开头参考</button></div></div>';}
-  h+='<div class="e2-fb-sec"><h4>📄 对照范文 · 差异提示</h4><ul class="e2-ul">'+(diffs.length?diffs.map(d=>'<li>💡 '+e2Esc(d)+'</li>').join(""):'<li>✅ 你的结构要素与范文较接近，可继续润色用词。</li>')+'</ul></div>';
-  h+='<div class="row e2-fb-actions"><button type="button" class="b-sub" data-e2act="again">看范文后再写一版</button><button type="button" class="b-fuz" data-e2act="ref">回写前参考</button><button type="button" class="mini" data-e2act="list">换题</button></div>';
-  return {html:h,score:score,scan:scan,ok:scan.ok&&score>=60};
+  if(task&&task.modelEn&&task.modelEn.length){
+    const diffs=e2ModelDiff(text,task);
+    h+='<div class="e2-fb-sec"><h4>📄 对照范文 · 差异提示</h4><ul class="e2-ul">'+(diffs.length?diffs.map(d=>'<li>💡 '+e2Esc(d)+'</li>').join(""):'<li>✅ 你的结构要素与范文较接近，可继续润色用词。</li>')+'</ul></div>';
+    h+='<div class="row e2-fb-actions"><button type="button" class="b-sub" data-e2act="again">看范文后再写一版</button><button type="button" class="b-fuz" data-e2act="ref">回写前参考</button><button type="button" class="mini" data-e2act="list">换题</button></div>';
+  }else{
+    h+='<div class="e2-fb-sec"><h4>💡 修改建议</h4><ul class="e2-ul">';
+    h+='<li>按 A2–B1 短文：开头引入 → because/so 原因 → 例子 → 连接词 → 简短结尾。</li>';
+    h+='<li>目标约 60–120 词；改正上面语法点后再点一次「提交批改」看分数变化。</li>';
+    if(theme)h+='<li>也可打开「⑥ 作文」选「'+e2Esc(theme)+'」标准题，对照范文重写一版。</li>';
+    h+='</ul></div>';
+    h+='<div class="row e2-fb-actions"><button type="button" class="mini" data-e2act="list">去作文专区选题</button></div>';
+  }
+  return {html:h,score:score,scan:scan,ok:scan.ok&&score>=60,grams:grams};
+}
+function e2FeedbackHtml(task,text){
+  return e2FeedbackForGroup(text,e2MustWords(task),task&&task.theme,task);
 }
 function e2ChipHtml(must,scan){
   const used=new Set((scan.used||[]).map(w=>w.en.toLowerCase()));
@@ -4224,7 +4427,7 @@ function e2Act(act){
   }
 }
 
-/* —— 组后小作文：接入同一套任务流程 —— */
+/* —— 组后小作文：ESSAY_GROUP_AI_V1 一律智能批改 —— */
 function renderEssay(){
   const area=$("essayArea");if(!area)return;
   const th=ST.theme;
@@ -4235,8 +4438,7 @@ function renderEssay(){
     return;}
   area.style.display="";
   const icon=(THEMES.find(t=>t.name===th)||{}).icon||"📝";
-  // Rebuild mini panel
-  let body='<div class="essay-title" id="essayTitle">📝 小作文 · '+icon+' 「'+e2Esc(th)+'」</div>';
+  let body='<div class="essay-title" id="essayTitle">📝 小作文 · '+icon+' 「'+e2Esc(th)+'」 <span class="e2-tag">ESSAY_GROUP_AI_V1</span></div>';
   if(task){
     body+='<p class="essay-hint">本组对应作文题：<b>'+e2Esc(task.titleZh)+'</b><br><span class="e2-muted">'+e2Esc(task.titleEn)+'</span></p>';
     body+='<div class="e2-mini-actions row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px">';
@@ -4245,9 +4447,8 @@ function renderEssay(){
     body+='</div>';
     body+='<div id="essayMiniRef" style="display:none;margin-top:10px"></div>';
   }else{
-    body+='<p class="essay-hint">写一段短文（60–120 词），尽量用上本组词。也可到「⑥ 作文」选标准题。</p>';
+    body+='<p class="essay-hint">写一段短文（60–120 词），尽量用上本组词。点「提交批改」可得分数、结构点评和语法修改建议。</p>';
   }
-  // keep quick write
   const must=task?e2MustWords(task):words.slice(0,8);
   const lastKey=task?task.id:th;
   const last=e2LoadAll()[lastKey]||e2LoadAll()[th]||{};
@@ -4256,7 +4457,7 @@ function renderEssay(){
   body+='<div class="essay-stat" id="essayStat">字数 '+e2Wc(last.s||"")+' · 必用/本组词 '+scan.used.length+'/'+scan.total+(last.score!=null?(' · 上次 '+last.score+' 分'):'')+'</div>';
   body+='<textarea id="essayIn" rows="7" autocapitalize="sentences" spellcheck="false" placeholder="用本组词写短文…">'+e2Esc(last.s||"")+'</textarea>';
   body+='<div class="row s-btns" style="margin-top:10px">';
-  body+='<button type="button" class="b-sub" id="essayChk">'+(task?"提交批改":"检测用词")+'</button>';
+  body+='<button type="button" class="b-sub" id="essayChk">提交批改</button>';
   body+='<button type="button" class="spk" id="essaySay">🔊 朗读</button>';
   body+='<button type="button" class="b-fuz" id="essayCopy">复制给老师</button>';
   body+='</div>';
@@ -4292,37 +4493,34 @@ function renderEssay(){
   $("essayChk").onclick=()=>{
     const text=(ta&&ta.value||"").trim();
     if(!text){eMsg("先写几句再提交。");return;}
-    if(task){
-      if(e2Wc(text)<30){eMsg("太短了，再写几句（目标 "+task.wordsMin+"+ 词）。");return;}
-      const fb=e2FeedbackHtml(task,text);
-      e2SaveTask(task.id,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total,score:fb.score,fb:"1"});
-      // also save under theme key for mem view
-      try{eSave(th,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total});}catch(e){}
-      const res=$("essayRes");if(res)res.innerHTML=fb.html;
-      eMsg("已批改 · "+fb.score+" 分。也可点「打开完整写作流程」看更大面板。");
-      // bind actions inside essayRes
-      if(res){
-        res.querySelectorAll("[data-e2act]").forEach(b=>b.onclick=()=>{
-          if(b.dataset.e2act==="again"||b.dataset.e2act==="ref"){goFull();return;}
-          if(b.dataset.e2act==="list"){ST.tab="write";MP.cur.wphase="list";save();mSave();renderAll();}
-        });
-      }
-      refresh();
-    }else{
-      const sc=e2ScanMust(text,must);ePaintWords(must,sc);
-      eSave(th,text,{ok:sc.ok,used:sc.used.length,total:sc.total});
-      const res=$("essayRes");
-      if(sc.ok){eMsg("🎉 词都用上了！");if(res)res.innerHTML='<div class="fb ok">✅ 用词检查通过。打开「⑥ 作文」可做带范文的标准题。</div>';}
-      else{eMsg("还差："+sc.miss.map(w=>w.en).join(", "));if(res)res.innerHTML='<div class="fb mid">⚠️ 未用上：'+sc.miss.map(w=>'<b>'+e2Esc(w.en)+'</b>').join(" · ")+'</div>';}
+    if(e2Wc(text)<30){eMsg("太短了，再写几句（目标 60+ 词）。");return;}
+    const fb=e2FeedbackForGroup(text,must,th,task||null);
+    // 分数与草稿写入主题 key +（若有）标准题 id，保证同步存储不丢
+    e2SaveTask(lastKey,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total,score:fb.score,fb:"1"});
+    if(task&&task.id!==lastKey)e2SaveTask(task.id,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total,score:fb.score,fb:"1"});
+    try{eSave(th,text,{ok:fb.ok,used:fb.scan.used.length,total:fb.scan.total,score:fb.score,fb:"1"});}catch(e){}
+    const res=$("essayRes");if(res)res.innerHTML=fb.html;
+    eMsg("已智能批改 · "+fb.score+" 分"+(fb.grams&&fb.grams.length?(" · 标出 "+fb.grams.length+" 处要改"):"")+"。");
+    if(res){
+      res.querySelectorAll("[data-e2act]").forEach(b=>b.onclick=()=>{
+        if(b.dataset.e2act==="again"||b.dataset.e2act==="ref"){goFull();return;}
+        if(b.dataset.e2act==="list"){ST.tab="write";MP.cur.wphase="list";save();mSave();renderAll();}
+      });
+      res.querySelectorAll(".e2-ins-rw").forEach(b=>b.onclick=()=>{
+        const rw=res.querySelector(".e2-rw");if(!rw||!ta)return;
+        const line=rw.textContent||"";ta.value=line+(ta.value?"\n"+ta.value:"");ta.focus();refresh();
+      });
     }
+    refresh();
   };
   $("essaySay").onclick=()=>{const t=(ta&&ta.value||"").trim();if(t)speak(t);else eMsg("先写一段再听。");};
   $("essayCopy").onclick=()=>{
     const text=(ta&&ta.value||"").trim();if(!text){eMsg("先写一段再复制。");return;}
     const sc=e2ScanMust(text,must);
-    if(task)e2SaveTask(task.id,text,{ok:sc.ok,used:sc.used.length,total:sc.total,score:(e2LoadAll()[task.id]||{}).score});
-    eSave(th,text,{ok:sc.ok,used:sc.used.length,total:sc.total});
-    sCopy("【小作文】"+(task?task.titleZh:th)+"\n必用词："+must.map(w=>w.en).join(", ")+"\n已用："+sc.used.length+"/"+sc.total+"\n------\n"+text+"\n------\n请帮我看结构与语法。");
+    const prevScore=(e2LoadAll()[lastKey]||e2LoadAll()[th]||{}).score;
+    e2SaveTask(lastKey,text,{ok:sc.ok,used:sc.used.length,total:sc.total,score:prevScore});
+    eSave(th,text,{ok:sc.ok,used:sc.used.length,total:sc.total,score:prevScore});
+    sCopy("【小作文】"+(task?task.titleZh:th)+"\n必用词："+must.map(w=>w.en).join(", ")+"\n已用："+sc.used.length+"/"+sc.total+(prevScore!=null?("\n得分："+prevScore):"")+"\n------\n"+text+"\n------\n请帮我看结构与语法。");
     eMsg("已复制，可以发给老师。");
   };
 }
