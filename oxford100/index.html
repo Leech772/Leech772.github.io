@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><head><meta charset="UTF-8"/>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -1618,8 +1618,12 @@ const AUDSEG={"l01": [[0, 2.71], [2.71, 7.18], [7.18, 9.93], [9.93, 13.54], [13.
 const MKEY="oxford100_modules_v1";
 const MOD_AUDIO_DIR="audio/modules/";
 function mLoad(){try{const o=JSON.parse(localStorage.getItem(MKEY)||"{}");return (o&&typeof o==="object")?o:{};}catch(e){return {};}}
-let MP=mLoad();["listen","speak","grammar","fill","cur"].forEach(k=>{if(!MP[k]||typeof MP[k]!=="object")MP[k]={};});
-if(typeof MP.rate!=="number")MP.rate=1;if(MP.sub===undefined)MP.sub=true;if(MP.zh===undefined)MP.zh=false;
+let MP=mLoad();try{["listen","speak","grammar","fill","cur"].forEach(k=>{if(!MP[k]||typeof MP[k]!=="object")MP[k]={};});
+}catch(e){__tfErr("init-mod",e);}
+try{if(typeof MP.rate!=="number")MP.rate=1;
+}catch(e){__tfErr("init-mod",e);}try{if(MP.sub===undefined)MP.sub=true;
+}catch(e){__tfErr("init-mod",e);}try{if(MP.zh===undefined)MP.zh=false;
+}catch(e){__tfErr("init-mod",e);}
 function mSave(){try{localStorage.setItem(MKEY,JSON.stringify(MP));}catch(e){}try{if(typeof flashSaved==="function")flashSaved();}catch(e){}}
 function mE(x){return String(x==null?"":x).replace(/[&<>"]/g,c=>({"&":"\u0026amp;","<":"\u0026lt;",">":"\u0026gt;",'"':"\u0026quot;"}[c]));}
 function mWord(en){try{return W.find(w=>w.en.toLowerCase()===String(en).toLowerCase())||null;}catch(e){return null;}}
@@ -1640,10 +1644,11 @@ function mTick(){const a=MA.a;if(!a)return;const t=a.currentTime;if(MA.stopAt!=n
 function mHi(k){document.querySelectorAll('[data-mline][data-aid="'+MA.id+'"]').forEach(el=>{const on=+el.dataset.mline===k;if(on&&!el.classList.contains("hi")&&MP.sub){try{el.scrollIntoView({block:"nearest",behavior:"smooth"});}catch(e){}}el.classList.toggle("hi",on);});}
 function mPaintBtn(){document.querySelectorAll("[data-mplay]").forEach(b=>{const on=MA.a&&MA.id===b.dataset.mplay&&!MA.a.paused;b.textContent=on?"⏸ 暂停":(b.dataset.lbl||"▶ 播放全文");});}
 function mRateBtns(){return '<span class="m-rate">'+[0.8,1].map(r=>'<button type="button" class="mini'+(MP.rate===r?" on":"")+'" data-mrate="'+r+'">'+(r===1?"1.0×常速":"0.8×慢速")+'</button>').join("")+'</span>';}
-document.addEventListener("click",e=>{const t=e.target.closest("[data-mplay],[data-mseg],[data-mrate]");if(!t)return;
+try{document.addEventListener("click",e=>{const t=e.target.closest("[data-mplay],[data-mseg],[data-mrate]");if(!t)return;
  if(t.dataset.mplay){mToggle(t.dataset.mplay);return;}
  if(t.dataset.mrate){MP.rate=+t.dataset.mrate;mSave();if(MA.a)MA.a.playbackRate=MP.rate;document.querySelectorAll("[data-mrate]").forEach(b=>b.classList.toggle("on",+b.dataset.mrate===MP.rate));return;}
  if(t.dataset.mseg){const [id,i]=t.dataset.mseg.split("|");mSeg(id,+i);}});
+}catch(e){__tfErr("init-mod",e);}
 function mBack(lbl,fn){return '<div class="row m-back" style="justify-content:flex-start"><button type="button" class="mini" data-mback="1">← '+mE(lbl)+'</button></div>';}
 function mQuiz(prefix,qs,saveFn){/* qs:[{q,o,a,ex}] */
  return qs.map((q,i)=>'<div class="m-q" data-qi="'+i+'" data-pre="'+prefix+'"><div class="m-qt"><b>'+(i+1)+'.</b> '+mE(q.q)+'</div><div class="m-opts">'+q.o.map((o,j)=>'<button type="button" class="m-opt" data-oj="'+j+'">'+String.fromCharCode(65+j)+'. '+mE(o)+'</button>').join("")+'</div><div class="m-ex"></div></div>').join("");}
@@ -1712,14 +1717,14 @@ function renderSpeak(){const P=$("p-speak");const T=SPEAK.find(x=>x.id===MP.cur.
  '<div class="row" style="justify-content:space-between">'+(idx>0?'<button type="button" class="mini" data-sgo="'+SPEAK[idx-1].id+'">← 上一个</button>':'<span></span>')+(idx<SPEAK.length-1?'<button type="button" class="b-sub" style="flex:none" data-sgo="'+SPEAK[idx+1].id+'">下一个话题 →</button>':'')+'</div>';
  P.querySelector("[data-mback]").onclick=()=>{MP.cur.speak=null;mSave();renderSpeak();};
  P.querySelectorAll("[data-sgo]").forEach(b=>b.onclick=()=>{MP.cur.speak=b.dataset.sgo;mSave();renderSpeak();window.scrollTo(0,0);});
- P.querySelectorAll(".m-shadow").forEach(box=>{const i=+box.dataset.si;const okB=box.querySelector(".m-ok");
+ P.querySelectorAll(".m-shadow").forEach(box=>{try{const i=+box.dataset.si;const okB=box.querySelector(".m-ok");
   okB.onclick=()=>{const arr=new Set(MP.speak[T.id]||[]);if(arr.has(i))arr.delete(i);else arr.add(i);MP.speak[T.id]=[...arr].sort();mSave();box.classList.toggle("done",arr.has(i));okB.textContent=arr.has(i)?"✅ 已会":"✓ 我说顺了";};
-  const live=box.querySelector(".m-live");const again=box.querySelector(".m-again");
+  const mic=box.querySelector(".m-mic");const live=box.querySelector(".m-live");const again=box.querySelector(".m-again");
   const showScore=(txt)=>{const r=mCmpWords(txt,T.ans[i]);const tip=r.pct>=80?"👍 很好 ":r.pct>=55?"🙂 不错，可再练一次 ":r.pct>=25?"💪 听慢速再跟读 ":"👂 没怎么听到，靠近麦、说清楚英语再试 ";
     box.querySelector(".m-sh-r").innerHTML='<div>听到：“'+mE(txt||"（空）")+'”</div><div>'+r.html+'</div><div class="m-scoreline"><b>'+tip+r.pct+'%</b>（对上 '+r.hit+'/'+r.total+' 词）</div>';
     if(again)again.hidden=false;if(r.pct>=80&&!(MP.speak[T.id]||[]).includes(i))okB.click();};
   const startListen=()=>mListen({btn:mic,live,onFinal:showScore,onInterim:t=>{if(live){live.classList.add("on");live.textContent="正在听… "+t;}}});
-  if(mic)mic.onclick=startListen;if(again)again.onclick=()=>{box.querySelector(".m-sh-r").innerHTML="";if(live){live.textContent="";live.classList.remove("on");}startListen();};});
+  if(mic)mic.onclick=startListen;if(again)again.onclick=()=>{box.querySelector(".m-sh-r").innerHTML="";if(live){live.textContent="";live.classList.remove("on");}startListen();};}catch(e){__tfErr("speak-box",e);}});
  const langSel=$("mSrLang");if(langSel)langSel.onchange=()=>mSetSrLang(langSel.value);
  const ta=$("mMyAns");ta.oninput=()=>{MP.speak[T.id+"_my"]=ta.value;clearTimeout(ta._t);ta._t=setTimeout(mSave,400);};
  const mm=$("mMyMic");if(mm)mm.onclick=()=>mListen({btn:mm,onFinal:txt=>{ta.value=(ta.value?ta.value.trim()+" ":"")+txt;ta.oninput();}});}
@@ -1792,7 +1797,8 @@ function mFillCheck(fid){const f=WRITE.fill.find(x=>x.id===fid);if(!f)return;let
  const box=document.querySelector('.m-fill[data-fid="'+fid+'"]');const all=ok===ins.length;MP.fill[fid]=Object.assign(MP.fill[fid]||{},{ok:all});mSave();
  if(box){const fr=box.querySelector(".m-fres");if(fr)fr.innerHTML=all?'🎉 全对！':'对了 <b>'+ok+"/"+ins.length+'</b>';}}
 function mChart(d){const mx=Math.max(...d.map(x=>x[1]));return '<div class="m-chart">'+d.map(x=>'<div class="m-bar"><span>'+mE(x[0])+'</span><i style="width:'+(x[1]/mx*100)+'%"></i><b>'+x[1]+'%</b></div>').join("")+'<div class="m-cap">How students travel to school (one class, 2024)</div></div>';}
-window.MOD_RENDER={listen:renderListen,speak:renderSpeak,grammar:function(){return renderGrammar();},write:renderWrite};
+try{window.MOD_RENDER={listen:renderListen,speak:renderSpeak,grammar:function(){return renderGrammar();},write:renderWrite};
+}catch(e){__tfErr("init-mod",e);}
 </script>
 <script id="grammar_v2">
 /* GRAMMAR_V3_DEEP data — deepened from grammar teacher KP1–12 + harder practice */
@@ -1874,7 +1880,8 @@ function gvWrongBook(P){const keys=Object.keys(MP.gwrong||{});const items=[],ks=
 
 </script>
 <script>
-"use strict";
+try{"use strict";
+}catch(e){__tfErr("init-main",e);}
 /* ===== 词表数据：16 个场景主题 · 200 词（Oxford 3000，A1 为主，标注 A2 的为稍难词；B1 无） =====
    每行：[en, pos, zh, ph, exEn, exZh, scene] */
 const THEMES=[
@@ -2111,7 +2118,8 @@ const THEMES=[
 ["worry","动词","担心","/ˈwʌri/","Don't worry about me.","别担心我。","安慰别人时"]
 ]}
 ];
-const W=[];THEMES.forEach(t=>t.words.forEach(a=>W.push({id:W.length,en:a[0],pos:a[1],zh:a[2],ph:a[3],theme:t.name,exEn:a[4],exZh:a[5],scene:a[6]})));
+const W=[];try{THEMES.forEach(t=>t.words.forEach(a=>W.push({id:W.length,en:a[0],pos:a[1],zh:a[2],ph:a[3],theme:t.name,exEn:a[4],exZh:a[5],scene:a[6]})));
+}catch(e){__tfErr("init-main",e);}
 
 const JESSICA_AUDIO={
 "name":"data:audio/mpeg;base64,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Wz2Mg0y4IXvxTXSUnz9mEm0YhSKjRzIoS6qRVFsVEOSc5VS5WMt3+Ul3JrUlttqsZMz+q7W10W9GVKVkVFRVXJ/a9V7/82TE7B6Z/nb+ekY0n278FQ2jAj3l2z3PvIBpNKgpBYhpZnhvtvrbV2TErEAS9+8UzmegEkQVQ8iQI0DJJw9HHbhs4DOXK9OtHDty8ioYhwrCpkd31nUkVS7w5DKGsMKdJtfaasrepXJwj5mh1lpUw0Eo0sOxzDLlJfIuyJYNJWgVY36XGFNY2dknyDR75ZD/82TE9CDDyl48eYS9BgqGjSMNSsGEhR1dGm313s122oEQngVoDsDyXLDuyu3dih4VVdwUnHessyLCzFpmFNKKLws2dPZc68MTA03CsGZVjS651Og4zoreXCWWGbLyMFL91Y8uHcoF1BV4+Wh1z+K0qkgtS2SlBYnCy0XZ3krett3FXdgKD/F//2322ADEJOL/82TE9B8qBnceeYZctIpdbVx+PUCIP/3jkbK/KTLRS0YWUajaZzW+9ynoqGSFNF2bi8cwYllNhRT9W0jxJfD5tfrrvcvfY2d9v9izf/xjbyfwTfVdAgtdfv/vv/QBQWsWwbx6VzWYag1MlwTCnE5uYegyAHBBkpooliJTdC29dDatxqVrFDv1y7qRVZr1q1P/81TE+hrajlpeeYatM6TSU4UhKpoR9co52niWyK3kMKcq969VFukllu22oADwnAFTwpI1vOrl6CATJYhtvCWFZJ2T1y4sjOw2SnmRSCiSa282CI/LgR1E7fhMvctBEYbfn3/LKT1O4hIIJJbbtmMyhEy1Tmqx9cj/80TE+RTxIl5eeYZZHhOubmadaRKxxt+ExwzNUepw60MqgIOasZTOqWb2/1pSBbawicAXlyXfjR6AANRtt6AAyFA4CCfLdauxCab1v/p70b0qtLo1/a/9dy7NId3oYUj/80TE+BRqKl5eewYEHhBEXB///lSPr9oX7AbAb//QM0INAMI4DYJPMsbd/93FXPWSK0/KKdHR5qE01TAACTBrEr////////1KwDrcrFV4PDw8PDwAAAFMQU1FMy4xMDD/8zTE+RC5ClJeYEZxmUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8zTE8Q6pok5YeEZVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8zTE8QypqlZeYARRVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8yTE+QiIJl5YMgQAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8xTE+QNYEkFQMIAAVVVVVVVVVVVVVVX/8xTE9gEIBjSgUAABVVVVVVVVVVVVVVX/8xTE/AIwBjCgOAABVVVVVVVVVVVVVVX/8xTE9QAwAjQAAAABVVVVVVVVVVVVVVU=",
@@ -2398,12 +2406,13 @@ function speak(t,slow){t=String(t||"").trim();if(!t)return;
 }
 function sMsgSafe(t){const a=$("audioStatus");if(a){a.textContent=t;setTimeout(()=>{if(a.textContent===t)a.textContent="";},3000);}}
 function spkBtns(t){const e=sEscH(t);return ` <button class="mini" data-say="${e}">🔊</button><button class="mini" data-slow="${e}">🐢</button>`;}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-say],[data-slow]");if(!b)return;if(b.dataset.say)speak(b.dataset.say,false);else speak(b.dataset.slow,true);});
+try{document.addEventListener("click",e=>{const b=e.target.closest("[data-say],[data-slow]");if(!b)return;if(b.dataset.say)speak(b.dataset.say,false);else speak(b.dataset.slow,true);});
+}catch(e){__tfErr("init-main",e);}
 
 /* ---------- 顶部 ---------- */
 function renderIntro(){$("introPane").style.display=ST.introHidden?"none":"";$("bIntro").style.display=ST.introHidden?"":"none";}
 function renderTabs(){const box=$("tabs");box.innerHTML="";
- TABS.forEach(([id,l])=>{const b=document.createElement("button");b.type="button";b.textContent=l;if(ST.tab===id)b.className="on";b.onclick=()=>{ST.tab=id;save();renderAll();};box.appendChild(b);});
+ TABS.forEach(([id,l])=>{const b=document.createElement("button");b.type="button";b.textContent=l;if(ST.tab===id)b.className="on";b.onclick=()=>{ST.tab=id;try{save();}catch(e){}renderAll();};box.appendChild(b);});
  TABS.forEach(([id])=>$("p-"+id).classList.toggle("on",ST.tab===id));}
 function knownIn(th){const ids=new Set(themeIds(th));return ST.known.filter(i=>ids.has(i)).length;}
 function renderChips(){const box=$("chips");box.innerHTML="";
@@ -2517,7 +2526,7 @@ function renderMem(){const miss=ST.missed.map(i=>W[i]);let sents={},essays={};tr
   '<div style="margin-top:6px">待重复：'+Object.keys(ST.reps).length+" 词 · 错过/模糊过："+miss.length+" 词 · 已造句："+sc+" 个 · 小作文："+ec+" 篇<br>上次保存："+(ST.updated?new Date(ST.updated).toLocaleString():"—")+"</div></div>"+
   '<div class="g"><h3>🗂️ 各场景</h3>'+THEMES.map(t=>{const k=knownIn(t.name);return '<div class="throw"><span>'+t.icon+" "+sEscH(t.name)+'</span><span class="progress thbar"><i style="width:'+(k/t.words.length*100)+'%"></i></span><b>'+k+"/"+t.words.length+"</b></div>";}).join("")+"</div>"+
   '<div class="g"><h3>🧠 错过/模糊过的词</h3>'+(miss.length?miss.map(w=>'<div class="sent">'+(ST.known.includes(w.id)?"✅":"⏳")+" <b>"+sEscH(w.en)+"</b> "+sEscH(w.ph)+" "+sEscH(w.pos)+" "+sEscH(w.zh)+spkBtns(w.en)+"</div>").join(""):"还没有错过的词 👍")+"</div>"+
-  (sc?'<div class="g"><h3>✍️ 我造过的句子</h3>'+Object.keys(sents).map(k=>'<div class="sent"><b>'+sEscH(k)+"</b>："+sEscH(sents[k].s)+spkBtns(sents[k].s)+"</div>").join("")+"</div>":"")+
+  (sc?'<div class="g"><h3>✍️ 我造过的句子</h3>'+Object.keys(sents).map(k=>'<div class="sent"><b>'+sEscH(k)+"</b>："+sEscH((sents[k]||{}).s||"")+spkBtns((sents[k]||{}).s||"")+"</div>").join("")+"</div>":"")+
   (ec?'<div class="g"><h3>📝 我写过的小作文</h3>'+Object.keys(essays).map(k=>{const e=essays[k]||{};return '<div class="sent"><b>'+sEscH(k)+'</b> · '+(e.ok?'✅':'⏳')+' '+(e.used||0)+'/'+(e.total||'?')+'<div class="wex">'+sEscH(e.s||'')+spkBtns(e.s||'')+'</div></div>';}).join('')+'</div>':'')+
   '<div class="g" id="syncCard"><h3>☁️ 手机电脑同步</h3>'+
   '<p class="sub" style="text-align:left;margin:0 0 8px">把进度放到云端，另一台设备输入同步码就能合并。两边都练过的词会合并，不会互相覆盖丢掉。</p>'+
@@ -2537,7 +2546,8 @@ function renderMem(){const miss=ST.missed.map(i=>W[i]);let sents={},essays={};tr
  $("mImport").onclick=()=>$("fileIn").click();
  try{syncBindMem();}catch(e){}
 }
-$("fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);ST=mergeState(o.state||o);if(o.sentences)try{localStorage.setItem(SKEY,JSON.stringify(o.sentences));}catch(_){}if(o.essays)try{localStorage.setItem(EKEY,JSON.stringify(o.essays));}catch(_){}if(!ST.queue.length)buildQueue();save();renderAll();$("restore").textContent="✅ 已导入进度";}catch(err){alert("文件格式不对，导入失败");}e.target.value="";};r.readAsText(f);};
+try{$("fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);ST=mergeState(o.state||o);if(o.sentences)try{localStorage.setItem(SKEY,JSON.stringify(o.sentences));}catch(_){}if(o.essays)try{localStorage.setItem(EKEY,JSON.stringify(o.essays));}catch(_){}if(!ST.queue.length)buildQueue();save();renderAll();$("restore").textContent="✅ 已导入进度";}catch(err){alert("文件格式不对，导入失败");}e.target.value="";};r.readAsText(f);};
+}catch(e){__tfErr("init-main",e);}
 
 
 /* ===== 东方可爱Q版角色装饰（侧边+小按钮旁，互不挡点击） ===== */
@@ -2632,12 +2642,13 @@ function renderTodayLearn(){
     const d=$("tlGram"); if(d)d.onclick=go("grammar");
   }catch(e){el.style.display="none";}
 }
-function renderAll(){renderIntro();renderTabs();try{renderTodayLearn();}catch(e){}$("auto").checked=!!ST.auto;
- if(ST.tab==="words"){renderChips();renderWords();}
- if(ST.tab==="list")renderList();
- if(ST.tab==="mem")renderMem();
+function renderAll(){/* IOS_TAPFIX_V2: 每一步单独保护 */const _g=(n,f)=>{try{f();}catch(e){__tfErr("renderAll:"+n,e);}};
+ _g("intro",renderIntro);_g("tabs",renderTabs);_g("today",renderTodayLearn);_g("auto",()=>{$("auto").checked=!!ST.auto;});
+ if(ST.tab==="words"){_g("chips",renderChips);_g("words",renderWords);}
+ if(ST.tab==="list")_g("list",renderList);
+ if(ST.tab==="mem")_g("mem",renderMem);
  try{const tb=$("tabs"),o=tb&&tb.querySelector("button.on");if(o&&tb.scrollWidth>tb.clientWidth)tb.scrollLeft=Math.max(0,o.offsetLeft-tb.offsetLeft-tb.clientWidth/2+o.offsetWidth/2);}catch(e){}
- if(window.MOD_RENDER&&MOD_RENDER[ST.tab]){try{MOD_RENDER[ST.tab]();}catch(e){console.error(e);}}
+ if(window.MOD_RENDER&&MOD_RENDER[ST.tab]){try{MOD_RENDER[ST.tab]();}catch(e){__tfErr("mod:"+ST.tab,e);}}
  if(ST.tab!=="listen"&&ST.tab!=="speak"&&ST.tab!=="grammar"&&ST.tab!=="write"){try{if(typeof mStop==="function")mStop();}catch(e){}}
  try{updateSideChars();decorateMascots();}catch(e){}}
 
@@ -3024,7 +3035,7 @@ function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWor
  if(startBeat==="done"&&done)done.style.display="";}
 function sMsg(t){$("sentMsg").textContent=t;}
 let sRec=null;
-(function initMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("sentMic");if(!b)return;
+try{(function initMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("sentMic");if(!b)return;
  if(!SR){b.style.display="none";$("sentNoMic").textContent="（这个浏览器不支持语音识别"+(/(iPhone|iPad|iPod)/.test(navigator.userAgent)||(/Safari/.test(navigator.userAgent)&&!/Chrome|Chromium|Edg|CriOS|FxiOS/.test(navigator.userAgent))?"，Safari/iPhone 通常不行，请用 Chrome/Edge":"")+"，可直接打字）";return;}
  let listening=false,baseText="",committed="",interim="",wantStop=false;
  const normQ=s=>String(s||"").replace(/[\u2018\u2019\u201A\u201B]/g,"'").replace(/[\u201C\u201D\u201E\u201F]/g,'"').replace(/\u2026/g,"...").replace(/\s+/g," ").trim();
@@ -3048,6 +3059,7 @@ let sRec=null;
     if(committed){const ta=$("sentIn");if(ta)ta.value=joinAppend(baseText,committed);try{dFlushFromInput({flash:true});}catch(e){}sMsg("✅ 听到了，可改一改再点「检测」。再点🎤会追加下一句，不会清空。");}
     wantStop=false;};sRec.start();}catch(err){listening=false;b.textContent="🎤 说一句";sMsg("⚠️ 无法启动语音识别，可直接打字。");}};
   start("en-US");};})();
+}catch(e){__tfErr("init-main",e);}
 
 const SSTRICT_KEY="oxford100_strict_v1";
 function sStrictOn(){try{const el=$("sentStrict");if(el)return !!el.checked;const v=localStorage.getItem(SSTRICT_KEY);return v===null?false:v!=="0";}catch(e){return false;}}
@@ -3491,31 +3503,58 @@ function sPaintAnnotatedHtml(sent,paint,targets){const all=paint||[];const pp=al
  let h=sPaintAnnotatedHtml0(sent,pp,targets);if(pp.length!==all.length)h+='<span class="s-bad" data-sid="loc-punct" id="sid-loc-punct" title="句末该用 . ? 或 !"> ＿</span>';return h;}
 
 /* 本词表补充：不规则变化 & 动词表 */
-Object.assign(IRREG,{sell:["sold"],pay:["paid"],understand:["understood"],learn:["learnt","learned"],stop:["stops","stopped","stopping"],walk:["walks","walked","walking"],listen:["listens","listened","listening"],answer:["answers","answered","answering"],order:["orders","ordered","ordering"],practice:["practise","practises","practised","practising"],exercise:["exercises","exercised","exercising"]});
-Object.assign(IRREG_PAST,{sell:"sold",sells:"sold",pay:"paid",pays:"paid",understand:"understood",understands:"understood",learn:"learned",learns:"learned",walk:"walked",walks:"walked",listen:"listened",listens:"listened",answer:"answered",answers:"answered",order:"ordered",orders:"ordered",practise:"practised",practice:"practised",exercise:"exercised",exercises:"exercised",ask:"asked",asks:"asked",wait:"waited",waits:"waited",turn:"turned",turns:"turned",drink:"drank",drinks:"drank",do:"did",does:"did",send:"sent",ride:"rode",rides:"rode"});
-"sell sells sold pay pays paid understand understands understood learn learns learnt learned walk walks walked listen listens listened answer answers answered order orders ordered practise practice practised exercise exercises exercised ask asks asked wait waits waited turn turns turned drink drinks drank rain rains rained stop stops stopped wake wakes woke finish finishes finished sleep sleeps slept put puts".split(" ").forEach(v=>S_VERBS.add(v));
+try{Object.assign(IRREG,{sell:["sold"],pay:["paid"],understand:["understood"],learn:["learnt","learned"],stop:["stops","stopped","stopping"],walk:["walks","walked","walking"],listen:["listens","listened","listening"],answer:["answers","answered","answering"],order:["orders","ordered","ordering"],practice:["practise","practises","practised","practising"],exercise:["exercises","exercised","exercising"]});
+}catch(e){__tfErr("init-main",e);}
+try{Object.assign(IRREG_PAST,{sell:"sold",sells:"sold",pay:"paid",pays:"paid",understand:"understood",understands:"understood",learn:"learned",learns:"learned",walk:"walked",walks:"walked",listen:"listened",listens:"listened",answer:"answered",answers:"answered",order:"ordered",orders:"ordered",practise:"practised",practice:"practised",exercise:"exercised",exercises:"exercised",ask:"asked",asks:"asked",wait:"waited",waits:"waited",turn:"turned",turns:"turned",drink:"drank",drinks:"drank",do:"did",does:"did",send:"sent",ride:"rode",rides:"rode"});
+}catch(e){__tfErr("init-main",e);}
+try{"sell sells sold pay pays paid understand understands understood learn learns learnt learned walk walks walked listen listens listened answer answers answered order orders ordered practise practice practised exercise exercises exercised ask asks asked wait waits waited turn turns turned drink drinks drank rain rains rained stop stops stopped wake wakes woke finish finishes finished sleep sleeps slept put puts".split(" ").forEach(v=>S_VERBS.add(v));
+}catch(e){__tfErr("init-main",e);}
 
 /* ---------- 绑定 ---------- */
-$("bSub").onclick=doSubmit;
-$("bFuz").onclick=()=>{const w=cur();if(!w||ST.revealed)return;markMiss(w.id,REP_FUZZY);logIt(w.en,"fuzzy");reveal("🟡 模糊：看清 "+w.en+"，跟读一遍，稍后再拼对 "+REP_FUZZY+" 次","mid");speak(w.en);};
-$("bNo").onclick=()=>{const w=cur();if(!w||ST.revealed)return;markMiss(w.id,REP_NO);logIt(w.en,"no");reveal("🔴 不会：正确是 "+w.en+"，跟读两遍，稍后再拼对 "+REP_NO+" 次","bad");speak(w.en);};
-$("bHint").onclick=()=>{ST.hint=true;save();renderWords();try{$("ans").focus({preventScroll:true});}catch(e){}};
-$("bNext").onclick=next;$("bPrev").onclick=prev;{const bc=$("beatConfirm");if(bc)bc.onclick=()=>next();const bp=$("beatPrev");if(bp)bp.onclick=prev;}
-$("ans").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();doSubmit();}else if(e.key==="Escape"){e.preventDefault();$("ans").value="";}});
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&ST.tab==="words"&&ST.revealed&&document.activeElement!==$("ans")&&document.activeElement!==$("sentIn")&&document.activeElement!==$("twistIn")&&!(document.activeElement&&document.activeElement.tagName==="BUTTON"&&document.activeElement!==$("bNext"))){e.preventDefault();next();}});
-$("sp").onclick=()=>{const w=cur();if(w)speak(w.en);};$("spSlow").onclick=()=>{const w=cur();if(w)speak(w.en,true);};
-$("spEx").onclick=()=>{const w=cur();if(w)speak(w.exEn);};$("spExS").onclick=()=>{const w=cur();if(w)speak(w.exEn,true);};
-$("auto").onchange=e=>{ST.auto=e.target.checked;save();};
-$("bTest").onclick=()=>{const w=cur();speak(w?w.en:"beautiful");};
-$("bHideIntro").onclick=()=>{ST.introHidden=true;save();renderIntro();};
-{const b0=$("bHideIntro0");if(b0)b0.onclick=()=>{ST.introHidden=true;save();renderIntro();window.scrollTo(0,0);};}
-$("bIntro").onclick=()=>{ST.introHidden=false;save();renderIntro();window.scrollTo({top:0,behavior:"smooth"});};
-$("essayChk").onclick=eDoCheck;
-$("essaySay").onclick=()=>{const t=($("essayIn")&&$("essayIn").value||"").trim();if(t)speak(t);else eMsg("先写一段再听。");};
-$("essayCopy").onclick=()=>{const th=ST.theme;const words=eThemeWords(th);const text=($("essayIn")&&$("essayIn").value||"").trim();if(!text){eMsg("先写一段再复制。");return;}const scan=eScan(text,words);eSave(th,text,{ok:scan.ok,used:scan.used.length,total:scan.total});sCopy("【小作文】场景："+th+"\n目标词（"+words.length+"）："+words.map(w=>w.en).join(", ")+"\n已用上："+scan.used.length+"/"+scan.total+"\n------\n"+text+"\n------\n请帮我看用词和语法。");eMsg("已复制，可以发给老师。");};
-$("bRetest").onclick=()=>{const ids=themeIds(ST.theme);const m=ST.missed.filter(i=>ids.includes(i));if(!m.length)return;ST.queue=shuffle(m);ST.round="final";ST.revealed=false;ST.pending=null;save();renderAll();};
-$("bNextTheme").onclick=()=>{const th=$("bNextTheme").dataset.th;if(!th)return;ST.theme=th;buildQueue();save();renderAll();window.scrollTo(0,0);};
-$("bRestart").onclick=()=>{if(!confirm("把「"+(ST.theme===ALLTH?"全部 200 词":ST.theme)+"」重新练一遍？（这组的已掌握会清零）"))return;const ids=themeIds(ST.theme);ST.known=ST.known.filter(i=>!ids.includes(i));ids.forEach(i=>delete ST.reps[i]);buildQueue();save();renderAll();};
+try{$("bSub").onclick=doSubmit;
+}catch(e){__tfErr("init-main",e);}
+try{$("bFuz").onclick=()=>{const w=cur();if(!w||ST.revealed)return;markMiss(w.id,REP_FUZZY);logIt(w.en,"fuzzy");reveal("🟡 模糊：看清 "+w.en+"，跟读一遍，稍后再拼对 "+REP_FUZZY+" 次","mid");speak(w.en);};
+}catch(e){__tfErr("init-main",e);}
+try{$("bNo").onclick=()=>{const w=cur();if(!w||ST.revealed)return;markMiss(w.id,REP_NO);logIt(w.en,"no");reveal("🔴 不会：正确是 "+w.en+"，跟读两遍，稍后再拼对 "+REP_NO+" 次","bad");speak(w.en);};
+}catch(e){__tfErr("init-main",e);}
+try{$("bHint").onclick=()=>{ST.hint=true;save();renderWords();try{$("ans").focus({preventScroll:true});}catch(e){}};
+}catch(e){__tfErr("init-main",e);}
+try{$("bNext").onclick=next;
+}catch(e){__tfErr("init-main",e);}try{$("bPrev").onclick=prev;
+}catch(e){__tfErr("init-main",e);}try{{const bc=$("beatConfirm");if(bc)bc.onclick=()=>next();const bp=$("beatPrev");if(bp)bp.onclick=prev;}
+}catch(e){__tfErr("init-main",e);}
+try{$("ans").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.isComposing){e.preventDefault();doSubmit();}else if(e.key==="Escape"){e.preventDefault();$("ans").value="";}});
+}catch(e){__tfErr("init-main",e);}
+try{document.addEventListener("keydown",e=>{if(e.key==="Enter"&&ST.tab==="words"&&ST.revealed&&document.activeElement!==$("ans")&&document.activeElement!==$("sentIn")&&document.activeElement!==$("twistIn")&&!(document.activeElement&&document.activeElement.tagName==="BUTTON"&&document.activeElement!==$("bNext"))){e.preventDefault();next();}});
+}catch(e){__tfErr("init-main",e);}
+try{$("sp").onclick=()=>{const w=cur();if(w)speak(w.en);};
+}catch(e){__tfErr("init-main",e);}try{$("spSlow").onclick=()=>{const w=cur();if(w)speak(w.en,true);};
+}catch(e){__tfErr("init-main",e);}
+try{$("spEx").onclick=()=>{const w=cur();if(w)speak(w.exEn);};
+}catch(e){__tfErr("init-main",e);}try{$("spExS").onclick=()=>{const w=cur();if(w)speak(w.exEn,true);};
+}catch(e){__tfErr("init-main",e);}
+try{$("auto").onchange=e=>{ST.auto=e.target.checked;save();};
+}catch(e){__tfErr("init-main",e);}
+try{$("bTest").onclick=()=>{const w=cur();speak(w?w.en:"beautiful");};
+}catch(e){__tfErr("init-main",e);}
+try{$("bHideIntro").onclick=()=>{ST.introHidden=true;save();renderIntro();};
+}catch(e){__tfErr("init-main",e);}
+try{{const b0=$("bHideIntro0");if(b0)b0.onclick=()=>{ST.introHidden=true;save();renderIntro();window.scrollTo(0,0);};}
+}catch(e){__tfErr("init-main",e);}
+try{$("bIntro").onclick=()=>{ST.introHidden=false;save();renderIntro();window.scrollTo({top:0,behavior:"smooth"});};
+}catch(e){__tfErr("init-main",e);}
+try{$("essayChk").onclick=eDoCheck;
+}catch(e){__tfErr("init-main",e);}
+try{$("essaySay").onclick=()=>{const t=($("essayIn")&&$("essayIn").value||"").trim();if(t)speak(t);else eMsg("先写一段再听。");};
+}catch(e){__tfErr("init-main",e);}
+try{$("essayCopy").onclick=()=>{const th=ST.theme;const words=eThemeWords(th);const text=($("essayIn")&&$("essayIn").value||"").trim();if(!text){eMsg("先写一段再复制。");return;}const scan=eScan(text,words);eSave(th,text,{ok:scan.ok,used:scan.used.length,total:scan.total});sCopy("【小作文】场景："+th+"\n目标词（"+words.length+"）："+words.map(w=>w.en).join(", ")+"\n已用上："+scan.used.length+"/"+scan.total+"\n------\n"+text+"\n------\n请帮我看用词和语法。");eMsg("已复制，可以发给老师。");};
+}catch(e){__tfErr("init-main",e);}
+try{$("bRetest").onclick=()=>{const ids=themeIds(ST.theme);const m=ST.missed.filter(i=>ids.includes(i));if(!m.length)return;ST.queue=shuffle(m);ST.round="final";ST.revealed=false;ST.pending=null;save();renderAll();};
+}catch(e){__tfErr("init-main",e);}
+try{$("bNextTheme").onclick=()=>{const th=$("bNextTheme").dataset.th;if(!th)return;ST.theme=th;buildQueue();save();renderAll();window.scrollTo(0,0);};
+}catch(e){__tfErr("init-main",e);}
+try{$("bRestart").onclick=()=>{if(!confirm("把「"+(ST.theme===ALLTH?"全部 200 词":ST.theme)+"」重新练一遍？（这组的已掌握会清零）"))return;const ids=themeIds(ST.theme);ST.known=ST.known.filter(i=>!ids.includes(i));ids.forEach(i=>delete ST.reps[i]);buildQueue();save();renderAll();};
+}catch(e){__tfErr("init-main",e);}
 /* ---- fs3 全屏：真全屏（能用就用）+ 沉浸模式（iPhone/微信等不支持时也有效） ---- */
 const FS_IMM_KEY="oxford100_imm_v1";
 function realFs(){const d=document;return !!(d.fullscreenElement||d.webkitFullscreenElement);}
@@ -3533,21 +3572,32 @@ function toggleFs(){const d=document,el=d.documentElement;
  let ok=false;
  if(fn&&!ios){try{const p=fn.call(el);if(p&&p.then){p.then(()=>{},()=>{fsTip("这个浏览器不让网页进入真全屏，已切到「沉浸模式」（隐藏标题和说明，多出一大截练习空间）。想去掉地址栏：用 Chrome/Safari 打开，或「添加到主屏幕」后从桌面图标打开。");});}ok=true;}catch(e){}}
  if(!ok){fsTip(ios?"iPhone 的 Safari 不允许网页真全屏，已切到「沉浸模式」。想彻底没有地址栏：点分享按钮 → 添加到主屏幕，以后从桌面图标打开就是全屏。":"这个浏览器不支持网页真全屏，已切到「沉浸模式」。想更全屏：用 Chrome 打开，或「添加到主屏幕」后从桌面图标打开。");}}
-$("btnFs").onclick=toggleFs;
-$("fsTipOk").onclick=()=>$("fsTip").classList.remove("show");
-document.addEventListener("fullscreenchange",()=>{if(!realFs()&&immOn()){/* 用户按返回退出真全屏：同时退出沉浸 */setImm(false);}fsLabel();});
-document.addEventListener("webkitfullscreenchange",()=>{if(!realFs()&&immOn()){setImm(false);}fsLabel();});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&immOn()&&!realFs()){setImm(false);}});
+try{$("btnFs").onclick=toggleFs;
+}catch(e){__tfErr("init-main",e);}
+try{$("fsTipOk").onclick=()=>$("fsTip").classList.remove("show");
+}catch(e){__tfErr("init-main",e);}
+try{document.addEventListener("fullscreenchange",()=>{if(!realFs()&&immOn()){/* 用户按返回退出真全屏：同时退出沉浸 */setImm(false);}fsLabel();});
+}catch(e){__tfErr("init-main",e);}
+try{document.addEventListener("webkitfullscreenchange",()=>{if(!realFs()&&immOn()){setImm(false);}fsLabel();});
+}catch(e){__tfErr("init-main",e);}
+try{document.addEventListener("keydown",e=>{if(e.key==="Escape"&&immOn()&&!realFs()){setImm(false);}});
+}catch(e){__tfErr("init-main",e);}
 try{if(sessionStorage.getItem(FS_IMM_KEY)==="1")setImm(true);}catch(e){}
-if(window.speechSynthesis){pickVoice();try{speechSynthesis.addEventListener?speechSynthesis.addEventListener("voiceschanged",pickVoice):(speechSynthesis.onvoiceschanged=pickVoice);}catch(e){speechSynthesis.onvoiceschanged=pickVoice;}}
+try{if(window.speechSynthesis){pickVoice();try{speechSynthesis.addEventListener?speechSynthesis.addEventListener("voiceschanged",pickVoice):(speechSynthesis.onvoiceschanged=pickVoice);}catch(e){speechSynthesis.onvoiceschanged=pickVoice;}}
 else{try{pickVoice();}catch(e){}}
+}catch(e){__tfErr("init-main",e);}
 try{pickVoice();}catch(e){}
-if(location.protocol==="file:")$("envTip").textContent="📁 你是直接打开的本地文件：拼写、发音、红绿标注都能用；🎤 说一句 在部分浏览器里需要用网址（https / localhost）打开才行。";
+try{if(location.protocol==="file:")$("envTip").textContent="📁 你是直接打开的本地文件：拼写、发音、红绿标注都能用；🎤 说一句 在部分浏览器里需要用网址（https / localhost）打开才行。";
+}catch(e){__tfErr("init-main",e);}
 /* 造句检测绑定（同英语1B）+ 第2/3拍 */
-sStrictInit();
-$("sentChk").onclick=sDoCheck;
-$("sentIn").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheck();}});
-$("sentSay").onclick=()=>{const t=$("sentIn").value.trim();if(t)speak(t);else sMsg("先写一个句子再听。");};
+try{sStrictInit();
+}catch(e){__tfErr("init-main",e);}
+try{$("sentChk").onclick=sDoCheck;
+}catch(e){__tfErr("init-main",e);}
+try{$("sentIn").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheck();}});
+}catch(e){__tfErr("init-main",e);}
+try{$("sentSay").onclick=()=>{const t=$("sentIn").value.trim();if(t)speak(t);else sMsg("先写一个句子再听。");};
+}catch(e){__tfErr("init-main",e);}
 function beat2GoNext(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForCheck(($("sentIn").value||""));let s=_prep.s;
  if(!s){sMsg("先写或说一句再进第3拍。");$("sentIn").focus();return;}
  $("sentIn").value=s;sSave(w.en,s);$("sentLast").textContent="已保存："+s;
@@ -3555,7 +3605,8 @@ function beat2GoNext(){const w=sCurWord();if(!w)return;const _prep=sPrepSentForC
  const r=localCheck(s,w);const level=lvl||r.level;if(box)box.dataset.beat2Level=level;
  if(level==="bad"){sMsg("这句还有明显语法问题，先改一改再进第3拍。（也可先点「检测」；目标词不强制）");try{$("sentIn").focus();}catch(e){}return;}
  beatUnlock3({focus:true});sMsg("✅ 进入第3拍 · 口述加戏（接着上一句往下说就行，不必再用目标词）");}
-const b2go=$("beat2Go");if(b2go)b2go.onclick=beat2GoNext;
+const b2go=$("beat2Go");try{if(b2go)b2go.onclick=beat2GoNext;
+}catch(e){__tfErr("init-main",e);}
 function sMsgTwist(t){const el=$("twistMsg");if(el)el.textContent=t;}
 function sRenderResInto(resId,r,lt,ltState,corr,sent,paintInfo,tr){const host=$(resId);if(!host)return;const head=r.level==="good"?"✅ 句子可以 · 过关":r.level==="mid"?"⚠️ 基本可以 · 还有小改":"❌ 有问题 · 先改语法";const cls=r.level==="good"?"ok":r.level==="mid"?"mid":"bad";
  paintInfo=paintInfo||{paint:[],targets:[],chips:[]};tr=tr||sTranslateLocal(sent);
@@ -3594,7 +3645,7 @@ async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sent
     const relOk=!(r.related&&r.related.ok===false);
     sMsgTwist(relOk?"🎉 加戏完成！看完反馈后，点下面「确定，进入下一词」":"🎉 语法过关已完成。刚才提示了跟上句的关系，下次注意接着说哦。看完反馈后，点下面「确定，进入下一词」");}
    else sMsgTwist("还有明显语法问题，再改一改吧。（接着上一句即可，不必再用目标词）");}});}
-(function initTwistMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("twistMic");if(!b)return;
+try{(function initTwistMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("twistMic");if(!b)return;
  if(!SR){b.style.display="none";return;}
  let listening=false,baseText="",committed="",interim="",wantStop=false,sRecT=null;
  const normQ=s=>String(s||"").replace(/[\u2018\u2019\u201A\u201B]/g,"'").replace(/[\u201C\u201D\u201E\u201F]/g,'"').replace(/\u2026/g,"...").replace(/\s+/g," ").trim();
@@ -3615,18 +3666,25 @@ async function sDoCheckTwist(){const w=sCurWord();if(!w)return;const box=$("sent
     if(committed){const ta=$("twistIn");if(ta)ta.value=joinAppend(baseText,committed);sMsgTwist("✅ 听到了，可改一改再点「检测加戏」。");}
     wantStop=false;};sRecT.start();}catch(err){listening=false;b.textContent="🎤 说加戏";sMsgTwist("⚠️ 无法启动语音识别，可直接打字。");}};
   start("en-US");};})();
-const twChk=$("twistChk");if(twChk)twChk.onclick=sDoCheckTwist;
-const twIn=$("twistIn");if(twIn)twIn.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheckTwist();}});
-const twSay=$("twistSay");if(twSay)twSay.onclick=()=>{const t=($("twistIn").value||"").trim();if(t)speak(t);else sMsgTwist("先写加戏句再听。");};
-const b2re=$("beat2Replay");if(b2re)b2re.onclick=()=>{const t=($("sentIn").value||"").trim();if(t)speak(t);else sMsgTwist("第2拍还没有句子可朗读。");};
-$("sentTeach").onclick=()=>{const w=sCurWord();if(!w)return;const s=$("sentIn").value.trim();const tw=($("twistIn")&&$("twistIn").value||"").trim();if(!s&&!tw){sMsg("先写一个句子哦。");return;}
+}catch(e){__tfErr("init-main",e);}
+const twChk=$("twistChk");try{if(twChk)twChk.onclick=sDoCheckTwist;
+}catch(e){__tfErr("init-main",e);}
+const twIn=$("twistIn");try{if(twIn)twIn.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){e.preventDefault();e.stopPropagation();sDoCheckTwist();}});
+}catch(e){__tfErr("init-main",e);}
+const twSay=$("twistSay");try{if(twSay)twSay.onclick=()=>{const t=($("twistIn").value||"").trim();if(t)speak(t);else sMsgTwist("先写加戏句再听。");};
+}catch(e){__tfErr("init-main",e);}
+const b2re=$("beat2Replay");try{if(b2re)b2re.onclick=()=>{const t=($("sentIn").value||"").trim();if(t)speak(t);else sMsgTwist("第2拍还没有句子可朗读。");};
+}catch(e){__tfErr("init-main",e);}
+try{$("sentTeach").onclick=()=>{const w=sCurWord();if(!w)return;const s=$("sentIn").value.trim();const tw=($("twistIn")&&$("twistIn").value||"").trim();if(!s&&!tw){sMsg("先写一个句子哦。");return;}
  if(s)sSave(w.en,s);if(tw)sSave(beatTwistKey(w.en),tw);
  sCopy("【造句批改】单词："+w.en+" "+w.ph+"（"+w.pos+"，"+w.zh+"）\n场景："+w.theme+"\n第2拍情景一句："+(s||"（无）")+"\n第3拍口述加戏："+(tw||"（无）")+"\n请判断对不对、哪里错、给我改正后的句子并教我读。");};
-$("sentSkip").onclick=()=>{next();};
+}catch(e){__tfErr("init-main",e);}
+try{$("sentSkip").onclick=()=>{next();};
+}catch(e){__tfErr("init-main",e);}
 
 
 /* wrap save/mSave for auto sync */
-(function(){
+try{(function(){
   try{
     var _save=save;
     save=function(opt){opt=opt||{};_save(opt);try{if(!opt.silent)syncSchedulePush();else if(syncAutoOn())syncSchedulePush();}catch(e){}};
@@ -3636,6 +3694,7 @@ $("sentSkip").onclick=()=>{next();};
     mSave=function(){_mSave();try{syncSchedulePush();}catch(e){}};
   }catch(e){}
 })();
+}catch(e){__tfErr("init-main",e);}
 
 /* SYNC_CROSS_DEVICE_V1: 手机电脑云同步（JSONBlob 优先，失败则 ExtendsClass） */
 var SYNC_ID_KEY="oxford100_sync_id_v1";
@@ -3964,13 +4023,16 @@ try{document.getElementById("tabs").addEventListener("click",function(ev){var b=
 try{setTimeout(syncBootPull,1200);}catch(e){}
 
 try{const ta=$("sentIn");if(ta){ta.addEventListener("input",()=>dSaveDebounced());ta.addEventListener("change",()=>dFlushFromInput({flash:true}));}}catch(e){}
-window.addEventListener("pagehide",()=>{try{dFlushFromInput();}catch(e){}save({silent:true});});
-document.addEventListener("visibilitychange",()=>{if(document.hidden){try{dFlushFromInput();}catch(e){}save({silent:true});}});
+try{window.addEventListener("pagehide",()=>{try{dFlushFromInput();}catch(e){}save({silent:true});});
+}catch(e){__tfErr("init-main",e);}
+try{document.addEventListener("visibilitychange",()=>{if(document.hidden){try{dFlushFromInput();}catch(e){}save({silent:true});}});
+}catch(e){__tfErr("init-main",e);}
 try{if(/[?&]demo=essay\b/.test(location.search)){(function(){function go(){try{const intro=$("intro");if(intro)intro.style.display="none";const card=$("card");if(card)card.style.display="none";if(typeof ST!=="undefined")ST.theme=(THEMES[0]&&THEMES[0].name)||"个人信息与家庭";const done=$("done");if(done)done.style.display="block";if(typeof renderDone==="function")renderDone();setTimeout(()=>{const a=$("essayArea");if(a)a.scrollIntoView({block:"start"});},100);}catch(e){console.error(e);}}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go();})();}}catch(e){}
 
 
 /* IOS_WHITESCREEN_FIX: 7MB 音频/立绘包改为 defer，不再阻塞首屏；包加载完后刷新立绘 */
-document.addEventListener("DOMContentLoaded",function(){try{document.querySelectorAll("img[data-slug]").forEach(function(i){delete i.dataset.slug;});updateSideChars();decorateMascots();}catch(e){}});
+try{document.addEventListener("DOMContentLoaded",function(){try{document.querySelectorAll("img[data-slug]").forEach(function(i){delete i.dataset.slug;});updateSideChars();decorateMascots();}catch(e){}});
+}catch(e){__tfErr("init-main",e);}
 </script>
 
 <script id="essay_v2">
@@ -4528,6 +4590,8 @@ function renderEssay(){
 window.__essayV2Ready=renderWrite;
 window.__renderEssayV2=renderEssay;
 if(window.MOD_RENDER){MOD_RENDER.write=renderWrite;}
+/* IOS_TAPFIX_V2: 启动时作文脚本比主脚本晚加载——如果上次停在「⑥ 作文」或组后小作文，这里补渲染一次，避免卡在「加载中…」点不动 */
+try{if(typeof ST!=="undefined"){if(ST.tab==="write")renderWrite();else if(ST.tab==="words"){const _d=$("done");if(_d&&_d.offsetParent!==null)renderEssay();}}}catch(e){if(window.__tfErr)__tfErr("essay-boot",e);}
 </script>
 <style>/* ROOTFAM_LISTEN_V2 */
 #rfBox{margin:10px 0}.rf{border:1px dashed #9cc9a3;border-radius:12px;background:#f6fbf6;padding:6px 10px}
