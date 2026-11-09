@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><!-- IOS_TAPFIX_V2 --><!-- E1B_OXUI_V1 -->
+<head>
+<meta charset="UTF-8" /><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Day1 综合挑战 · U1问候 + U2工作爱好</title>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --bg2: #e8eef6;
+    --card: #ffffff;
+    --card2: #f7f9fc;
+    --accent: #3b82f6;
+    --accent-soft: #dbeafe;
+    --accent2: #2563eb;
+    --good: #8b1a1a;
+    --good-bg: #ecfdf5;
+    --bad: #dc2626;
+    --bad-bg: #fef2f2;
+    --speak: #5a5a58;
+    --speak2: #3a3a38;
+    --warn: #d97706;
+    --text: #1e293b;
+    --muted: #6e6e6a;
+    --border: #e2e8f0;
+    --shadow: 0 8px 28px rgba(15, 23, 42, 0.08);
+    --shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #dbeafe 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #fde68a33 0%, transparent 50%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    color: var(--text);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 16px 14px 48px; gap: 12px;
+  }
+  h1 {
+    font-size: 1.12rem; margin: 6px 0 0; font-weight: 750;
+    text-align: center; line-height: 1.4; color: #0f172a;
+    letter-spacing: -0.01em;
+  }
+  .sub { color: var(--muted); font-size: 0.82rem; margin: 0; text-align: center; }
+  .voice-status {
+    width: min(460px, 100%);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 12px;
+    box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .voice-status .line {
+    font-size: 0.82rem; color: var(--text);
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .voice-status .line b { color: var(--accent2); font-weight: 650; }
+  .voice-status .tip {
+    font-size: 0.75rem; color: var(--warn); line-height: 1.4; display: none;
+  }
+  .voice-status .tip.show { display: block; }
+  .voice-status select {
+    width: 100%; padding: 8px 10px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--card2);
+    color: var(--text); font-size: 0.82rem; outline: none;
+  }
+  .voice-status select:focus { border-color: var(--accent); }
+  .tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    width: min(460px, 100%);
+  }
+  .tabs button {
+    border: 1px solid var(--border); border-radius: 999px; padding: 8px 13px;
+    font-size: 0.82rem; cursor: pointer;
+    background: #fff; color: var(--text);
+    box-shadow: var(--shadow-sm);
+    transition: background .15s, color .15s, border-color .15s, transform .1s;
+  }
+  .tabs button:active { transform: scale(.98); }
+  .tabs button.active {
+    background: var(--accent); color: #fff; border-color: var(--accent);
+    font-weight: 650; box-shadow: 0 6px 16px rgba(59,130,246,.28);
+  }
+  .tabs button .n {
+    display: inline-block; min-width: 1.2em; margin-left: 3px;
+    font-size: 0.72rem; opacity: .9;
+  }
+  .progress {
+    width: min(460px, 100%); height: 8px;
+    background: #e2e8f0; border-radius: 99px; overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(15,23,42,.06);
+  }
+  .progress > i {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, #60a5fa, #3b82f6 55%, #2563eb);
+    width: 0%; transition: width .28s ease;
+    border-radius: 99px;
+  }
+  .stats {
+    width: min(460px, 100%);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.84rem; color: var(--muted); gap: 8px; flex-wrap: wrap;
+  }
+  .stats .score { color: var(--accent2); font-weight: 700; }
+  .toolbar {
+    width: min(460px, 100%);
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  }
+  .toolbar button, .actions button, .speak-btn, .opt, .start-btn, .chip {
+    border: none; border-radius: 12px; padding: 10px 14px;
+    font-size: 0.9rem; cursor: pointer;
+    background: #fff; color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .toolbar button.primary, .actions .primary, .start-btn, .actions .next {
+    background: linear-gradient(180deg, #4f94ff, var(--accent));
+    color: #fff; font-weight: 650; border-color: transparent;
+    box-shadow: 0 6px 16px rgba(59,130,246,.28);
+  }
+  .toolbar button.ghost {
+    background: #fff; border: 1px solid var(--border); color: var(--muted);
+  }
+  .card {
+    width: min(460px, 100%);
+    background: var(--card); border-radius: 20px;
+    padding: 20px 16px 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(226,232,240,.9);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag {
+    font-size: 0.7rem; padding: 3px 9px; border-radius: 99px;
+    background: #f1f5f9; color: #475569; border: 1px solid var(--border);
+  }
+  .tag.type { background: var(--accent-soft); color: #1d4ed8; border-color: #bfdbfe; }
+  .tag.diff-hard { background: #f3e8ff; color: #6b21a8; border-color: #e9d5ff; }
+  .tag.diff-mid { background: #f8fafc; color: #6e6e6a; }
+  .prompt {
+    font-size: 1.06rem; line-height: 1.6; font-weight: 600;
+    word-break: break-word; color: #0f172a;
+  }
+  .prompt .blank {
+    display: inline-block; min-width: 2.2em; border-bottom: 2px solid var(--accent);
+    color: var(--accent2); text-align: center; margin: 0 2px; padding: 0 4px;
+  }
+  .hint-zh { font-size: 0.85rem; color: var(--muted); line-height: 1.45; }
+  .speak-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .speak-btn {
+    background: linear-gradient(180deg, #5a5a58, var(--speak));
+    color: #fff; font-weight: 650; border-radius: 999px; padding: 8px 14px;
+    border: none; box-shadow: 0 6px 14px rgba(124,58,237,.25);
+  }
+  .speak-btn.slow {
+    background: linear-gradient(180deg, #5a5a58, var(--speak2));
+  }
+  .input-wrap input, .input-wrap textarea {
+    width: 100%; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--card2);
+    color: var(--text); font-size: 1rem; outline: none;
+    font-family: inherit;
+  }
+  .input-wrap input:focus, .input-wrap textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+  }
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    text-align: left; padding: 12px 14px; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--card2);
+    line-height: 1.45; transition: border-color .15s, background .15s, box-shadow .15s;
+    color: var(--text); box-shadow: none;
+  }
+  .opt:active { transform: scale(.99); }
+  .opt.selected {
+    border-color: var(--accent); background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+  }
+  .opt.correct { border-color: var(--good); background: var(--good-bg); color: #166534; }
+  .opt.wrong { border-color: var(--bad); background: var(--bad-bg); color: #991b1b; }
+  .opt:disabled { cursor: default; opacity: 1; }
+  .reorder {
+    display: flex; flex-wrap: wrap; gap: 8px; min-height: 48px;
+    padding: 10px; border-radius: 12px; border: 1px dashed #cbd5e1;
+    background: var(--card2);
+  }
+  .reorder .chip, .pool .chip {
+    background: #eff6ff; color: #1d4ed8; border-radius: 999px;
+    padding: 8px 12px; font-size: 0.9rem; user-select: none;
+    border: 1px solid #bfdbfe; box-shadow: none;
+  }
+  .pool { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pool .chip { background: #fff; color: var(--text); border-color: var(--border); }
+  .feedback {
+    display: none; border-radius: 12px; padding: 12px 14px;
+    font-size: 0.9rem; line-height: 1.55;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--good-bg); border: 1px solid #bbf7d0; color: #166534; }
+  .feedback.no { background: var(--bad-bg); border: 1px solid #fecaca; color: #991b1b; }
+  .feedback .en { color: #1d4ed8; font-weight: 650; margin-top: 6px; }
+  .feedback .zh { color: #475569; margin-top: 4px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: stretch; }
+  .actions button { flex: 1; min-width: 110px; }
+  .actions .skip {
+    background: #fff; border: 1px solid var(--border); color: var(--muted);
+  }
+  .empty, .home {
+    width: min(460px, 100%); text-align: center;
+    background: var(--card); border-radius: 18px; padding: 28px 18px;
+    box-shadow: var(--shadow);
+  }
+  .home h2 { margin: 0 0 8px; font-size: 1.15rem; }
+  .home p { color: var(--muted); font-size: 0.88rem; line-height: 1.5; margin: 0 0 16px; }
+  .home .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .home .start-btn { width: 100%; padding: 14px 10px; border-radius: 14px; }
+  .home .start-btn small { display: block; font-weight: 400; opacity: .8; margin-top: 4px; font-size: 0.75rem; }
+  .done-box {
+    width: min(460px, 100%); background: var(--card); border-radius: 20px;
+    padding: 26px 18px; text-align: center; display: none;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+  }
+  .done-box.show { display: block; }
+  .done-box h2 { margin: 0 0 8px; color: #0f172a; }
+  .done-box .big { font-size: 2.1rem; color: var(--accent2); font-weight: 800; margin: 8px 0; }
+  .wrong-list { text-align: left; max-height: 280px; overflow: auto; margin-top: 12px; }
+  .wrong-item {
+    padding: 10px 12px; border-radius: 10px; background: var(--card2);
+    margin-bottom: 8px; font-size: 0.85rem; line-height: 1.45;
+    border: 1px solid var(--border);
+  }
+  .wrong-item .q { color: #334155; }
+  .wrong-item .a { color: var(--good); margin-top: 4px; }
+  .hidden { display: none !important; }
+  .multi-blanks { display: flex; flex-direction: column; gap: 8px; }
+  .multi-blanks label { font-size: 0.8rem; color: var(--muted); }
+  .multi-blanks .row { display: flex; align-items: center; gap: 8px; }
+  .multi-blanks .row span { min-width: 1.5em; color: var(--accent2); font-weight: 700; }
+  .multi-blanks input {
+    flex: 1; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--card2);
+    color: var(--text); font-size: 0.95rem;
+  }
+  .multi-blanks input:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+  }
+</style>
+<style id="e1b-oxui">
+/* E1B_OXUI_V1 · 旧版 Day 单页（day1/day1-words/day1-quiz/day2）改成 oxford100 外观 */
+:root{--bg:#f4f4f2;--bg2:#ebeae6;--card:#fafaf8;--card2:#f2f1ed;--paper:#f2f1ed;--accent:#8b1a1a;--accent2:#6e1515;--accent-soft:#f0e4e4;
+--good:#2f6b4e;--good-bg:#e3efe7;--bad:#a84f42;--bad-bg:#f3e8e5;--speak:#5a5a58;--speak2:#3a3a38;--warn:#a67c3a;--mid:#8a5a22;--mid-bg:#ece6d8;
+--text:#2e2e2c;--ink:#1a1a1a;--muted:#6e6e6a;--border:#c8c8c4;--radius:2px;
+--shadow:0 10px 28px rgba(26,26,26,.07),0 2px 6px rgba(26,26,26,.04);--shadow-sm:0 4px 12px rgba(26,26,26,.05),0 1px 2px rgba(26,26,26,.04);--sm:var(--shadow-sm)}
+html{background:var(--bg)}
+body{background-color:var(--bg)!important;background-image:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 32%),repeating-linear-gradient(90deg,transparent 0 3px,rgba(42,42,40,.018) 3px 4px)!important;background-attachment:fixed!important;color:var(--text);
+font-family:-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(90deg,transparent 0 56px,rgba(42,42,40,.03) 56px 57px),repeating-linear-gradient(0deg,transparent 0 56px,rgba(42,42,40,.022) 56px 57px);opacity:.7}
+body>*:not(.char-deco):not(.fs-btn):not(.fs-fixed):not(script):not(style){position:relative;z-index:1}
+h1{font-weight:700!important;color:var(--ink)!important;letter-spacing:-.01em;border-bottom:1px solid rgba(42,42,42,.14);padding-bottom:8px;text-align:center}
+h1::before{content:"◇ ANIMUS / MEMORY CORE";display:block;font-size:.6rem;font-weight:600;color:var(--muted);letter-spacing:.12em;margin-bottom:4px}
+.sub{color:var(--muted)!important}
+h2{color:var(--ink)}
+/* 卡片：白纸 + 左侧红色强调线 */
+.card,.word-card,.done-box,.mem-card,.voice-status,.feedback,.spell-ex,.reorder{border-radius:var(--radius)!important;border:1px solid rgba(200,200,196,.9)!important;background:var(--card)!important;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 2px 6px rgba(26,26,26,.045),0 14px 36px rgba(26,26,26,.075)!important;position:relative}
+.card::before,.done-box::before,.mem-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);opacity:.92;pointer-events:none}
+.voice-status .line b,.stats .score,.mem-card h2,.done-box .big{color:var(--accent2)!important}
+.voice-status .tip{color:var(--warn)!important}
+.voice-status select,.quiz-area input,.input-wrap input,.input-wrap textarea,.multi-blanks input{border:1px solid var(--border)!important;border-radius:8px!important;background:rgba(255,255,255,.85)!important;color:var(--ink)!important;box-shadow:inset 0 1px 2px rgba(26,26,26,.04)}
+.quiz-area input:focus,.input-wrap input:focus,.input-wrap textarea:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(139,26,26,.18)!important}
+.progress{height:4px!important;background:#e0e0dc!important;border-radius:2px!important;border:1px solid var(--border)}
+.progress>i{background:linear-gradient(90deg,var(--accent),#a01818)!important;border-radius:2px!important}
+.word-card .main{color:var(--good)!important}.word-card .zh{color:var(--ink)!important;font-size:2.1rem!important;letter-spacing:-.02em}
+.word-card .extra,.word-card .pos{color:var(--speak)!important}
+.unit-tag,.tag{border-radius:8px!important;background:var(--accent-soft)!important;color:var(--accent2)!important;border:1px solid #e0c8c8!important}
+.tag.type{background:#ece6d8!important;color:#8a5a22!important;border-color:#d4c4a0!important}
+.tag.diff-hard{background:#f3e8e5!important;color:#7f1d1d!important;border-color:#e0b8b2!important}
+.tag.rep{background:#f3efe6!important;color:#8a5a22!important;border-color:#d4c4a0!important}
+.prompt{color:var(--ink)!important}
+/* 玻璃按钮（与 oxford100 相同参数） */
+button{font-family:inherit;border-radius:10px!important;min-height:44px;min-width:44px;-webkit-tap-highlight-color:transparent;
+background:rgba(255,255,255,.62)!important;color:var(--text)!important;border:1px solid rgba(255,255,255,.68)!important;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 0 rgba(0,0,0,.04),0 2px 6px rgba(26,26,26,.06),0 8px 24px rgba(26,26,26,.08),0 0 0 1px rgba(26,26,26,.06)!important;
+backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);transition:transform .12s ease,box-shadow .14s ease,background .14s ease}
+button:active{transform:scale(.985)}
+.nav-main button.active,.tabs button.active,.modes button.active,.actions .primary,.actions .next,.toolbar button.primary,.b-sub,.b-next,.speak,.speak-btn,button.primary,.start-btn,.fs-btn,.fs-fixed{
+background:rgba(139,26,26,.82)!important;color:#fafaf8!important;border:1px solid rgba(255,255,255,.42)!important;font-weight:700!important;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 0 -1px 0 rgba(0,0,0,.08),0 2px 6px rgba(26,26,26,.08),0 8px 28px rgba(139,26,26,.22),0 0 0 1px rgba(110,21,21,.28)!important}
+.slow,.speak-btn.slow{background:rgba(90,90,88,.72)!important;color:#fafaf8!important;border:1px solid rgba(255,255,255,.28)!important}
+.actions .know{background:rgba(47,107,78,.85)!important;color:#fafaf8!important}
+.actions .unknow,.b-fuz{background:rgba(236,230,216,.85)!important;color:#8a5a22!important;border-color:#d4c4a0!important;font-weight:700}
+.b-no,.danger{background:rgba(243,232,229,.85)!important;color:#8f3a32!important;font-weight:700}
+.toolbar button.ghost,.actions .skip{color:var(--muted)!important}
+.fs-btn{border-radius:10px!important;padding:10px 16px!important;font-size:.88rem!important}
+.nav-main button,.tabs button{color:var(--ink)!important}
+.nav-main button.active,.tabs button.active{color:#fafaf8!important}
+.tabs button .n{opacity:.8}
+.opt{background:rgba(255,255,255,.7)!important}
+.chip{background:var(--accent-soft)!important;color:var(--accent2)!important;border:1px solid #e0c8c8!important;border-radius:10px!important}
+.pool .chip{background:rgba(255,255,255,.7)!important;color:var(--text)!important;border-color:var(--border)!important}
+.reorder{border:1px dashed rgba(139,26,26,.35)!important;background:var(--paper)!important}
+.feedback.ok{background:#e3efe7!important;border-color:#b7d3c1!important;color:#1f4d36!important}
+.feedback.no{background:#f3e8e5!important;border-color:#e0b8b2!important;color:#7f1d1d!important}
+.feedback.mid{background:#ece6d8!important;border-color:#d4c4a0!important;color:#8a5a22!important}
+.feedback .en{color:var(--good)!important}
+.spell-fb.ok,.e1b-res.ok{color:var(--good)!important}.spell-fb.bad,.e1b-res.bad{color:var(--bad)!important}
+.topbar .save-ind{background:transparent!important;border:none!important;color:var(--good)!important}
+.mem-row{border-bottom:1px dashed var(--border)!important}
+.e1b-res{font-weight:650;text-align:center;min-height:1.2em;margin-top:4px}
+/* 可爱 Q版 / SD 角色装饰 — Animus proportions */
+.char-deco{position:fixed;bottom:0;z-index:0;pointer-events:none;user-select:none;
+  height:min(52vh,440px);width:auto;max-width:min(260px,26vw);object-fit:contain;object-position:bottom center;
+  opacity:.96;filter:drop-shadow(0 12px 24px rgba(26,26,26,.18));
+  image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.char-deco.left{left:max(4px, calc(50% - 620px));}
+.char-deco.right{right:max(4px, calc(50% - 620px));transform:scaleX(-1)}
+@media (max-width:1100px){
+  .char-deco{height:min(46vh,380px);max-width:min(200px,28vw);opacity:.8}
+  .char-deco.left{left:2px}
+  .char-deco.right{right:2px}
+}
+@media (max-width:720px){
+  .char-deco{height:min(36vh,280px);max-width:34vw;opacity:.68}
+}
+.wrap,.fs-fixed,#fsTip{position:relative;z-index:1}
+
+/* tiny mascot beside small controls — pointer-events none, no layout crush */
+.has-mascot{position:relative}
+.has-mascot > .btn-mascot{
+  position:absolute;pointer-events:none;user-select:none;
+  width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:center 20%;
+  top:50%;transform:translateY(-50%);
+  box-shadow:0 1px 3px rgba(26,26,26,.28),0 0 0 1.5px rgba(255,255,255,.75);
+  z-index:2;opacity:.98;
+  image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden;
+}
+.has-mascot.mascot-left > .btn-mascot{left:-30px}
+.has-mascot.mascot-right > .btn-mascot{right:-30px;left:auto}
+.has-mascot.mascot-left{margin-left:28px}
+.has-mascot.mascot-right{margin-right:28px}
+.fs-fixed.has-mascot{margin-left:0;margin-right:0}
+.fs-fixed.has-mascot.mascot-left > .btn-mascot{left:6px;right:auto;top:calc(100% + 4px);transform:none}
+.fs-fixed.has-mascot{padding-bottom:2px}
+.chip.has-mascot.mascot-left,.tabs button.has-mascot.mascot-left{margin-left:22px}
+.chip.has-mascot > .btn-mascot,.tabs button.has-mascot > .btn-mascot{width:22px;height:22px}
+.thgo.has-mascot.mascot-left{margin-left:30px}
+.mini.has-mascot{margin-left:22px;margin-right:4px}
+.mini.has-mascot > .btn-mascot{width:20px;height:20px;left:-22px}
+@media (max-width:600px){
+  .has-mascot.mascot-left{margin-left:24px}
+  .has-mascot > .btn-mascot{width:24px;height:24px}
+  .has-mascot.mascot-left > .btn-mascot{left:-26px}
+}
+/* E1B_OXUI_V1 · 1B 专有元素套用 oxford100 Animus 白底红强调 */
+.plan,.say,.s-improve,.s-demo,.mem-card,.done-box,.voice-status{background:var(--card)!important;border:1px solid rgba(200,200,196,.9)!important;border-radius:var(--radius)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 6px rgba(26,26,26,.04),0 10px 28px rgba(26,26,26,.06)!important;color:var(--text)}
+.plan{color:var(--accent2)!important;font-weight:650;border-left:3px solid var(--accent)!important}
+.say{border:1px dashed rgba(139,26,26,.35)!important;color:var(--accent2)!important;background:var(--paper)!important}
+.s-improve{border-left:3px solid var(--warn)!important}.s-improve-title,.s-improve-judge{color:#8a5a22!important}.s-improve li{color:var(--text)!important}.s-improve .s-why{color:var(--bad)!important}.s-improve .s-can{color:var(--good)!important}
+.s-demo{border-left:3px solid var(--good)!important}.s-demo-label,.s-demo-en,.s-demo-zh{color:var(--good)!important}
+.dl .ln{border-bottom:1px dashed var(--border)!important}.dl .who{color:var(--accent2)!important}
+.wrongc{color:var(--bad)!important}.rightc{color:var(--good)!important}
+.opt{border-radius:10px!important;text-align:left!important}
+.opt.ok,.opt.correct{background:rgba(207,233,216,.85)!important;border-color:var(--good)!important;color:#1f4d36!important}
+.opt.no,.opt.wrong{background:rgba(240,208,202,.85)!important;border-color:var(--bad)!important;color:#7f1d1d!important}
+.opt.selected{background:var(--accent-soft)!important;border-color:var(--accent)!important}
+.daynav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.daynav button{min-width:96px;font-weight:700}
+.daynav button.on{background:rgba(139,26,26,.82)!important;color:#fafaf8!important;border:1px solid rgba(255,255,255,.42)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 8px 28px rgba(139,26,26,.22),0 0 0 1px rgba(110,21,21,.28)!important}
+.daynav button .sm{display:block;font-size:.68rem;font-weight:500;opacity:.85;margin-top:2px}
+.daynav button.has-mascot.mascot-left{margin-left:24px}
+.intro .d{background:#fafaf8!important;border:1px solid var(--border)!important;border-left:3px solid rgba(139,26,26,.35)!important;border-radius:2px!important}
+.intro .d b{color:var(--accent)!important}
+.g h2,.intro h2,.done-box h2,.mem-card h2{color:var(--ink)!important}
+.top .homebtn,.top .b-pc,.top .b-pc2{flex:0 0 auto}
+.wrap>.card,.pane>.card,#p-words>.card{flex:0 0 auto!important}
+.card{min-height:170px}
+/* 性能：浅色底上毛玻璃几乎看不出，去掉 backdrop-filter，视觉不变、iPhone 更流畅 */
+*,*::before,*::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.top .tabs{width:100%}
+.e1b-filebtns{gap:8px}.e1b-filebtns button{flex:0 1 auto}
+
+.e1b-home{display:block;text-align:center;font-size:.82rem;font-weight:650;color:var(--accent2)!important;text-decoration:none;margin:0 auto;padding:6px 12px;position:relative;z-index:2}
+</style>
+</head>
+<body>
+<img class="char-deco left" id="charLeft" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
+<img class="char-deco right" id="charRight" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="" aria-hidden="true" decoding="async">
+<a class="e1b-home" href="./">🏠 返回 1B 学习目录</a>
+
+  <h1>Day1 综合挑战 · U1问候 + U2工作爱好</h1>
+  <p class="sub">《英语1B基础模块（第三版）》· 中职 · 难度加强版</p>
+  <div class="voice-status" id="voiceStatus">
+    <div class="line">🔊 当前朗读：<b id="voiceName">检测中…</b> <span id="voiceTag">（英式）</span></div>
+    <select id="voiceSelect" aria-label="选择朗读声音"></select>
+    <div class="tip" id="voiceTip">未检测到英式女声。请用 Chrome，或在系统设置中安装「英语（英国）」语音包。</div>
+  </div>
+
+
+  <div class="tabs" id="tabs">
+    <button type="button" data-mode="grammar" class="active">语法挑战<span class="n" id="n-grammar"></span></button>
+    <button type="button" data-mode="dialogue">对话补全<span class="n" id="n-dialogue"></span></button>
+    <button type="button" data-mode="mixed">综合扩展<span class="n" id="n-mixed"></span></button>
+    <button type="button" data-mode="wrong">错题本<span class="n" id="n-wrong">0</span></button>
+  </div>
+
+  <div class="progress"><i id="bar"></i></div>
+  <div class="stats">
+    <span><span id="idx">0</span> / <span id="total">0</span></span>
+    <span class="score">正确 <span id="correct">0</span> · 错误 <span id="wrongN">0</span></span>
+  </div>
+  <div class="toolbar">
+    <button type="button" id="btnShuffle" class="ghost">🔀 打乱</button>
+    <button type="button" id="btnRestart" class="ghost">↺ 重开本模式</button>
+    <button type="button" id="btnClearWrong" class="ghost hidden">🗑 清空错题</button>
+  </div>
+
+  <div class="card" id="card">
+    <div class="meta">
+      <span class="tag" id="unitTag">U1</span>
+      <span class="tag type" id="typeTag">填空</span>
+      <span class="tag" id="diffTag">中等</span>
+    </div>
+    <div class="prompt" id="prompt">加载中…</div>
+    <div class="hint-zh" id="hintZh"></div>
+    <div class="speak-row" id="speakRow">
+      <button type="button" class="speak-btn" id="speak">🔊 朗读英文</button>
+      <button type="button" class="speak-btn slow" id="speakSlow">🐢 慢速</button>
+    </div>
+    <div id="answerArea"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions" id="actions">
+      <button type="button" class="primary" id="btnCheck">检查答案</button>
+      <button type="button" class="skip" id="btnSkip">跳过</button>
+      <button type="button" class="next hidden" id="btnNext">下一题 →</button>
+    </div>
+  </div>
+
+  <div class="done-box" id="done">
+    <h2>本模式完成 🎉</h2>
+    <div class="big" id="doneScore">0%</div>
+    <p class="sub" id="doneMsg"></p>
+    <div class="toolbar" style="margin-top:14px;justify-content:center">
+      <button type="button" class="primary" id="btnAgain">再做一轮</button>
+      <button type="button" class="ghost" id="btnRedoWrong">只做错题</button>
+    </div>
+  </div>
+
+<script>
+/* ========== Question bank ========== */
+/** @typedef {{id:string, mode:string, unit:string, type:string, diff:string, prompt:string, hint?:string, speak?:string, options?:string[], answer:string|string[], accept?:string[], blanks?:number, blankLabels?:string[], parts?:string[], explain:string, explainEn:string, explainZh:string}} Q */
+
+const BANK = [
+  /* ===== 语法挑战：be ===== */
+  {
+    id:"g01", mode:"grammar", unit:"U1", type:"choose", diff:"中等",
+    prompt:"选正确形式：_____ Samuel Anderson. Nice to meet you!",
+    speak:"I am Samuel Anderson. Nice to meet you!",
+    options:["I am","I is","I are","Me am"],
+    answer:"I am",
+    explain:"第一人称单数用 am。",
+    explainEn:"I am Samuel Anderson. Nice to meet you!",
+    explainZh:"我是塞缪尔·安德森。很高兴见到你！"
+  },
+  {
+    id:"g02", mode:"grammar", unit:"U1", type:"choose", diff:"中等",
+    prompt:"选正确形式：She _____ from Britain.",
+    speak:"She is from Britain.",
+    options:["am","is","are","be"],
+    answer:"is",
+    explain:"第三人称单数 she/he/it 用 is。",
+    explainEn:"She is from Britain.",
+    explainZh:"她来自英国。"
+  },
+  {
+    id:"g03", mode:"grammar", unit:"U1", type:"fill", diff:"较难",
+    prompt:"填空（缩写）：_____ from New York.（I am 的缩写）",
+    hint:"提示：I'm / You're / He's…",
+    speak:"I'm from New York.",
+    answer:"I'm",
+    accept:["I'm","I’m","I am"],
+    explain:"I am 常缩写为 I'm。口语里很常见。",
+    explainEn:"I'm from New York.",
+    explainZh:"我来自纽约。"
+  },
+  {
+    id:"g04", mode:"grammar", unit:"U1", type:"rewrite", diff:"较难",
+    prompt:"改成否定句：They are classmates.",
+    hint:"可用 aren't 或 are not",
+    speak:"They aren't classmates.",
+    answer:"They aren't classmates.",
+    accept:["They aren't classmates.","They aren’t classmates.","They are not classmates.","They're not classmates.","They’re not classmates."],
+    explain:"are 的否定：are not = aren't。",
+    explainEn:"They aren't classmates. / They are not classmates.",
+    explainZh:"他们不是同班同学。"
+  },
+  {
+    id:"g05", mode:"grammar", unit:"U1", type:"rewrite", diff:"较难",
+    prompt:"改成一般疑问句：He is a tour guide.",
+    hint:"把 be 提前到句首",
+    speak:"Is he a tour guide?",
+    answer:"Is he a tour guide?",
+    accept:["Is he a tour guide?","Is he a tour guide"],
+    explain:"be 动词疑问句：把 is/am/are 提到主语前。",
+    explainEn:"Is he a tour guide?",
+    explainZh:"他是导游吗？"
+  },
+  {
+    id:"g06", mode:"grammar", unit:"U1", type:"fill", diff:"较难",
+    prompt:"简短回答：— Are you from the US? — Yes, _____.",
+    speak:"Yes, I am.",
+    answer:"I am",
+    accept:["I am","I'm","I’m"],
+    explain:"肯定简答用 Yes, I am.（不用 Yes, I'm. 单独作答时通常不缩写）",
+    explainEn:"Yes, I am.",
+    explainZh:"是的，我是。"
+  },
+  {
+    id:"g07", mode:"grammar", unit:"U1", type:"choose", diff:"较难",
+    prompt:"选正确简答：— Is she a receptionist? — No, _____.",
+    speak:"No, she isn't.",
+    options:["she isn't","she aren't","she doesn't","she not"],
+    answer:"she isn't",
+    explain:"对 is 提问用 isn't 否定；don't/doesn't 是一般现在时助动词，这里不配。",
+    explainEn:"No, she isn't.",
+    explainZh:"不，她不是。"
+  },
+  {
+    id:"g08", mode:"grammar", unit:"U1", type:"error", diff:"较难",
+    prompt:"改错（写出正确整句）：We is glad to meet you.",
+    speak:"We are glad to meet you.",
+    answer:"We are glad to meet you.",
+    accept:["We are glad to meet you.","We're glad to meet you.","We’re glad to meet you."],
+    explain:"we 搭配 are，不是 is。陷阱：第三人称单数才用 is。",
+    explainEn:"We are glad to meet you.",
+    explainZh:"我们很高兴见到你。"
+  },
+  {
+    id:"g09", mode:"grammar", unit:"U1", type:"choose", diff:"中等",
+    prompt:"选正确缩写：They _____ students.（= they are）",
+    speak:"They're students.",
+    options:["they're","they's","them're","their"],
+    answer:"they're",
+    explain:"they are → they're。their 是「他们的」，词性不同。",
+    explainEn:"They're students.",
+    explainZh:"他们是学生。"
+  },
+  {
+    id:"g10", mode:"grammar", unit:"U1", type:"fill", diff:"较难",
+    prompt:"填空：_____ you and your friend from Liverpool?",
+    speak:"Are you and your friend from Liverpool?",
+    answer:"Are",
+    accept:["Are","are"],
+    explain:"主语 you and your friend 是复数概念，用 Are。",
+    explainEn:"Are you and your friend from Liverpool?",
+    explainZh:"你和你的朋友来自利物浦吗？"
+  },
+
+  /* ===== 语法挑战：一般现在时 ===== */
+  {
+    id:"g11", mode:"grammar", unit:"U2", type:"choose", diff:"较难",
+    prompt:"选正确形式：He _____ swimming every weekend.",
+    speak:"He likes swimming every weekend.",
+    options:["like","likes","liking","liked"],
+    answer:"likes",
+    explain:"第三人称单数 he/she/it 动词加 -s：like → likes。",
+    explainEn:"He likes swimming every weekend.",
+    explainZh:"他每个周末都喜欢游泳。"
+  },
+  {
+    id:"g12", mode:"grammar", unit:"U2", type:"choose", diff:"较难",
+    prompt:"陷阱题：She _____ English at a vocational school.",
+    speak:"She studies English at a vocational school.",
+    options:["study","studys","studies","studyies"],
+    answer:"studies",
+    explain:"以辅音+y 结尾：变 y 为 i 再加 -es → studies。不是 studys！",
+    explainEn:"She studies English at a vocational school.",
+    explainZh:"她在一所职业学校学英语。"
+  },
+  {
+    id:"g13", mode:"grammar", unit:"U2", type:"choose", diff:"较难",
+    prompt:"选正确否定：He _____ like stressful jobs.",
+    speak:"He doesn't like stressful jobs.",
+    options:["don't","doesn't","isn't","aren't"],
+    answer:"doesn't",
+    explain:"第三人称单数否定用 doesn't + 动词原形。don't 用于 I/you/we/they。",
+    explainEn:"He doesn't like stressful jobs.",
+    explainZh:"他不喜欢压力大的工作。"
+  },
+  {
+    id:"g14", mode:"grammar", unit:"U2", type:"error", diff:"较难",
+    prompt:"改错：She doesn't likes playing the piano.",
+    speak:"She doesn't like playing the piano.",
+    answer:"She doesn't like playing the piano.",
+    accept:["She doesn't like playing the piano.","She does not like playing the piano."],
+    explain:"doesn't 后面必须用动词原形 like，不能再加 -s。",
+    explainEn:"She doesn't like playing the piano.",
+    explainZh:"她不喜欢弹钢琴。"
+  },
+  {
+    id:"g15", mode:"grammar", unit:"U2", type:"choose", diff:"较难",
+    prompt:"选正确疑问助动词：_____ he work in a travel agency?",
+    speak:"Does he work in a travel agency?",
+    options:["Do","Does","Is","Are"],
+    answer:"Does",
+    explain:"第三人称单数疑问用 Does；后面动词用原形 work。",
+    explainEn:"Does he work in a travel agency?",
+    explainZh:"他在旅行社工作吗？"
+  },
+  {
+    id:"g16", mode:"grammar", unit:"U2", type:"fill", diff:"较难",
+    prompt:"简短回答：— Does she collect stamps? — No, she _____.",
+    speak:"No, she doesn't.",
+    answer:"doesn't",
+    accept:["doesn't","doesn’t","does not"],
+    explain:"Does 问句的否定简答：No, she doesn't.",
+    explainEn:"No, she doesn't.",
+    explainZh:"不，她不收集。"
+  },
+  {
+    id:"g17", mode:"grammar", unit:"U2", type:"rewrite", diff:"较难",
+    prompt:"改成一般疑问句：They play basketball in their free time.",
+    speak:"Do they play basketball in their free time?",
+    answer:"Do they play basketball in their free time?",
+    accept:["Do they play basketball in their free time?","Do they play basketball in their free time"],
+    explain:"I/you/we/they 疑问用 Do + 主语 + 动词原形。",
+    explainEn:"Do they play basketball in their free time?",
+    explainZh:"他们业余时间打篮球吗？"
+  },
+  {
+    id:"g18", mode:"grammar", unit:"U2", type:"choose", diff:"较难",
+    prompt:"选正确：My classmate _____ to school by bike.",
+    speak:"My classmate cycles to school by bike.",
+    options:["cycle","cycles","cycling","cycels"],
+    answer:"cycles",
+    explain:"classmate 是第三人称单数；cycle 加 -s → cycles。",
+    explainEn:"My classmate cycles to school by bike.",
+    explainZh:"我的同班同学骑自行车上学。"
+  },
+  {
+    id:"g19", mode:"grammar", unit:"U2", type:"error", diff:"较难",
+    prompt:"改错：Do she hate boring work?",
+    speak:"Does she hate boring work?",
+    answer:"Does she hate boring work?",
+    accept:["Does she hate boring work?","Does she hate boring work"],
+    explain:"主语 she 是第三人称单数，疑问助动词要用 Does，不是 Do。",
+    explainEn:"Does she hate boring work?",
+    explainZh:"她讨厌无聊的工作吗？"
+  },
+  {
+    id:"g20", mode:"grammar", unit:"U2", type:"fill", diff:"较难",
+    prompt:"填第三人称单数形式：go → _____（He _____ to work early.）",
+    speak:"He goes to work early.",
+    answer:"goes",
+    accept:["goes"],
+    explain:"以 o/s/x/ch/sh 结尾的动词加 -es：go → goes。",
+    explainEn:"He goes to work early.",
+    explainZh:"他很早去上班。"
+  },
+  {
+    id:"g21", mode:"grammar", unit:"U2", type:"choose", diff:"中等",
+    prompt:"选正确：I _____ a cashier. I work in a supermarket.",
+    speak:"I am a cashier. I work in a supermarket.",
+    options:["am","is","are","be"],
+    answer:"am",
+    explain:"职业介绍常用 be：I am a…",
+    explainEn:"I am a cashier.",
+    explainZh:"我是收银员。"
+  },
+  {
+    id:"g22", mode:"grammar", unit:"U2", type:"rewrite", diff:"较难",
+    prompt:"改成否定句：She likes exciting hobbies.",
+    speak:"She doesn't like exciting hobbies.",
+    answer:"She doesn't like exciting hobbies.",
+    accept:["She doesn't like exciting hobbies.","She does not like exciting hobbies.","She doesn’t like exciting hobbies."],
+    explain:"一般现在时否定：doesn't + 动词原形 like（去掉原 likes 的 -s）。",
+    explainEn:"She doesn't like exciting hobbies.",
+    explainZh:"她不喜欢刺激的爱好。"
+  },
+  {
+    id:"g23", mode:"grammar", unit:"U1", type:"choose", diff:"较难",
+    prompt:"陷阱：— _____ your family name Anderson? — Yes, it is.",
+    speak:"Is your family name Anderson?",
+    options:["Do","Does","Is","Are"],
+    answer:"Is",
+    explain:"family name 是单数名词，用 Is，不是 Do/Does。",
+    explainEn:"Is your family name Anderson?",
+    explainZh:"你的姓是安德森吗？"
+  },
+  {
+    id:"g24", mode:"grammar", unit:"U2", type:"fill", diff:"较难",
+    prompt:"填空：She _____ (watch) TV after work.（第三人称单数）",
+    speak:"She watches TV after work.",
+    answer:"watches",
+    accept:["watches"],
+    explain:"watch 以 ch 结尾，加 -es → watches。不是 watchs。",
+    explainEn:"She watches TV after work.",
+    explainZh:"她下班后看电视。"
+  },
+  {
+    id:"g25", mode:"grammar", unit:"U2", type:"choose", diff:"较难",
+    prompt:"选正确简答：— Do you play the piano? — Yes, _____.",
+    speak:"Yes, I do.",
+    options:["I do","I am","I does","I play"],
+    answer:"I do",
+    explain:"Do 问句简答：Yes, I do. / No, I don't. 不用 am。",
+    explainEn:"Yes, I do.",
+    explainZh:"是的，我会。"
+  },
+
+  /* ===== 对话补全 ===== */
+  {
+    id:"d01", mode:"dialogue", unit:"U1", type:"choose", diff:"中等",
+    prompt:"A: Hello! My name is Ella Baker.\\nB: _____ Nice to meet you!",
+    speak:"Nice to meet you!",
+    options:["Hello, I'm Samuel.","I am fine, thank you.","How old are you?","What do you do?"],
+    answer:"Hello, I'm Samuel.",
+    explain:"初次见面：自我介绍 + Nice to meet you。",
+    explainEn:"Hello, I'm Samuel. Nice to meet you!",
+    explainZh:"你好，我是塞缪尔。很高兴见到你！"
+  },
+  {
+    id:"d02", mode:"dialogue", unit:"U1", type:"fill", diff:"较难",
+    prompt:"补全：A: How do you _____ your full name?\\nB: W-I-L-L-I-A-M.",
+    speak:"How do you spell your full name?",
+    answer:"spell",
+    accept:["spell"],
+    explain:"询问拼写用 How do you spell…?",
+    explainEn:"How do you spell your full name?",
+    explainZh:"你的全名怎么拼？"
+  },
+  {
+    id:"d03", mode:"dialogue", unit:"U1", type:"multi", diff:"较难", blanks:2,
+    blankLabels:["①","②"],
+    prompt:"对话填空（2空）：\\nA: Just ①_____ me Bill.\\nB: Glad to ②_____ you, Bill!",
+    speak:"Just call me Bill. Glad to meet you, Bill!",
+    answer:["call","meet"],
+    accept:[["call"],["meet"]],
+    explain:"Just call me… = 就叫我…；Glad/Nice to meet you.",
+    explainEn:"Just call me Bill. Glad to meet you, Bill!",
+    explainZh:"就叫我比尔吧。比尔，很高兴见到你！"
+  },
+  {
+    id:"d04", mode:"dialogue", unit:"U1", type:"reorder", diff:"较难",
+    prompt:"给对话句子排序（点击选入正确顺序）：初次见面自我介绍",
+    parts:["Nice to meet you, too!","Hi, I'm Lisa.","Nice to meet you, Lisa. I'm Tom."],
+    answer:["Hi, I'm Lisa.","Nice to meet you, Lisa. I'm Tom.","Nice to meet you, too!"],
+    speak:"Hi, I'm Lisa. Nice to meet you, Lisa. I'm Tom. Nice to meet you, too!",
+    explain:"顺序：打招呼自我介绍 → 回应并介绍自己 → Nice to meet you, too.",
+    explainEn:"Hi, I'm Lisa. / Nice to meet you, Lisa. I'm Tom. / Nice to meet you, too!",
+    explainZh:"嗨，我是丽莎。/ 丽莎，很高兴见到你。我是汤姆。/ 我也很高兴见到你！"
+  },
+  {
+    id:"d05", mode:"dialogue", unit:"U2", type:"choose", diff:"中等",
+    prompt:"A: What do you do?\\nB: _____",
+    speak:"I'm a doctor.",
+    options:["I'm a doctor.","I like music.","I'm fine.","I'm from Beijing."],
+    answer:"I'm a doctor.",
+    explain:"What do you do? 问职业，回答 I'm a…",
+    explainEn:"What do you do? — I'm a doctor.",
+    explainZh:"你做什么工作？——我是医生。"
+  },
+  {
+    id:"d06", mode:"dialogue", unit:"U2", type:"multi", diff:"较难", blanks:2,
+    blankLabels:["①","②"],
+    prompt:"对话填空：\\nA: What ①_____ you like doing in your free time?\\nB: I like ②_____ basketball.",
+    speak:"What do you like doing in your free time? I like playing basketball.",
+    answer:["do","playing"],
+    accept:[["do"],["playing","to play"]],
+    explain:"疑问：What do you like…?；like + V-ing 很常见。",
+    explainEn:"What do you like doing in your free time? I like playing basketball.",
+    explainZh:"你业余时间喜欢做什么？我喜欢打篮球。"
+  },
+  {
+    id:"d07", mode:"dialogue", unit:"U2", type:"choose", diff:"较难",
+    prompt:"A: Does he like his job?\\nB: No, _____. It's too stressful.",
+    speak:"No, he doesn't. It's too stressful.",
+    options:["he doesn't","he isn't","he don't","he aren't"],
+    answer:"he doesn't",
+    explain:"Does 问句 → No, he doesn't. 后面补充 It's too stressful.",
+    explainEn:"No, he doesn't. It's too stressful.",
+    explainZh:"不，他不喜欢。压力太大了。"
+  },
+  {
+    id:"d08", mode:"dialogue", unit:"U2", type:"fill", diff:"较难",
+    prompt:"补全：A: My job is very stressful.\\nB: Why don't you play the _____ to release stress?",
+    speak:"Why don't you play the piano to release stress?",
+    answer:"piano",
+    accept:["piano"],
+    explain:"教材对话建议：弹钢琴 / 游泳来释放压力（release stress）。",
+    explainEn:"Why don't you play the piano to release stress?",
+    explainZh:"你为什么不弹钢琴来释放压力呢？"
+  },
+  {
+    id:"d09", mode:"dialogue", unit:"U2", type:"reorder", diff:"较难",
+    prompt:"给句子排序：谈论工作与爱好",
+    parts:["I work as a tour guide.","What do you do?","Do you like it?","Yes, it's exciting, but sometimes stressful."],
+    answer:["What do you do?","I work as a tour guide.","Do you like it?","Yes, it's exciting, but sometimes stressful."],
+    speak:"What do you do? I work as a tour guide. Do you like it? Yes, it's exciting, but sometimes stressful.",
+    explain:"问职业 → 回答 → 问是否喜欢 → 评价（exciting / stressful）。",
+    explainEn:"What do you do? / I work as a tour guide. / Do you like it? / Yes, it's exciting, but sometimes stressful.",
+    explainZh:"你做什么工作？/ 我做导游。/ 你喜欢吗？/ 喜欢，很刺激，但有时压力大。"
+  },
+  {
+    id:"d10", mode:"dialogue", unit:"U1", type:"multi", diff:"较难", blanks:3,
+    blankLabels:["①","②","③"],
+    prompt:"三空补全：\\nA: ①_____ you from the US?\\nB: Yes, I ②_____. And you?\\nA: I ③_____ from Britain.",
+    speak:"Are you from the US? Yes, I am. I am from Britain.",
+    answer:["Are","am","am"],
+    accept:[["Are","are"],["am"],["am","'m"]],
+    explain:"Are you…? — Yes, I am. 来源用 be from。",
+    explainEn:"Are you from the US? — Yes, I am. — I am from Britain.",
+    explainZh:"你来自美国吗？——是的。——我来自英国。"
+  },
+  {
+    id:"d11", mode:"dialogue", unit:"U2", type:"choose", diff:"中等",
+    prompt:"A: What are your hobbies?\\nB: _____",
+    speak:"I like reading and collecting stamps.",
+    options:["I like reading and collecting stamps.","I am a nurse.","I am fifteen.","My name is Sally."],
+    answer:"I like reading and collecting stamps.",
+    explain:"hobbies 问爱好，用 I like + V-ing…",
+    explainEn:"I like reading and collecting stamps.",
+    explainZh:"我喜欢阅读和集邮。"
+  },
+  {
+    id:"d12", mode:"dialogue", unit:"U1", type:"fill", diff:"中等",
+    prompt:"补全常用问候：Nice to _____ you!",
+    speak:"Nice to meet you!",
+    answer:"meet",
+    accept:["meet","see"],
+    explain:"Nice to meet you 初次见面；Nice to see you 再见熟人也可以。本题优先 meet。",
+    explainEn:"Nice to meet you!",
+    explainZh:"很高兴见到你！"
+  },
+
+  /* ===== 综合扩展 ===== */
+  {
+    id:"m01", mode:"mixed", unit:"U1", type:"translate", diff:"较难",
+    prompt:"中译英：她来自英国。",
+    hint:"用 be + from",
+    speak:"She is from Britain.",
+    answer:"She is from Britain.",
+    accept:["She is from Britain.","She's from Britain.","She’s from Britain.","She is from the UK.","She's from the UK."],
+    explain:"主语 she + is + from + 地点。",
+    explainEn:"She is from Britain. / She's from Britain.",
+    explainZh:"她来自英国。"
+  },
+  {
+    id:"m02", mode:"mixed", unit:"U2", type:"translate", diff:"较难",
+    prompt:"中译英：他不喜欢这份压力大的工作。",
+    hint:"doesn't like + stressful",
+    speak:"He doesn't like this stressful job.",
+    answer:"He doesn't like this stressful job.",
+    accept:["He doesn't like this stressful job.","He does not like this stressful job.","He doesn’t like this stressful job.","He doesn't like the stressful job.","He doesn't like his stressful job."],
+    explain:"第三人称否定：doesn't + 动词原形 like。",
+    explainEn:"He doesn't like this stressful job.",
+    explainZh:"他不喜欢这份压力大的工作。"
+  },
+  {
+    id:"m03", mode:"mixed", unit:"U2", type:"translate", diff:"较难",
+    prompt:"中译英：你业余时间喜欢做什么？",
+    speak:"What do you like doing in your free time?",
+    answer:"What do you like doing in your free time?",
+    accept:["What do you like doing in your free time?","What do you like to do in your free time?","What do you like doing in your free time","What are your hobbies?"],
+    explain:"常用：What do you like doing in your free time?",
+    explainEn:"What do you like doing in your free time?",
+    explainZh:"你业余时间喜欢做什么？"
+  },
+  {
+    id:"m04", mode:"mixed", unit:"U2", type:"choose", diff:"较难",
+    prompt:"选词填空：A _____ works at the front desk of a hotel.",
+    speak:"A receptionist works at the front desk of a hotel.",
+    options:["receptionist","cashier","doctor","tour guide"],
+    answer:"receptionist",
+    explain:"receptionist = 宾馆前台接待员；cashier 是收银员。",
+    explainEn:"A receptionist works at the front desk of a hotel.",
+    explainZh:"接待员在宾馆前台工作。"
+  },
+  {
+    id:"m05", mode:"mixed", unit:"U2", type:"choose", diff:"中等",
+    prompt:"选近义：这份工作很 _____. I feel a lot of stress.",
+    speak:"This job is very stressful.",
+    options:["stressful","exciting","lovely","interesting"],
+    answer:"stressful",
+    explain:"stressful（压力大的）与 feel stress 对应。",
+    explainEn:"This job is very stressful.",
+    explainZh:"这份工作压力很大。"
+  },
+  {
+    id:"m06", mode:"mixed", unit:"U2", type:"error", diff:"较难",
+    prompt:"改错：He don't work in a travel agency.",
+    speak:"He doesn't work in a travel agency.",
+    answer:"He doesn't work in a travel agency.",
+    accept:["He doesn't work in a travel agency.","He does not work in a travel agency.","He doesn’t work in a travel agency."],
+    explain:"he → doesn't，不是 don't。",
+    explainEn:"He doesn't work in a travel agency.",
+    explainZh:"他不在旅行社工作。"
+  },
+  {
+    id:"m07", mode:"mixed", unit:"U1", type:"translate", diff:"中等",
+    prompt:"中译英：很高兴见到你！",
+    speak:"Nice to meet you!",
+    answer:"Nice to meet you!",
+    accept:["Nice to meet you!","Nice to meet you.","Glad to meet you!","Glad to meet you.","I'm glad to meet you.","I am glad to meet you."],
+    explain:"教材常用 Nice / Glad to meet you.",
+    explainEn:"Nice to meet you! / Glad to meet you!",
+    explainZh:"很高兴见到你！"
+  },
+  {
+    id:"m08", mode:"mixed", unit:"U2", type:"fill", diff:"较难",
+    prompt:"填空：She _____ (hate) boring jobs.（注意三单）",
+    speak:"She hates boring jobs.",
+    answer:"hates",
+    accept:["hates"],
+    explain:"hate → hates（直接加 -s）。",
+    explainEn:"She hates boring jobs.",
+    explainZh:"她讨厌无聊的工作。"
+  },
+  {
+    id:"m09", mode:"mixed", unit:"U2", type:"choose", diff:"较难",
+    prompt:"选正确对话回应：\\nA: What do you do?\\nB: I'm a nurse.\\nA: _____\\nB: Yes, but it's a bit stressful.",
+    speak:"Do you like it?",
+    options:["Do you like it?","Are you like it?","Does you like it?","What do you like?"],
+    answer:"Do you like it?",
+    explain:"对 you 提问用 Do you like…? 不是 Are you like / Does you。",
+    explainEn:"Do you like it?",
+    explainZh:"你喜欢这份工作吗？"
+  },
+  {
+    id:"m10", mode:"mixed", unit:"U1", type:"choose", diff:"较难",
+    prompt:"选正确：How do you spell your _____ name?",
+    speak:"How do you spell your full name?",
+    options:["full","fully","fill","fool"],
+    answer:"full",
+    explain:"full name = 全名；family name = 姓。",
+    explainEn:"How do you spell your full name?",
+    explainZh:"你的全名怎么拼？"
+  },
+  {
+    id:"m11", mode:"mixed", unit:"U2", type:"multi", diff:"较难", blanks:2,
+    blankLabels:["①","②"],
+    prompt:"填空：\\nHe ①_____ (be) a doctor. He ②_____ (like) helping people.",
+    speak:"He is a doctor. He likes helping people.",
+    answer:["is","likes"],
+    accept:[["is"],["likes"]],
+    explain:"职业用 is；三单 like → likes。",
+    explainEn:"He is a doctor. He likes helping people.",
+    explainZh:"他是医生。他喜欢帮助别人。"
+  },
+  {
+    id:"m12", mode:"mixed", unit:"U2", type:"translate", diff:"较难",
+    prompt:"中译英：她弹钢琴来释放压力。",
+    hint:"play the piano / release stress",
+    speak:"She plays the piano to release stress.",
+    answer:"She plays the piano to release stress.",
+    accept:["She plays the piano to release stress.","She plays the piano to release her stress.","She plays piano to release stress."],
+    explain:"三单 play → plays；乐器前常加 the。",
+    explainEn:"She plays the piano to release stress.",
+    explainZh:"她弹钢琴来释放压力。"
+  },
+  {
+    id:"m13", mode:"mixed", unit:"U1", type:"error", diff:"较难",
+    prompt:"改错：Is you a student?",
+    speak:"Are you a student?",
+    answer:"Are you a student?",
+    accept:["Are you a student?","Are you a student"],
+    explain:"you 永远搭配 are，疑问句 Are you…?",
+    explainEn:"Are you a student?",
+    explainZh:"你是学生吗？"
+  },
+  {
+    id:"m14", mode:"mixed", unit:"U2", type:"choose", diff:"中等",
+    prompt:"词义：tour guide 是？",
+    speak:"tour guide",
+    options:["导游","收银员","接待员","医生"],
+    answer:"导游",
+    explain:"tour guide = 导游；常在 travel agency（旅行社）相关语境出现。",
+    explainEn:"tour guide",
+    explainZh:"导游"
+  },
+  {
+    id:"m15", mode:"mixed", unit:"U2", type:"fill", diff:"较难",
+    prompt:"填空：_____ she cycle to work every day?",
+    speak:"Does she cycle to work every day?",
+    answer:"Does",
+    accept:["Does","does"],
+    explain:"三单疑问用 Does + 主语 + 动词原形。",
+    explainEn:"Does she cycle to work every day?",
+    explainZh:"她每天骑自行车上班吗？"
+  },
+  {
+    id:"m16", mode:"mixed", unit:"U1", type:"choose", diff:"中等",
+    prompt:"选正确：My _____ name is Baker. Just call me Ella.",
+    speak:"My family name is Baker.",
+    options:["family","full","firstly","friendly"],
+    answer:"family",
+    explain:"family name = 姓；full name = 全名。",
+    explainEn:"My family name is Baker.",
+    explainZh:"我姓贝克。"
+  },
+  {
+    id:"m17", mode:"mixed", unit:"U2", type:"rewrite", diff:"较难",
+    prompt:"改成否定：They collect lovely pets.",
+    speak:"They don't collect lovely pets.",
+    answer:"They don't collect lovely pets.",
+    accept:["They don't collect lovely pets.","They do not collect lovely pets.","They don’t collect lovely pets."],
+    explain:"they 否定用 don't + 原形。",
+    explainEn:"They don't collect lovely pets.",
+    explainZh:"他们不收集可爱的宠物。"
+  },
+  {
+    id:"m18", mode:"mixed", unit:"U2", type:"translate", diff:"较难",
+    prompt:"中译英：他是导游吗？",
+    speak:"Is he a tour guide?",
+    answer:"Is he a tour guide?",
+    accept:["Is he a tour guide?","Is he a tour guide"],
+    explain:"职业用 be：Is he a…?",
+    explainEn:"Is he a tour guide?",
+    explainZh:"他是导游吗？"
+  }
+];
+
+/* ========== State ========== */
+const LS_KEY = "english1b_day1_wrong_v1";
+let mode = "grammar";
+let queue = [];
+let qi = 0;
+let correct = 0;
+let wrong = 0;
+let answered = false;
+let selectedOpt = null;
+let reorderPicked = [];
+let enVoice = null;
+let voiceMeta = { label: "检测中…", isUK: false, isFemale: false, tier: "none" };
+let sessionWrongIds = new Set();
+
+const $ = (id) => document.getElementById(id);
+
+function loadWrongBook() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+function saveWrongBook(arr) {
+  localStorage.setItem(LS_KEY, JSON.stringify(arr));
+  updateTabCounts();
+}
+function addWrong(q) {
+  const book = loadWrongBook();
+  if (!book.find(x => x.id === q.id)) {
+    book.push({ id: q.id, prompt: q.prompt, answer: Array.isArray(q.answer) ? q.answer.join(" / ") : q.answer, explainEn: q.explainEn, explainZh: q.explainZh, ts: Date.now() });
+    saveWrongBook(book);
+  }
+  sessionWrongIds.add(q.id);
+}
+function removeWrong(id) {
+  saveWrongBook(loadWrongBook().filter(x => x.id !== id));
+}
+function updateTabCounts() {
+  const c = (m) => BANK.filter(q => q.mode === m).length;
+  $("n-grammar").textContent = c("grammar");
+  $("n-dialogue").textContent = c("dialogue");
+  $("n-mixed").textContent = c("mixed");
+  $("n-wrong").textContent = loadWrongBook().length;
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function isFemaleName(name) {
+  return /female|woman|girl|emma|serena|kate|karen|susan|zira|hazel|martha|moira|fiona|tessa|victoria|aria|jenny|salli|ivy|joanna|kendra|kimberly|salli|amy|libby|sonia|anya|natalie|google uk english female/i.test(name)
+    && !/male|david|daniel|thomas|fred|alex(?!a)|arthur|george|oliver|rishi|ryan|mark|james/i.test(name);
+}
+function isMaleName(name) {
+  return /male|david|daniel|thomas|fred|arthur|george|oliver|rishi|ryan|mark|james|google uk english male/i.test(name);
+}
+function scoreVoice(v) {
+  const lang = (v.lang || "").toLowerCase();
+  const name = v.name || "";
+  let score = 0;
+  const isGB = /en(-|_)gb/.test(lang) || /uk english|british/i.test(name);
+  const isUS = /en(-|_)us/.test(lang);
+  const isEN = /^en/.test(lang);
+  const female = isFemaleName(name);
+  const male = isMaleName(name);
+  // Prefer exact known UK female voices
+  if (/google uk english female/i.test(name)) score += 1000;
+  if (isGB && female) score += 800;
+  if (isGB && !male) score += 500;
+  if (isGB) score += 300;
+  if (/emma|serena|kate|libby|sonia|hazel|martha|moira|fiona|tessa/i.test(name) && isGB) score += 120;
+  if (!isGB && female && isUS) score += 180;
+  if (!isGB && female && isEN) score += 120;
+  if (isUS && !male) score += 60;
+  if (isEN) score += 20;
+  // Penalize known US-only / male
+  if (/samantha/i.test(name)) score -= 80;
+  if (male) score -= 200;
+  if (!isEN) score -= 500;
+  return score;
+}
+function pickBestVoice(preferredName) {
+  if (!window.speechSynthesis) {
+    enVoice = null;
+    voiceMeta = { label: "不支持朗读", isUK: false, isFemale: false, tier: "none" };
+    return;
+  }
+  const voices = speechSynthesis.getVoices() || [];
+  const enVoices = voices.filter(v => /^en/i.test(v.lang || ""));
+  let chosen = null;
+  if (preferredName) {
+    chosen = enVoices.find(v => v.name === preferredName) || voices.find(v => v.name === preferredName) || null;
+  }
+  if (!chosen && enVoices.length) {
+    chosen = enVoices.slice().sort((a, b) => scoreVoice(b) - scoreVoice(a))[0];
+  }
+  enVoice = chosen;
+  if (!chosen) {
+    voiceMeta = { label: "未找到英语语音", isUK: false, isFemale: false, tier: "none" };
+    return;
+  }
+  const lang = (chosen.lang || "").toLowerCase();
+  const name = chosen.name || "";
+  const isUK = /en(-|_)gb/.test(lang) || /uk english|british/i.test(name);
+  const female = isFemaleName(name) || (!isMaleName(name) && isUK);
+  let tier = "fallback";
+  if (isUK && female) tier = "uk-female";
+  else if (isUK) tier = "uk";
+  else if (female) tier = "us-female";
+  voiceMeta = { label: name, isUK, isFemale: !!female, tier };
+}
+function refreshVoiceUI() {
+  const nameEl = $("voiceName");
+  const tagEl = $("voiceTag");
+  const tipEl = $("voiceTip");
+  const sel = $("voiceSelect");
+  if (!nameEl) return;
+  nameEl.textContent = voiceMeta.label || "未知";
+  if (voiceMeta.tier === "uk-female") tagEl.textContent = "（英式女声）";
+  else if (voiceMeta.tier === "uk") tagEl.textContent = "（英式）";
+  else if (voiceMeta.tier === "us-female") tagEl.textContent = "（美式女声·后备）";
+  else if (voiceMeta.tier === "fallback") tagEl.textContent = "（后备）";
+  else tagEl.textContent = "";
+  const needTip = voiceMeta.tier !== "uk-female";
+  tipEl.classList.toggle("show", needTip);
+  if (needTip && voiceMeta.tier === "none") {
+    tipEl.textContent = "未检测到可用英语语音。请用 Chrome，或在系统设置中安装「英语（英国）」语音包。";
+  } else if (needTip) {
+    tipEl.textContent = "未检测到英式女声，已用后备音色。请用 Chrome，或在系统安装英式语音包以获得最佳效果。";
+  }
+  if (sel && !sel.dataset.filled) {
+    const voices = (speechSynthesis.getVoices() || []).filter(v => /^en/i.test(v.lang || ""));
+    voices.sort((a, b) => scoreVoice(b) - scoreVoice(a));
+    sel.innerHTML = "";
+    if (!voices.length) {
+      const opt = document.createElement("option");
+      opt.value = "";
+      opt.textContent = "无可用英语语音";
+      sel.appendChild(opt);
+    } else {
+      voices.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v.name;
+        const uk = /en(-|_)gb/i.test(v.lang) || /uk english|british/i.test(v.name);
+        const mark = uk ? "🇬🇧" : (/en(-|_)us/i.test(v.lang) ? "🇺🇸" : "🌐");
+        opt.textContent = mark + " " + v.name + " (" + v.lang + ")";
+        sel.appendChild(opt);
+      });
+    }
+    sel.dataset.filled = "1";
+  }
+  if (sel && enVoice) sel.value = enVoice.name;
+}
+function initVoices() {
+  pickBestVoice();
+  // allow re-fill when voices arrive asynchronously
+  const sel = $("voiceSelect");
+  if (sel) sel.dataset.filled = "";
+  refreshVoiceUI();
+}
+initVoices();
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = initVoices;
+}
+if ($("voiceSelect")) {
+  $("voiceSelect").onchange = () => {
+    pickBestVoice($("voiceSelect").value);
+    refreshVoiceUI();
+  };
+}
+
+function speakText(text, rate) {
+  if (!text || !window.speechSynthesis) {
+    alert("当前浏览器不支持朗读，请用 Chrome / Edge 打开。");
+    return;
+  }
+  if (!enVoice) initVoices();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-GB";
+  u.rate = rate || 0.93;
+  u.pitch = 1.05;
+  if (enVoice) u.voice = enVoice;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+function typeLabel(t) {
+  return ({ choose:"选择", fill:"填空", rewrite:"改写", error:"改错", translate:"翻译", multi:"多空填空", reorder:"排序" })[t] || t;
+}
+function norm(s) {
+  return String(s || "")
+    .trim()
+    .replace(/[’‘]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/\s+/g, " ")
+    .replace(/[.?!。？！]+$/g, "")
+    .toLowerCase();
+}
+function matchOne(user, answer, accept) {
+  const u = norm(user);
+  const cands = [answer].concat(accept || []).map(norm);
+  return cands.some(c => c === u);
+}
+function matchMulti(users, answers, acceptLists) {
+  if (users.length !== answers.length) return false;
+  return answers.every((a, i) => matchOne(users[i], a, (acceptLists && acceptLists[i]) || []));
+}
+
+function buildQueue(m, onlyIds) {
+  let list;
+  if (m === "wrong") {
+    const book = loadWrongBook();
+    const ids = onlyIds || book.map(x => x.id);
+    list = BANK.filter(q => ids.includes(q.id));
+  } else {
+    list = BANK.filter(q => q.mode === m);
+    if (onlyIds) list = list.filter(q => onlyIds.includes(q.id));
+  }
+  return shuffle(list.slice());
+}
+
+function startMode(m, onlyIds) {
+  mode = m;
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  $("btnClearWrong").classList.toggle("hidden", m !== "wrong");
+  queue = buildQueue(m, onlyIds);
+  qi = 0; correct = 0; wrong = 0; answered = false; sessionWrongIds = new Set();
+  $("done").classList.remove("show");
+  $("card").classList.remove("hidden");
+  if (!queue.length) {
+    $("card").classList.add("hidden");
+    $("done").classList.add("show");
+    $("doneScore").textContent = "—";
+    $("doneMsg").textContent = m === "wrong" ? "错题本是空的，先去做题吧！" : "本模式暂无题目。";
+    updateStats();
+    return;
+  }
+  render();
+}
+
+function updateStats() {
+  $("idx").textContent = queue.length ? Math.min(qi + 1, queue.length) : 0;
+  $("total").textContent = queue.length;
+  $("correct").textContent = correct;
+  $("wrongN").textContent = wrong;
+  const pct = queue.length ? (qi / queue.length * 100) : 0;
+  $("bar").style.width = Math.min(100, pct) + "%";
+}
+
+function renderPrompt(q) {
+  return q.prompt.replace(/\\n/g, "<br/>");
+}
+
+function renderAnswerArea(q) {
+  const area = $("answerArea");
+  area.innerHTML = "";
+  selectedOpt = null;
+  reorderPicked = [];
+
+  if (q.type === "choose") {
+    const wrap = document.createElement("div");
+    wrap.className = "opts";
+    const opts = shuffle(q.options.slice());
+    opts.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "opt";
+      btn.textContent = opt;
+      btn.onclick = () => {
+        if (answered) return;
+        selectedOpt = opt;
+        wrap.querySelectorAll(".opt").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+      };
+      wrap.appendChild(btn);
+    });
+    area.appendChild(wrap);
+  } else if (q.type === "multi") {
+    const wrap = document.createElement("div");
+    wrap.className = "multi-blanks";
+    for (let i = 0; i < q.blanks; i++) {
+      const row = document.createElement("div");
+      row.className = "row";
+      const lab = document.createElement("span");
+      lab.textContent = (q.blankLabels && q.blankLabels[i]) || (i + 1);
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.autocomplete = "off";
+      inp.placeholder = "填空 " + (i + 1);
+      inp.dataset.i = i;
+      row.appendChild(lab);
+      row.appendChild(inp);
+      wrap.appendChild(row);
+    }
+    area.appendChild(wrap);
+  } else if (q.type === "reorder") {
+    const slot = document.createElement("div");
+    slot.className = "reorder";
+    slot.id = "reorderSlot";
+    const pool = document.createElement("div");
+    pool.className = "pool";
+    pool.id = "reorderPool";
+    const parts = shuffle(q.parts.slice());
+    parts.forEach(p => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = p;
+      chip.onclick = () => {
+        if (answered) return;
+        reorderPicked.push(p);
+        chip.remove();
+        const c2 = document.createElement("button");
+        c2.type = "button";
+        c2.className = "chip";
+        c2.textContent = p;
+        c2.onclick = () => {
+          if (answered) return;
+          const ix = reorderPicked.indexOf(p);
+          if (ix >= 0) reorderPicked.splice(ix, 1);
+          c2.remove();
+          pool.appendChild(chip);
+        };
+        slot.appendChild(c2);
+      };
+      pool.appendChild(chip);
+    });
+    const tip = document.createElement("div");
+    tip.className = "hint-zh";
+    tip.textContent = "先点下方短语按正确顺序加入上方；点上方可撤回。";
+    area.appendChild(tip);
+    area.appendChild(slot);
+    area.appendChild(pool);
+  } else {
+    const wrap = document.createElement("div");
+    wrap.className = "input-wrap";
+    const isLong = q.type === "rewrite" || q.type === "error" || q.type === "translate";
+    const inp = document.createElement(isLong ? "textarea" : "input");
+    if (!isLong) { inp.type = "text"; inp.autocomplete = "off"; }
+    inp.id = "userAns";
+    inp.placeholder = q.type === "translate" ? "写出英文句子…" : (q.type === "rewrite" || q.type === "error" ? "写出正确整句…" : "填入答案…");
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey && q.type !== "translate" && q.type !== "rewrite" && q.type !== "error") {
+        e.preventDefault();
+        checkAnswer();
+      }
+    });
+    wrap.appendChild(inp);
+    area.appendChild(wrap);
+  }
+}
+
+function render() {
+  if (qi >= queue.length) {
+    showDone();
+    return;
+  }
+  answered = false;
+  const q = queue[qi];
+  $("done").classList.remove("show");
+  $("card").classList.remove("hidden");
+  $("unitTag").textContent = q.unit;
+  $("typeTag").textContent = typeLabel(q.type);
+  $("diffTag").textContent = q.diff;
+  $("diffTag").className = "tag " + (q.diff === "较难" ? "diff-hard" : "diff-mid");
+  $("prompt").innerHTML = renderPrompt(q);
+  $("hintZh").textContent = q.hint || "";
+  $("feedback").className = "feedback";
+  $("feedback").textContent = "";
+  $("btnCheck").classList.remove("hidden");
+  $("btnSkip").classList.remove("hidden");
+  $("btnNext").classList.add("hidden");
+  renderAnswerArea(q);
+  updateStats();
+  const firstInput = $("answerArea").querySelector("input, textarea");
+  if (firstInput) setTimeout(() => firstInput.focus(), 50);
+}
+
+function getUserAnswer(q) {
+  if (q.type === "choose") return selectedOpt;
+  if (q.type === "multi") {
+    return [...$("answerArea").querySelectorAll("input")].map(i => i.value);
+  }
+  if (q.type === "reorder") return reorderPicked.slice();
+  const el = $("userAns");
+  return el ? el.value : "";
+}
+
+function isCorrect(q, user) {
+  if (q.type === "choose") return user === q.answer;
+  if (q.type === "multi") return matchMulti(user, q.answer, q.accept);
+  if (q.type === "reorder") {
+    if (!Array.isArray(user) || user.length !== q.answer.length) return false;
+    return user.every((p, i) => p === q.answer[i]);
+  }
+  return matchOne(user, q.answer, q.accept);
+}
+
+function lockChoices(q, ok, user) {
+  if (q.type !== "choose") return;
+  $("answerArea").querySelectorAll(".opt").forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === q.answer) btn.classList.add("correct");
+    if (!ok && btn.textContent === user) btn.classList.add("wrong");
+  });
+}
+
+function showFeedback(q, ok) {
+  const fb = $("feedback");
+  fb.className = "feedback show " + (ok ? "ok" : "no");
+  const ansText = Array.isArray(q.answer) ? q.answer.join("  /  ") : q.answer;
+  fb.innerHTML =
+    (ok ? "✅ 正确！" : "❌ 不对。") +
+    "<div style='margin-top:6px'>" + q.explain + "</div>" +
+    "<div class='en'>🇬🇧 " + escapeHtml(q.explainEn) + "</div>" +
+    "<div class='zh'>🇨🇳 " + escapeHtml(q.explainZh) + "</div>" +
+    (ok ? "" : "<div style='margin-top:6px;color:#fca5a5'>参考答案：<b>" + escapeHtml(ansText) + "</b></div>");
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+}
+
+function checkAnswer() {
+  if (answered || qi >= queue.length) return;
+  const q = queue[qi];
+  const user = getUserAnswer(q);
+  if (q.type === "choose" && user == null) { alert("请先选择一个选项"); return; }
+  if (q.type === "multi" && user.some(u => !String(u).trim())) { alert("请填完所有空"); return; }
+  if (q.type === "reorder" && user.length !== q.answer.length) { alert("请把所有短语排入顺序"); return; }
+  if ((q.type === "fill" || q.type === "rewrite" || q.type === "error" || q.type === "translate") && !String(user).trim()) {
+    alert("请先输入答案"); return;
+  }
+
+  const ok = isCorrect(q, user);
+  answered = true;
+  if (ok) {
+    correct++;
+    if (mode === "wrong") removeWrong(q.id);
+  } else {
+    wrong++;
+    addWrong(q);
+  }
+  lockChoices(q, ok, user);
+  showFeedback(q, ok);
+  $("btnCheck").classList.add("hidden");
+  $("btnSkip").classList.add("hidden");
+  $("btnNext").classList.remove("hidden");
+  updateStats();
+}
+
+function skipQ() {
+  if (answered || qi >= queue.length) return;
+  const q = queue[qi];
+  answered = true;
+  wrong++;
+  addWrong(q);
+  showFeedback(q, false);
+  lockChoices(q, false, null);
+  $("btnCheck").classList.add("hidden");
+  $("btnSkip").classList.add("hidden");
+  $("btnNext").classList.remove("hidden");
+  updateStats();
+}
+
+function nextQ() {
+  qi++;
+  render();
+}
+
+function showDone() {
+  $("card").classList.add("hidden");
+  $("done").classList.add("show");
+  const total = correct + wrong;
+  const pct = total ? Math.round(correct / total * 100) : 0;
+  $("doneScore").textContent = pct + "%";
+  $("doneMsg").textContent = `正确 ${correct} · 错误 ${wrong} · 共 ${total} 题。错题已自动收入错题本。`;
+  $("bar").style.width = "100%";
+  updateTabCounts();
+}
+
+/* events */
+document.querySelectorAll(".tabs button").forEach(btn => {
+  btn.onclick = () => startMode(btn.dataset.mode);
+});
+$("btnCheck").onclick = checkAnswer;
+$("btnSkip").onclick = skipQ;
+$("btnNext").onclick = nextQ;
+$("btnShuffle").onclick = () => startMode(mode);
+$("btnRestart").onclick = () => startMode(mode);
+$("btnAgain").onclick = () => startMode(mode);
+$("btnRedoWrong").onclick = () => {
+  const ids = [...sessionWrongIds];
+  if (!ids.length) {
+    startMode("wrong");
+    return;
+  }
+  startMode("wrong", ids);
+};
+$("btnClearWrong").onclick = () => {
+  if (confirm("确定清空错题本？")) {
+    saveWrongBook([]);
+    startMode("wrong");
+  }
+};
+$("speak").onclick = () => {
+  if (qi < queue.length) speakText(queue[qi].speak || queue[qi].explainEn, 0.92);
+};
+$("speakSlow").onclick = () => {
+  if (qi < queue.length) speakText(queue[qi].speak || queue[qi].explainEn, 0.65);
+};
+
+updateTabCounts();
+startMode("grammar");
+</script>
+<script>window.E1B_PAGE_IDX=0;
+/* E1B_OXUI_V1 · 东方 Q 版角色（与 oxford100 同一套素材）+ iOS 防点不动 */
+(function(){
+var BLANK="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+var SLUGS=["reimu","marisa","cirno","meiling","patchouli","sakuya","remilia","flandre","alice","youmu","yuyuko","yukari","reisen","aya","sanae","suwako","tenshi","suika","koishi","nitori","chen","rumia","tewi","kogasa"];
+var PAIRS=[["reimu","marisa"],["cirno","flandre"],["sakuya","remilia"],["youmu","yuyuko"],["sanae","suwako"],["alice","patchouli"]];
+function Q(){return window.__QCHARS||{};}
+function icon(s){return Q()[s+"-icon"]||BLANK;}
+function full(s){return Q()[s]||BLANK;}
+var busy=false;
+function fixTypes(){try{document.querySelectorAll("button:not([type])").forEach(function(b){b.setAttribute("type","button");});}catch(e){}}
+function ensure(el,slug){
+  if(!el||!slug)return;
+  if(el.classList.contains("fs-fixed")||el.classList.contains("fs-btn"))return;
+  if(!el.classList.contains("has-mascot"))el.classList.add("has-mascot","mascot-left");
+  var img=null;for(var i=0;i<el.children.length;i++){if(el.children[i].classList.contains("btn-mascot")){img=el.children[i];break;}}
+  if(!img){img=document.createElement("img");img.className="btn-mascot";img.alt="";img.setAttribute("aria-hidden","true");img.decoding="async";el.appendChild(img);}
+  var src=icon(slug);
+  if(img.dataset.slug!==slug||img.getAttribute("src")!==src){img.dataset.slug=slug;img.src=src;}
+}
+function sides(){
+  var L=document.getElementById("charLeft"),R=document.getElementById("charRight");if(!L||!R)return;
+  var n=0;try{var on=document.querySelector("#daynav button.on");if(on){n=[].indexOf.call(on.parentNode.children,on);}else{n=(window.E1B_PAGE_IDX||0);}}catch(e){}
+  var p=PAIRS[((n%PAIRS.length)+PAIRS.length)%PAIRS.length];
+  if(L.getAttribute("src")!==full(p[0]))L.src=full(p[0]);
+  if(R.getAttribute("src")!==full(p[1]))R.src=full(p[1]);
+}
+function decorate(){
+  if(busy)return;busy=true;
+  try{
+    fixTypes();
+    var k=0;
+    var sel="#daynav button, #tabs button, #navMain button, .tabs button, .nav-main button, .modes button, .hub-go, #bHome, #bIntro";
+    var seen=[];
+    document.querySelectorAll(sel).forEach(function(el){if(seen.indexOf(el)>=0)return;seen.push(el);ensure(el,SLUGS[k%SLUGS.length]);k++;});
+    sides();
+  }catch(e){window.__tfErr&&window.__tfErr("e1b-decorate",e);}
+  busy=false;
+}
+var t=null;function later(){if(t)return;t=setTimeout(function(){t=null;decorate();},120);}
+window.E1B_DECORATE=decorate;
+function boot(){
+  decorate();
+  try{new MutationObserver(function(ms){if(busy)return;for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==="childList"){later();return;}}}).observe(document.body,{childList:true,subtree:true});}catch(e){}
+  document.addEventListener("click",later,true);
+  var packs=["/oxford100/assets/qchars-pack-0.js?v=20261102hd","/oxford100/assets/qchars-pack-1.js?v=20261102hd"];
+  setTimeout(function(){packs.forEach(function(src){var s=document.createElement("script");s.src=src;s.async=true;s.onload=function(){decorate();};s.onerror=function(){};document.head.appendChild(s);});},300);
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+</script>
+</body>
+</html>
