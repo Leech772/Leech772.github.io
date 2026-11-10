@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><!-- MEM_SPEAK_GRAM_V1 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><!-- MEM_SPEAK_GRAM_V1 --><!-- DROP_SCENE_EX_V1 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -5582,11 +5582,11 @@ function gpRenderList(P){
   MP.gprac=MP.gprac||{};MP.gwrong=MP.gwrong||{};
   var n=GRAMMAR_PLAIN.filter(function(g){var r=MP.grammar[g.id];return r&&r[2]===2&&r[0]/r[1]>=0.8;}).length;
   var next=GRAMMAR_PLAIN.find(function(g){var r=MP.grammar[g.id];return !(r&&r[2]===2&&r[0]/r[1]>=0.8);});
-  P.innerHTML=mHead("📐","语法 · A1–B1 实用点（大白话）","每个点都很短：<b>大白话</b> → <b>口诀</b> → <b>2–3 个生活例句</b> → <b>常见错法</b> → <b>2–3 道小练习</b>。做完先看讲解，不自动跳。跟单词场景能对上号。","已掌握 <b>"+n+"</b> / "+GRAMMAR_PLAIN.length)+
+  P.innerHTML=mHead("📐","语法 · A1–B1 实用点（大白话）","每个点都很短：<b>大白话</b> → <b>口诀</b> → <b>常见错法</b> → <b>2–3 道小练习</b>。做完先看讲解，不自动跳。学完一组单词后也可弹出相关语法小卡片。","已掌握 <b>"+n+"</b> / "+GRAMMAR_PLAIN.length)+
     '<div class="g gv-route"><div class="m-sub">一天学 1 个点就够。不堆术语，只记会用的。学完一组单词后也会弹出相关语法小卡片，可跳过。</div>'+
     (next?'<button type="button" class="gv-today" data-gid="'+next.id+'">📌 建议接着学：'+mE(next.t)+' →</button>':'<div class="gv-today">🎉 这些点都过关了，有空复习错题。</div>')+
     '<button type="button" class="mini" data-gwb="1">📕 错题（'+Object.keys(MP.gwrong||{}).length+'）</button></div>'+
-    mGrid(GRAMMAR_PLAIN.map(function(g,i){var r=MP.grammar[g.id];var badge=r?(r[2]===2&&r[0]/r[1]>=0.8?"🏆 "+r[0]+"/"+r[1]:(r[0]+"/"+r[1])) : "";return mCard('data-gid="'+g.id+'"',g.icon,(i+1)+". "+g.t,"口诀 + 例句 + 小练习",badge);}));
+    mGrid(GRAMMAR_PLAIN.map(function(g,i){var r=MP.grammar[g.id];var badge=r?(r[2]===2&&r[0]/r[1]>=0.8?"🏆 "+r[0]+"/"+r[1]:(r[0]+"/"+r[1])) : "";return mCard('data-gid="'+g.id+'"',g.icon,(i+1)+". "+g.t,"口诀 + 小练习",badge);}));
   P.querySelectorAll("[data-gid]").forEach(function(b){b.onclick=function(){MP.cur.grammar=b.dataset.gid;MP.cur.gstep=0;MP.cur.gqi=0;mSave();renderGrammar();window.scrollTo(0,0);};});
   var wb=P.querySelector("[data-gwb]");if(wb)wb.onclick=function(){MP.cur.grammar="__wrong";mSave();renderGrammar();window.scrollTo(0,0);};
 }
@@ -5605,9 +5605,8 @@ function gpRenderPoint(P,G){
   var revealed=!!(ans&&ans.done);
   var it=G.prac[qi];
   P.innerHTML=mBack("返回语法目录")+
-    '<div class="g"><h3>'+G.icon+' '+(idx+1)+'. '+mE(G.t)+'</h3><p class="m-sub">大白话讲解，配口诀和场景例句。练习答完先看讲解，再点「下一题」。可回上一题。</p></div>'+
+    '<div class="g"><h3>'+G.icon+' '+(idx+1)+'. '+mE(G.t)+'</h3><p class="m-sub">大白话讲解，配口诀和小练习。练习答完先看讲解，再点「下一题」。可回上一题。</p></div>'+
     '<div class="g"><h3>🗣️ 跟朋友这么讲</h3><p class="gv-why">'+mE(G.talk)+'</p><div class="mem-tip"><b>口诀：</b>'+mE(G.hook)+'</div></div>'+
-    '<div class="g"><h3>🎬 场景例句</h3>'+G.ex.map(function(x){return '<div class="gv-ex"><div class="en">'+mE(x[0])+spkBtns(x[0])+'</div><div class="zh">'+mE(x[1])+' · <span class="tag">'+mE(x[2]||"")+'</span></div></div>';}).join("")+'</div>'+
     '<div class="g"><h3>⚠️ 常见错法</h3><p class="m-sub">'+mE(G.wrong)+'</p></div>'+
     '<div class="g"><h3>✏️ 小练习（'+G.prac.length+' 题）· 第 '+(qi+1)+' / '+G.prac.length+' 题</h3>'+gpItemHtml(it,qi,revealed,ans&&ans.pick)+'<div class="row" style="justify-content:space-between;margin-top:10px">'+
       '<button type="button" class="mini" id="gpPrev"'+(qi===0?" disabled":"")+'>← 上一题</button>'+
@@ -5627,7 +5626,7 @@ function gpRenderPoint(P,G){
     var ref=it.k==="c"?it.o[it.a]:it.a[0];
     var fb=$("gpFb");if(fb)fb.innerHTML=(ok?'<b class="m-good">✅ 对了！</b> ':'<b class="m-badt">❌ 不对。</b> 参考：<b>'+mE(ref)+'</b>'+spkBtns(ref)+'<br>')+'💡 '+mE(it.e);
     var nx=$("gpNext");if(nx)nx.disabled=false;
-    var sc=$("gpScore");if(sc&&doneN===G.prac.length)sc.innerHTML="本点练习 <b>"+right+"/"+G.prac.length+"</b>"+(right/G.prac.length>=0.8?" 🏆 过关了！":" · 先回看口诀和例句，再点题目重做。");
+    var sc=$("gpScore");if(sc&&doneN===G.prac.length)sc.innerHTML="本点练习 <b>"+right+"/"+G.prac.length+"</b>"+(right/G.prac.length>=0.8?" 🏆 过关了！":" · 先回看口诀，再点题目重做。");
   }
   if(revealed){
     var ok=ans.ok,ref=it.k==="c"?it.o[it.a]:it.a[0];
@@ -5663,7 +5662,6 @@ function gpThemeCardHtml(theme){
   var gid=THEME_GRAMMAR[theme];var G=gpById(gid);if(!G)return "";
   return '<div class="g gp-theme" id="gpThemeCard"><h3>🔗 跟这组单词相关的语法</h3><p class="m-sub">学完「'+mE(theme)+'」这些词，顺手记一个用法。可跳过。</p>'+
     '<div class="mem-tip"><b>'+mE(G.t)+' · 口诀：</b>'+mE(G.hook)+'</div>'+
-    '<div class="gv-ex"><div class="en">'+mE(G.ex[0][0])+spkBtns(G.ex[0][0])+'</div><div class="zh">'+mE(G.ex[0][1])+'</div></div>'+
     '<div class="row" style="justify-content:flex-start;margin-top:8px"><button type="button" class="b-sub" style="flex:none" id="gpThemeGo">去练这个语法点 →</button><button type="button" class="mini" id="gpThemeSkip">暂时跳过</button></div></div>';
 }
 
