@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><!-- MEM_SPEAK_GRAM_V1 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -969,7 +969,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
 <div class="pane" id="p-words">
 <div class="chips" id="chips"></div>
 <div class="counts">
-  <div><b id="cLeft">0</b><span>本组剩余</span></div><div><b id="cDone">0</b><span>已掌握</span></div><div><b id="cRep">0</b><span>待重复</span></div>
+  <div><b id="cLeft">0</b><span>本组剩余</span></div><div><b id="cDone">0</b><span>已掌握</span></div><div><b id="cRep">0</b><span>待复习</span></div>
 </div>
 <div class="progress"><i id="bar"></i></div>
 <div class="phase" id="phase">第一轮</div>
@@ -1039,7 +1039,7 @@ input#ans:focus{border-color:var(--accent)!important;box-shadow:0 0 0 2px rgba(1
   <div class="line">🔊 发音：<b id="vName">Jessica · 内置真人女声</b> <button type="button" class="mini" id="bTest">试听</button></div>
 </div>
 <div class="row"><label class="auto"><input type="checkbox" id="auto"/> 出新卡自动读单词</label></div>
-<p class="method">记忆方法：第1拍遮眼拼出 → 第2拍情景一句 → 第3拍口述加戏；同一场景的词一起练；「模糊」后再拼对 1 次、「不会/拼错」再拼对 2 次；一组拼完可「复测错过的词」。</p>
+<p class="method">记忆方法：到期复习优先，模糊/不会的词会更勤出现，掌握后间隔拉长。第1拍拼写 → 第2拍情景一句 → 第3拍口述加戏；词卡上有记忆提示、场景联想和听/说/写入口。一组拼完可复测，并会看到相关语法小卡片。</p>
 </div>
 
 <div class="pane" id="p-list"></div>
@@ -4782,4 +4782,1283 @@ try{window.MOD_RENDER.listen=renderListen;}catch(e){}
 })();
 
 try{rfPaint();if(ST.tab==="listen")renderListen();}catch(e){}
-</script></body></html>
+</script>
+<script id="mem_speak_gram_v1">
+/* MEM_SPEAK_GRAM_V1 */
+(function(){
+"use strict";
+window.MEM_SPEAK_GRAM_V1 = "MEM_SPEAK_GRAM_V1";
+function _esc(x){return String(x==null?"":x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function _now(){return Date.now();}
+function _today(){var d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function _isIOS(){var ua=navigator.userAgent||"";return /iP(hone|ad|od)/.test(ua);}
+function _isSafari(){var ua=navigator.userAgent||"";return /Safari/.test(ua)&&!/Chrome|Chromium|Edg|CriOS|FxiOS|Android/.test(ua);}
+function _isAppleWebKit(){return _isIOS()||_isSafari();}
+
+/* ========================= SpeakScore ========================= */
+var VARIANT={
+  colour:"color",favorite:"favourite",favourite:"favorite",neighbor:"neighbour",neighbour:"neighbor",
+  center:"centre",centre:"center",meter:"metre",metre:"meter",traveling:"travelling",travelling:"traveling",
+  practice:"practise",practise:"practice",program:"programme",programme:"program",organize:"organise",organise:"organize",
+  gray:"grey",grey:"gray",defense:"defence",defence:"defense",license:"licence",licence:"license",
+  mom:"mum",mum:"mom",math:"maths",maths:"math",toward:"towards",towards:"toward",
+  theater:"theatre",theatre:"theater",catalog:"catalogue",catalogue:"catalog",
+  dialog:"dialogue",dialogue:"dialog",aging:"ageing",ageing:"aging"
+};
+var NUM_WORD={0:"zero",1:"one",2:"two",3:"three",4:"four",5:"five",6:"six",7:"seven",8:"eight",9:"nine",10:"ten",
+  11:"eleven",12:"twelve",13:"thirteen",14:"fourteen",15:"fifteen",16:"sixteen",17:"seventeen",18:"eighteen",19:"nineteen",
+  20:"twenty",30:"thirty",40:"forty",50:"fifty",60:"sixty",70:"seventy",80:"eighty",90:"ninety",100:"hundred"};
+var WORD_NUM={};Object.keys(NUM_WORD).forEach(function(k){WORD_NUM[NUM_WORD[k]]=k;});
+var FUNCT=new Set("a an the to of in on at for and or but is am are was were be been being do does did have has had will would can could shall should may might must not no nor so if as than then that this these those it its i you he she we they me him her us them my your his her our their with from by into onto over under about after before up down off out just too very also only once".split(" "));
+var CONTRACTIONS={"i'm":"i am","you're":"you are","we're":"we are","they're":"they are","he's":"he is","she's":"she is","it's":"it is","that's":"that is","there's":"there is","here's":"here is","who's":"who is","what's":"what is","where's":"where is","how's":"how is","let's":"let us","isn't":"is not","aren't":"are not","wasn't":"was not","weren't":"were not","don't":"do not","doesn't":"does not","didn't":"did not","can't":"cannot","cannot":"can not","couldn't":"could not","won't":"will not","wouldn't":"would not","shouldn't":"should not","haven't":"have not","hasn't":"has not","hadn't":"had not","i've":"i have","you've":"you have","we've":"we have","they've":"they have","i'd":"i would","you'd":"you would","he'd":"he would","she'd":"she would","we'd":"we would","they'd":"they would","i'll":"i will","you'll":"you will","he'll":"he will","she'll":"she will","we'll":"we will","they'll":"they will","mustn't":"must not","o'clock":"oclock"};
+
+function expandContractions(s){
+  s=String(s||"").toLowerCase().replace(/[\u2018\u2019]/g,"'");
+  return s.replace(/\b[a-z]+'[a-z]+\b/g,function(m){return CONTRACTIONS[m]||m;});
+}
+function canonToken(t){
+  t=String(t||"").toLowerCase();
+  if(VARIANT[t])t=VARIANT[t]<t?VARIANT[t]:t; // normalize to lexicographically smaller variant pair later via pair check
+  if(WORD_NUM[t]!=null)return "__n_"+WORD_NUM[t];
+  if(/^\d+$/.test(t)&&NUM_WORD[+t])return "__n_"+t;
+  if(t==="oclock"||t==="o'clock")return "oclock";
+  return t;
+}
+function tokensOf(s){
+  s=expandContractions(s).replace(/[^a-z0-9'\s]/g," ").replace(/\s+/g," ").trim();
+  if(!s)return [];
+  return s.split(" ").filter(Boolean);
+}
+function wordsClose(a,b){
+  if(a===b)return true;
+  if(!a||!b)return false;
+  if(VARIANT[a]===b||VARIANT[b]===a)return true;
+  var ca=canonToken(a),cb=canonToken(b);
+  if(ca===cb)return true;
+  if(Math.min(a.length,b.length)<4)return false;
+  if(a.slice(0,3)!==b.slice(0,3))return false;
+  var la=a.length,lb=b.length;if(Math.abs(la-lb)>2)return false;
+  var i=0,j=0,miss=0;
+  while(i<la&&j<lb){if(a[i]===b[j]){i++;j++;}else{miss++;if(miss>2)return false;if(la>lb)i++;else if(lb>la)j++;else{i++;j++;}}}
+  return miss<=2;
+}
+function alignWords(saidArr,targetArr,mode){
+  var S=saidArr,T=targetArr,n=S.length,m=T.length;
+  var INF=1e9;
+  var dp=new Array(n+1);var bt=new Array(n+1);
+  for(var i=0;i<=n;i++){dp[i]=new Array(m+1);bt[i]=new Array(m+1);dp[i][0]=i;bt[i][0]=[i-1,0,"ins"];}
+  for(var j=0;j<=m;j++){dp[0][j]=j;bt[0][j]=[0,j-1,"del"];}
+  dp[0][0]=0;bt[0][0]=null;
+  function subCost(a,b){
+    if(a===b||wordsClose(a,b)||canonToken(a)===canonToken(b))return 0;
+    var sent=mode==="sentence";
+    if(sent&&FUNCT.has(a)&&FUNCT.has(b))return 0.35;
+    if(sent&&(FUNCT.has(a)||FUNCT.has(b)))return 0.55;
+    return 1;
+  }
+  function delCost(b){return (mode==="sentence"&&FUNCT.has(b))?0.45:1;}
+  function insCost(a){return (mode==="sentence"&&FUNCT.has(a))?0.25:0.6;}
+  for(i=1;i<=n;i++){
+    for(j=1;j<=m;j++){
+      var sc=dp[i-1][j-1]+subCost(S[i-1],T[j-1]);
+      var dc=dp[i][j-1]+delCost(T[j-1]);
+      var ic=dp[i-1][j]+insCost(S[i-1]);
+      var best=sc,op="eq";
+      if(sc===dp[i-1][j-1])op="eq";else op="sub";
+      if(dc<best){best=dc;op="del";}
+      if(ic<best){best=ic;op="ins";}
+      dp[i][j]=best;
+      bt[i][j]=op==="ins"?[i-1,j,"ins"]:op==="del"?[i,j-1,"del"]:[i-1,j-1,op];
+    }
+  }
+  var ops=[],ci=n,cj=m;
+  while(ci>0||cj>0){
+    var p=bt[ci][cj];if(!p)break;
+    ops.push({op:p[2],said:p[2]==="del"?null:S[ci-1],tgt:p[2]==="ins"?null:T[cj-1]});
+    ci=p[0];cj=p[1];
+  }
+  ops.reverse();
+  return {cost:dp[n][m],ops:ops};
+}
+function scoreUtterance(opts){
+  opts=opts||{};
+  var said=String(opts.said||"");
+  var target=String(opts.target||"");
+  var mode=opts.mode==="word"?"word":"sentence";
+  var dur=typeof opts.durationMs==="number"?opts.durationMs:null;
+  var S=tokensOf(said),T=tokensOf(target);
+  if(!T.length)return {pct:0,grade:"—",accuracy:0,fluency:0,completeness:0,intel:0,html:"",missed:[],extra:[],wrong:[],tips:["没有目标句，无法评分。"],feedback:"没有可对比的目标。",saidTokens:S,targetTokens:T,ok:false};
+  if(!S.length)return {pct:0,grade:"未识别",accuracy:0,fluency:0,completeness:0,intel:0,html:T.map(function(t){return '<span class="m-miss">'+_esc(t)+'</span>';}).join(" "),missed:T.slice(),extra:[],wrong:[],tips:["没有识别到英文。请靠近麦克风，用英语大声说完，再试一次。"],feedback:"没有识别到内容，还不能判断你有没有读对。",saidTokens:S,targetTokens:T,ok:false};
+  var al=alignWords(S,T,mode);
+  var hit=0,soft=0,missed=[],wrong=[],extra=[];
+  var flags=[]; // per target word 1/0.5/0
+  T.forEach(function(){flags.push(0);});
+  var ti=0;
+  al.ops.forEach(function(op){
+    if(op.op==="eq"){hit++;flags[ti]=1;ti++;}
+    else if(op.op==="sub"){
+      if(wordsClose(op.said,op.tgt)||canonToken(op.said)===canonToken(op.tgt)){soft++;flags[ti]=0.7;hit++;}
+      else{wrong.push({said:op.said,tgt:op.tgt});flags[ti]=0;missed.push(op.tgt);}
+      ti++;
+    }else if(op.op==="del"){missed.push(op.tgt);flags[ti]=0;ti++;}
+    else if(op.op==="ins"){if(!(mode==="sentence"&&FUNCT.has(op.said)))extra.push(op.said);}
+  });
+  var contentT=T.filter(function(t){return !FUNCT.has(t);});
+  if(!contentT.length)contentT=T.slice();
+  var contentHit=0;
+  T.forEach(function(t,i){if((!FUNCT.has(t)||contentT===T)&&flags[i]>=0.7)contentHit++;else if(!FUNCT.has(t)&&flags[i]>=0.7)contentHit++;});
+  // recount content hits properly
+  contentHit=0;
+  T.forEach(function(t,i){if(contentT.indexOf(t)>=0&&flags[i]>=0.7){/* may double if repeated */}});
+  var usedC=0,needC=contentT.length,ci2=0;
+  T.forEach(function(t,i){
+    if(FUNCT.has(t)&&mode==="sentence")return;
+    if(flags[i]>=0.7)usedC++;
+  });
+  needC=T.filter(function(t){return !(mode==="sentence"&&FUNCT.has(t));}).length||T.length;
+  var completeness=usedC/needC;
+  var accBase=T.length?((hit+soft*0.5)/T.length):0;
+  // word mode stricter
+  if(mode==="word"){
+    var tgt0=T[0];
+    var ok=S.some(function(s){return s===tgt0||wordsClose(s,tgt0)||canonToken(s)===canonToken(tgt0);});
+    accBase=ok?Math.max(accBase,0.92):Math.min(accBase,0.4);
+    completeness=ok?1:0;
+  }
+  var extraPen=Math.min(0.15,extra.length*(mode==="word"?0.04:0.03));
+  var accuracy=Math.max(0,Math.min(1,accBase-extraPen*0.3));
+  var intel=accuracy; // honest: only ASR text
+  var fluency=0.85;
+  var fluTip="";
+  if(dur!=null&&dur>0){
+    var expect=Math.max(600,T.length*(mode==="word"?700:420));
+    if(dur<expect*0.35){fluency=0.45;fluTip="说得有点太短，可能没说完。";}
+    else if(dur<expect*0.55){fluency=0.7;fluTip="有点快，试着把每个词说完整。";}
+    else if(dur>expect*4.5){fluency=0.7;fluTip="停顿有点长。可以再连贯地说一遍。";}
+    else if(dur>expect*3){fluency=0.8;fluTip="整体完整，节奏再紧凑一点会更好。";}
+    else fluency=0.95;
+  }
+  var overall=0.5*accuracy+0.25*completeness+0.15*intel+0.1*fluency;
+  if(mode==="sentence"&&S.length&&accuracy>0&&overall<0.15)overall=Math.max(overall,0.18);
+  var pct=Math.round(Math.max(0,Math.min(1,overall))*100);
+  if(pct>100)pct=100;
+  var grade=pct>=90?"优秀":pct>=80?"良好":pct>=65?"还行":pct>=45?"需加油":"再听再试";
+  var html=T.map(function(t,i){var cls=flags[i]>=1?"m-hit":flags[i]>=0.7?"m-soft":"m-miss";return '<span class="'+cls+'">'+_esc(t)+'</span>';}).join(" ");
+  var tips=[];
+  var readOk=completeness>=0.85&&accuracy>=0.8?"对":(usedC>0?"部分对":"还没对上");
+  if(missed.length)tips.push("漏了或没听清："+missed.slice(0,6).map(function(w){return "「"+w+"」";}).join("、")+"。先单独跟读这几个词，再连起来说。");
+  if(wrong.length)tips.push("识别成了别的词："+wrong.slice(0,4).map(function(w){return "你说的像「"+w.said+"」，目标是「"+w.tgt+"」";}).join("；")+"。对着慢速再读一次。");
+  if(extra.length&&pct>=50)tips.push("多出来的词（不扣成零分）："+extra.slice(0,4).map(function(w){return "「"+w+"」";}).join("、")+"。尽量只读目标句。");
+  if(fluTip)tips.push(fluTip);
+  if(!tips.length)tips.push(pct>=90?"读得很完整，可以练下一句。":"基本读对了，再流畅跟读一遍会更稳。");
+  tips.push("说明：分数是根据语音识别出的英文，和目标词/句做词级对比得来的（准确、完整、流畅），不是实验室级音素打分。");
+  var feedback=(readOk==="对"?"内容基本读对了。":readOk==="部分对"?"读到了一部分，还有词漏了或读成别的。":"这次几乎没对上目标词。请先听示范，再大声跟读。")+" "+tips[0];
+  return {pct:pct,grade:grade,accuracy:Math.round(accuracy*100),fluency:Math.round(fluency*100),completeness:Math.round(completeness*100),intel:Math.round(intel*100),html:html,missed:missed,extra:extra,wrong:wrong,tips:tips,feedback:feedback,saidTokens:S,targetTokens:T,ok:pct>=80,readOk:readOk,hit:hit,total:T.length};
+}
+function scoreCardHtml(r,said){
+  var stars=r.pct>=90?"★★★★★":r.pct>=80?"★★★★☆":r.pct>=65?"★★★☆☆":r.pct>=45?"★★☆☆☆":"★☆☆☆☆";
+  var tone=r.pct>=80?"ok":r.pct>=45?"mid":"bad";
+  return '<div class="ss-card ss-'+tone+'">'+
+    '<div class="ss-scoreline"><b class="ss-pct">'+r.pct+'</b><span>分 · '+_esc(r.grade)+' '+stars+'</span></div>'+
+    '<div class="ss-kv">读对了没：<b>'+_esc(r.readOk)+'</b> · 准确 '+r.accuracy+'% · 完整 '+r.completeness+'% · 流畅 '+r.fluency+'%</div>'+
+    '<div class="ss-cmp">目标：'+r.html+'</div>'+
+    '<div class="ss-heard">识别到：「'+_esc(said||"（空）")+'」</div>'+
+    '<div class="ss-fb">'+_esc(r.feedback)+'</div>'+
+    (r.tips.slice(1,3).map(function(t){return '<div class="ss-tip">💡 '+_esc(t)+'</div>';}).join(""))+
+  '</div>';
+}
+
+var _micStream=null,_micDenied=false,_micTried=false,_rec=null,_listenOn=false;
+function srAPI(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
+function micHint(){
+  return "请用 Safari 打开本页（必须是 https），在系统设置里允许 Safari 使用麦克风，然后再点「允许麦克风」。安卓可用 Chrome。";
+}
+function ensureMic(cb){
+  // Does NOT delay recognition start. Optional callback after permission settles.
+  if(_micStream){if(cb)cb(true);return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){if(cb)cb(false);return;}
+  _micTried=true;
+  try{
+    var p=navigator.mediaDevices.getUserMedia({audio:true});
+    if(p&&p.then)p.then(function(s){_micStream=s;_micDenied=false;if(cb)cb(true);}).catch(function(){_micDenied=true;if(cb)cb(false);});
+  }catch(e){if(cb)cb(false);}
+}
+function stopRec(){
+  _listenOn=false;
+  try{if(_rec){_rec.onend=null;_rec.onerror=null;_rec.onresult=null;_rec.stop();}}catch(e){}
+  _rec=null;
+}
+function listenOnce(opts){
+  opts=opts||{};
+  var btn=opts.btn,live=opts.live,onFinal=opts.onFinal,onInterim=opts.onInterim,onScore=opts.onScore;
+  var target=opts.target||"",mode=opts.mode||(tokensOf(target).length<=2?"word":"sentence");
+  var SR=srAPI();
+  if(!SR){
+    var msg="当前浏览器不能自动语音评分。"+micHint()+" 你也可以先录音回放，自己对照。";
+    if(live)live.textContent=msg;
+    if(opts.onUnsupported)opts.onUnsupported(msg);
+    else if(typeof alert==="function")try{alert(msg);}catch(e){}
+    return {ok:false,reason:"not-supported"};
+  }
+  // Stop previous, then start() SYNCHRONOUSLY in this click.
+  try{if(_rec){_rec.onend=null;_rec.onerror=null;_rec.onresult=null;_rec.stop();}}catch(e){}
+  _rec=null;
+  try{if(typeof mStop==="function")mStop();}catch(e){}
+  // Kick permission in the same gesture; do not await.
+  ensureMic();
+  var rec=new SR();
+  _rec=rec;_listenOn=true;
+  rec.lang=(opts.lang)||(typeof mSrLang==="function"?mSrLang():"en-US")||"en-US";
+  // iOS Safari: continuous is unstable. Always default false.
+  rec.continuous=false;
+  rec.interimResults=_isAppleWebKit()?false:true; // iOS often only final
+  rec.maxAlternatives=3;
+  var old=btn?btn.textContent:"";
+  var finalTxt="",interimTxt="",stopped=false,got=false,t0=_now();
+  if(btn)btn.textContent="⏹️ 停";
+  if(live){live.classList.add("on");live.textContent="正在听… 请用英语大声说完整";}
+  function finish(why){
+    if(stopped)return;stopped=true;_listenOn=false;
+    var dur=_now()-t0;
+    try{rec.stop();}catch(e){}
+    if(btn)btn.textContent=old||"🎙️ 开始跟读";
+    var best=(finalTxt||interimTxt||"").trim();
+    if(live){live.classList.remove("on");if(!best&&why)live.textContent=errZh(why);else if(!best)live.textContent="没识别到英文。请靠近麦克风再说，或点「继续说」。";else live.textContent="识别完成";}
+    if(best){
+      var r=target?scoreUtterance({said:best,target:target,durationMs:dur,mode:mode}):null;
+      if(onFinal)onFinal(best,r);
+      if(onScore&&r)onScore(r,best);
+    }else if(opts.onEmpty)opts.onEmpty(why||"no-speech");
+    if(btn)btn.onclick=function(){listenOnce(opts);};
+    _rec=null;
+  }
+  rec.onstart=function(){if(live){live.classList.add("on");live.textContent="正在听… 请用英语大声说完整";}};
+  rec.onresult=function(e){
+    got=true;var finals="",inter="";
+    for(var i=e.resultIndex;i<e.results.length;i++){
+      var res=e.results[i],best="",bestC=-1;
+      for(var j=0;j<Math.min(res.length||1,3);j++){
+        var alt=res[j];if(!alt)continue;var t=String(alt.transcript||"").trim();if(!t)continue;
+        var c=typeof alt.confidence==="number"?alt.confidence:-1;
+        if(c>bestC||(bestC<0&&t.length>best.length)){best=t;bestC=c;}
+      }
+      if(!best)continue;
+      if(res.isFinal)finals+=(finals?" ":"")+best;else inter+=(inter?" ":"")+best;
+    }
+    if(finals){finalTxt=(finalTxt?finalTxt+" ":"")+finals;interimTxt="";}else interimTxt=inter;
+    var show=((finalTxt?finalTxt+" ":"")+(interimTxt||"")).trim();
+    if(live){live.classList.add("on");live.textContent="正在听… "+(show||"请说英语");}
+    if(onInterim&&show)onInterim(show);
+  };
+  rec.onerror=function(e){
+    var er=(e&&e.error)||"error";
+    if(er==="aborted")return;
+    if(er==="no-speech"&&(finalTxt||interimTxt))return;
+    if(live)live.textContent=errZh(er);
+    if(er==="not-allowed"||er==="service-not-allowed"){ _micDenied=true; try{alert(errZh(er));}catch(x){} }
+  };
+  rec.onend=function(){
+    // Do NOT auto-restart here (async, iOS would fail / loop). Offer a button instead.
+    if(stopped){if(btn){btn.textContent=old||"🎙️ 开始跟读";btn.onclick=function(){listenOnce(opts);};}return;}
+    if(!got&&!finalTxt&&!interimTxt&&live){
+      live.innerHTML=errZh("no-speech")+' <button type="button" class="mini ss-resume">继续说</button>';
+      var rb=live.querySelector(".ss-resume");
+      if(rb)rb.onclick=function(){listenOnce(opts);};
+    }
+    finish(got?"":"no-speech");
+  };
+  if(btn)btn.onclick=function(){if(_rec===rec&&!stopped)finish("");};
+  try{rec.start();}catch(err){
+    if(btn){btn.textContent=old||"🎙️ 开始跟读";btn.onclick=function(){listenOnce(opts);};}
+    var msg=errZh("not-supported");
+    if(live)live.textContent=msg;
+    try{alert(msg);}catch(e){}
+    return {ok:false,reason:"start-failed"};
+  }
+  return {ok:true};
+}
+function errZh(code){
+  if(code==="not-allowed"||code==="service-not-allowed")return "麦克风权限被拒绝。请到「设置 → Safari → 麦克风」允许，并确保用 Safari 打开本 https 页面，然后先点「允许麦克风」。";
+  if(code==="no-speech")return "没听到声音。请靠近麦克风，用英语把整句说完，再点「继续说」。";
+  if(code==="audio-capture")return "找不到麦克风。请检查手机麦克风是否可用。";
+  if(code==="network")return "语音识别需要联网，请检查网络后重试。";
+  if(code==="language-not-supported")return "当前识别语言不被支持，试试把语言换成 en-US。";
+  if(code==="not-supported"||!srAPI())return "这个浏览器不能做英语语音识别。请用 iPhone 自带 Safari（https 打开），或改用「听示范 + 自己对照」。不要用微信内置浏览器。";
+  return "语音识别出错（"+code+"）。可再点一次，或先听示范自己跟读。";
+}
+function recFallbackHtml(){
+  return '<div class="ss-fallback"><p>当前无法自动评分。你可以先录音，再回放对照示范。</p><div class="row" style="justify-content:flex-start"><button type="button" class="mini" data-ssrec="1">⏺️ 开始录音</button><button type="button" class="mini" data-ssplay="1" hidden>▶ 回放我的录音</button></div><div class="ss-fb" data-ssrecmsg="1"></div></div>';
+}
+function bindRecorder(root){
+  if(!root||!window.MediaRecorder)return;
+  var recBtn=root.querySelector("[data-ssrec]"),playBtn=root.querySelector("[data-ssplay]"),msg=root.querySelector("[data-ssrecmsg]");
+  if(!recBtn)return;
+  var chunks=[],mr=null,url=null,recording=false;
+  recBtn.onclick=function(){
+    if(recording){try{mr.stop();}catch(e){}return;}
+    ensureMic(function(ok){
+      if(!ok||!_micStream){if(msg)msg.textContent="无法使用麦克风。"+micHint();return;}
+      try{
+        chunks=[];mr=new MediaRecorder(_micStream);
+        mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data);};
+        mr.onstop=function(){recording=false;recBtn.textContent="⏺️ 开始录音";var blob=new Blob(chunks,{type:mr.mimeType||"audio/webm"});if(url)try{URL.revokeObjectURL(url);}catch(e){}url=URL.createObjectURL(blob);if(playBtn){playBtn.hidden=false;playBtn.onclick=function(){var a=new Audio(url);a.play();};}if(msg)msg.textContent="已录好，点回放对照示范。这个浏览器不能自动评分。";};
+        mr.start();recording=true;recBtn.textContent="⏹️ 停止录音";if(msg)msg.textContent="正在录音…说完点停止。";
+      }catch(e){if(msg)msg.textContent="此浏览器不支持录音回放。";}
+    });
+  };
+}
+
+window.SpeakScore={
+  version:"MEM_SPEAK_GRAM_V1",
+  available:function(){return !!srAPI();},
+  isIOS:_isIOS,isSafari:_isSafari,
+  normalize:function(s){return tokensOf(s).join(" ");},
+  tokens:tokensOf,
+  align:alignWords,
+  score:scoreUtterance,
+  card:scoreCardHtml,
+  listen:listenOnce,
+  ensureMic:ensureMic,
+  stop:stopRec,
+  errZh:errZh,
+  micHint:micHint,
+  recFallbackHtml:recFallbackHtml,
+  bindRecorder:bindRecorder,
+  VARIANT:VARIANT
+};
+
+/* ========================= SRS ========================= */
+var SRS_NEW_CAP=50;
+var SRS_MAX_INTERVAL=30;
+var SRS_MIN_EASE=1.3;
+var SRS_MAX_EASE=2.8;
+function srsDef(){return {status:"new",ease:2.5,intervalDays:0,nextDue:0,lapses:0,wrongStreak:0,okStreak:0,lastResult:"",lastAt:0,reviews:0,spellWrong:0,speakPct:null};}
+function srsBucket(st){if(!st.srs||typeof st.srs!=="object")st.srs={};if(!st.srsDay||typeof st.srsDay!=="object")st.srsDay={date:"",newCount:0,newIds:[]};return st;}
+function srsGet(id){srsBucket(ST);var k=String(id);return ST.srs[k]||null;}
+function srsPut(id,row){srsBucket(ST);ST.srs[String(id)]=row;return row;}
+function srsEnsure(id){var r=srsGet(id);if(!r){r=srsDef();srsPut(id,r);}return r;}
+function srsIsDue(id,now){now=now||_now();var r=srsGet(id);if(!r)return false;if(r.status==="new"&&!r.reviews)return false;if(!r.nextDue)return r.status==="fuzzy"||r.status==="learning";return r.nextDue<=now;}
+function srsHours(h){return _now()+Math.round(h*3600*1000);}
+function srsDays(d){return _now()+Math.round(d*24*3600*1000);}
+function srsMigrate(st){
+  st=srsBucket(st||ST);
+  var today=_today();
+  if(st.srsDay.date!==today){st.srsDay={date:today,newCount:+st.srsDay.newCount&&st.srsDay.date?0:0,newIds:[]};st.srsDay.date=today;st.srsDay.newCount=0;st.srsDay.newIds=[];}
+  try{
+    var known=st.known||[],missed=st.missed||[],reps=st.reps||{},log=st.log||[];
+    var lastBy={};
+    log.forEach(function(row){if(row&&row[1])lastBy[String(row[1]).toLowerCase()]=row;});
+    var i,w,r,en;
+    for(i=0;i<(typeof W!=="undefined"?W.length:0);i++){
+      if(st.srs[String(i)])continue;
+      w=W[i];if(!w)continue;
+      en=String(w.en||"").toLowerCase();
+      var inK=known.indexOf(i)>=0, inM=missed.indexOf(i)>=0, need=+(reps[i]||reps[String(i)]||0);
+      if(!inK&&!inM&&!need)continue; // leave brand-new unrecorded
+      r=srsDef();r.reviews=1;r.lastAt=_now();
+      if(inK&&!need){
+        r.status="mastered";r.ease=2.5;r.intervalDays=3;r.okStreak=2;
+        var lg=lastBy[en];var base=(lg&&lg[0])?lg[0]:_now();
+        r.nextDue=base+3*24*3600*1000;
+        if(r.nextDue<_now())r.nextDue=_now(); // due now if overdue
+      }else if(need||inM){
+        r.status="fuzzy";r.ease=2.2;r.intervalDays=0.25;r.wrongStreak=need>=2?2:1;r.lapses=1;r.spellWrong=need||1;
+        r.lastResult=need>=2?"wrong":"fuzzy";r.nextDue=_now(); // due immediately
+      }
+      st.srs[String(i)]=r;
+    }
+  }catch(e){}
+  return st;
+}
+function srsApply(id,result){
+  var r=srsEnsure(id);var now=_now();
+  r.lastResult=result;r.lastAt=now;r.reviews=(r.reviews||0)+1;
+  if(result==="ok"){
+    r.wrongStreak=0;r.okStreak=(r.okStreak||0)+1;
+    if(r.status==="new"||r.status==="fuzzy"){
+      r.status="learning";r.intervalDays=1;r.nextDue=srsDays(1);r.ease=Math.max(SRS_MIN_EASE,(r.ease||2.5)-0.05);
+    }else if(r.status==="learning"){
+      if(r.okStreak>=2){r.status="mastered";r.intervalDays=3;r.ease=Math.min(SRS_MAX_EASE,(r.ease||2.5)+0.1);r.nextDue=srsDays(3);}
+      else{r.intervalDays=1;r.nextDue=srsDays(1);}
+    }else{ // mastered
+      var iv=r.intervalDays||3;
+      iv=Math.min(SRS_MAX_INTERVAL,Math.max(2,iv*(r.ease||2.5)));
+      r.intervalDays=Math.round(iv*10)/10;
+      r.ease=Math.min(SRS_MAX_EASE,(r.ease||2.5)+0.1);
+      r.nextDue=srsDays(r.intervalDays);
+    }
+  }else if(result==="fuzzy"){
+    r.okStreak=0;r.wrongStreak=(r.wrongStreak||0)+1;r.lapses=(r.lapses||0)+1;
+    r.status="fuzzy";r.ease=Math.max(SRS_MIN_EASE,(r.ease||2.5)-0.15);
+    r.intervalDays=0.25;r.nextDue=srsHours(6);
+  }else{ // wrong / no
+    r.okStreak=0;r.wrongStreak=(r.wrongStreak||0)+1;r.lapses=(r.lapses||0)+1;r.spellWrong=(r.spellWrong||0)+1;
+    r.status="fuzzy";r.ease=Math.max(SRS_MIN_EASE,(r.ease||2.5)-0.2);
+    var h=r.wrongStreak>=2?1:2;
+    r.intervalDays=h/24;r.nextDue=srsHours(h);
+  }
+  srsPut(id,r);return r;
+}
+function srsNoteSpeak(id,pct){var r=srsEnsure(id);r.speakPct=pct;if(pct<60){r.status=r.status==="mastered"?"fuzzy":r.status;if(r.status==="new")r.status="learning";if(!r.nextDue||r.nextDue>_now()+6*3600*1000)r.nextDue=srsHours(6);}srsPut(id,r);}
+function srsRolloverDay(){srsBucket(ST);var t=_today();if(ST.srsDay.date!==t){ST.srsDay={date:t,newCount:0,newIds:[]};}}
+function srsMarkNewShown(id){
+  srsRolloverDay();
+  var r=srsGet(id);
+  if(r&&r.reviews)return;
+  var ids=ST.srsDay.newIds||(ST.srsDay.newIds=[]);
+  if(ids.indexOf(id)<0){ids.push(id);ST.srsDay.newCount=ids.length;}
+}
+function srsDueIds(theme){
+  var ids=typeof themeIds==="function"?themeIds(theme==null?ST.theme:theme):[];
+  var due=[],fuzzy=[];
+  ids.forEach(function(i){
+    if(!srsIsDue(i))return;
+    var r=srsGet(i);
+    if(r&&(r.status==="fuzzy"||(r.wrongStreak||0)>=1||(r.spellWrong||0)>=2))fuzzy.push(i);
+    else due.push(i);
+  });
+  return fuzzy.concat(due);
+}
+function srsCounts(theme){
+  var ids=typeof themeIds==="function"?themeIds(theme==null?ST.theme:theme):[];
+  var c={new:0,learning:0,fuzzy:0,mastered:0,due:0,total:ids.length};
+  ids.forEach(function(i){
+    var r=srsGet(i);
+    if(srsIsDue(i))c.due++;
+    var st=r?r.status:(ST.known&&ST.known.indexOf(i)>=0?"mastered":"new");
+    if(!c[st])c[st]=0;c[st]++;
+  });
+  return c;
+}
+function srsStatusZh(s){return {new:"新词",learning:"学习中",fuzzy:"模糊",mastered:"已掌握"}[s]||"新词";}
+function srsDueText(r){
+  if(!r||!r.nextDue)return "待安排";
+  var ms=r.nextDue-_now();
+  if(ms<=0)return "现在该复习";
+  var h=Math.round(ms/3600000);
+  if(h<24)return h<=1?"约 1 小时后":h+" 小时后";
+  var d=Math.round(h/24);return d+" 天后";
+}
+function syncMergeSrs(a,b){
+  a=a||{};b=b||{};var o={},k,L,C;
+  for(k in a)if(a.hasOwnProperty(k))o[k]=Object.assign({},a[k]);
+  for(k in b)if(b.hasOwnProperty(k)){
+    L=o[k];C=b[k];
+    if(!L){o[k]=Object.assign({},C);continue;}
+    if(!C)continue;
+    var pick=(C.lastAt||0)>=(L.lastAt||0)?C:L;
+    var row=Object.assign({},pick);
+    row.lapses=Math.max(+L.lapses||0,+C.lapses||0);
+    row.wrongStreak=Math.max(+L.wrongStreak||0,+C.wrongStreak||0);
+    row.spellWrong=Math.max(+L.spellWrong||0,+C.spellWrong||0);
+    row.reviews=Math.max(+L.reviews||0,+C.reviews||0);
+    row.okStreak=Math.max(+L.okStreak||0,+C.okStreak||0);
+    if(typeof L.speakPct==="number"||typeof C.speakPct==="number")row.speakPct=Math.max(+L.speakPct||0,+C.speakPct||0);
+    // more conservative due date
+    var nd=[];if(L.nextDue)nd.push(L.nextDue);if(C.nextDue)nd.push(C.nextDue);
+    if(nd.length)row.nextDue=Math.min.apply(null,nd);
+    if(L.status==="fuzzy"||C.status==="fuzzy")row.status="fuzzy";
+    else if(row.status==="mastered"&&(L.status==="learning"||C.status==="learning")&&row.nextDue<=_now())row.status="learning";
+    o[k]=row;
+  }
+  return o;
+}
+
+window.SRS={
+  version:"MEM_SPEAK_GRAM_V1",
+  NEW_CAP:SRS_NEW_CAP,
+  def:srsDef,get:srsGet,ensure:srsEnsure,apply:srsApply,isDue:srsIsDue,
+  migrate:srsMigrate,dueIds:srsDueIds,counts:srsCounts,statusZh:srsStatusZh,dueText:srsDueText,
+  merge:syncMergeSrs,today:_today
+};
+
+/* ---- wrap state helpers ---- */
+function srsInstallStateHooks(){
+  try{
+    var _def=defState;
+    defState=function(){var d=_def();d.srs={};d.srsDay={date:_today(),newCount:0,newIds:[]};return d;};
+  }catch(e){}
+  try{
+    var _merge=mergeState;
+    mergeState=function(o){var r=_merge(o);return srsMigrate(r);};
+  }catch(e){}
+  try{
+    var _bq=buildQueue;
+    buildQueue=function(){
+      srsMigrate(ST);srsRolloverDay();
+      var ids=themeIds(ST.theme);
+      var fuzzy=[],due=[],learn=[],fresh=[];
+      var started=ST.srsDay.newIds||[];
+      ids.forEach(function(i){
+        var r=srsGet(i);
+        var known=ST.known.indexOf(i)>=0;
+        var need=+(ST.reps[i]||0);
+        if(srsIsDue(i)){
+          if(r&&(r.status==="fuzzy"||(r.wrongStreak||0)>=1||(r.spellWrong||0)>=2))fuzzy.push(i);
+          else due.push(i);
+          return;
+        }
+        if(need>0||(r&&r.status==="learning")){learn.push(i);return;}
+        if(!known){
+          var already=started.indexOf(i)>=0;
+          if(already||started.length+fresh.length<SRS_NEW_CAP)fresh.push(i);
+        }
+      });
+      function sh(a){return (typeof shuffle==="function"?shuffle(a):a.slice());}
+      var by={};fresh.forEach(function(i){var t=W[i]&&W[i].theme; (by[t]=by[t]||[]).push(i);});
+      var freshQ=(typeof THEMES!=="undefined"?THEMES:[]).flatMap(function(t){return sh(by[t.name]||[]);});
+      // leftover fresh not in THEMES names
+      Object.keys(by).forEach(function(name){if(!(typeof THEMES!=="undefined"&&THEMES.some(function(t){return t.name===name;})))freshQ=freshQ.concat(sh(by[name]));});
+      var seen={},q=[];
+      function add(arr){arr.forEach(function(i){if(seen[i])return;seen[i]=1;q.push(i);});}
+      add(sh(fuzzy));add(sh(due));add(sh(learn));add(freshQ);
+      ST.queue=q;ST.round="first";ST.revealed=false;ST.pending=null;ST.sentOn=false;ST.hint=false;ST.lastFb=null;
+      ST._srsToday={review:fuzzy.length+due.length,fresh:freshQ.length,learn:learn.length};
+    };
+  }catch(e){}
+}
+
+function srsInstallAnswerHooks(){
+  try{
+    var _do=doSubmit;
+    doSubmit=function(){
+      var w=typeof cur==="function"?cur():null;
+      _do();
+      try{
+        if(!w||!ST.revealed)return;
+        var last=ST.lastFb&&ST.lastFb[1];
+        if(last==="ok"){
+          if(ST.pending==="later"){
+            var row=srsEnsure(w.id);
+            if(row.status==="new"){row.status="learning";row.intervalDays=0.5;row.nextDue=srsHours(12);}
+            row.lastResult="ok";row.lastAt=_now();row.reviews=(row.reviews||0)+1;
+            srsPut(w.id,row);
+          }else srsApply(w.id,"ok");
+        }else srsApply(w.id,"wrong");
+        srsMarkNewShown(w.id);
+      }catch(e){}
+    };
+  }catch(e){}
+  try{
+    var _mm=null;
+    // wrap fuzzy/no via existing buttons later; also patch after their handlers by wrapping logIt? Better wrap at button level below.
+  }catch(e){}
+}
+
+function srsOnFuzzyOrNo(id,kind){
+  try{srsApply(id,kind==="fuzzy"?"fuzzy":"wrong");srsMarkNewShown(id);}catch(e){}
+}
+
+function srsInstallSyncHook(){
+  try{
+    var _apply=syncApplyPack;
+    syncApplyPack=function(pack,opt){
+      var info=_apply(pack,opt);
+      try{
+        var cloud=(pack&&pack.state&&pack.state.srs)||{};
+        ST.srs=syncMergeSrs(ST.srs,cloud);
+        if(pack.state&&pack.state.srsDay&&pack.state.srsDay.date===_today()){
+          var a=ST.srsDay||{date:_today(),newCount:0,newIds:[]};
+          var b=pack.state.srsDay;
+          var ids=[];(a.newIds||[]).concat(b.newIds||[]).forEach(function(i){if(ids.indexOf(i)<0)ids.push(i);});
+          ST.srsDay={date:_today(),newIds:ids,newCount:ids.length};
+        }
+        srsMigrate(ST);
+        try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}
+      }catch(e){}
+      return info;
+    };
+  }catch(e){}
+}
+
+/* ========================= Memory aids ========================= */
+function memTipFor(w){
+  if(!w)return "把单词和它出现的生活场景绑在一起，比死记字母更牢。";
+  var rf=(window.ROOTFAM||{})[w.en];
+  if(rf&&rf.h)return rf.h;
+  var en=w.en,zh=w.zh,pos=String(w.pos||"");
+  if(/词组/.test(pos))return "这是词组，要整组记、整组用，不要拆开只记其中一个字。";
+  if(en.indexOf(" ")>=0)return "两个词要一起出现：先说前面，再说后面，想象「"+ (w.scene||zh) +"」这个画面。";
+  return "看到「"+zh+"」，先想起使用场景「"+(w.scene||w.theme||"日常")+"」，再说出 "+en+"。";
+}
+function memSceneFor(w){
+  if(!w)return {en:"",zh:""};
+  return {en:w.exEn||"",zh:(w.exZh||"")+"（"+(w.scene||w.theme||"")+"）"};
+}
+function memAidHtml(w){
+  if(!w)return "";
+  var sc=memSceneFor(w);
+  var r=srsGet(w.id);
+  var st=r?r.status:(ST.known.indexOf(w.id)>=0?"mastered":"new");
+  return '<div id="memAid" class="mem-aid">'+
+    '<div class="mem-h">🧠 记得更牢</div>'+
+    '<p class="mem-tip"><b>记忆提示：</b>'+_esc(memTipFor(w))+'</p>'+
+    '<p class="mem-sc"><b>场景联想：</b>'+_esc(sc.en)+'<br><span class="zhl">'+_esc(sc.zh)+'</span> '+ (sc.en?spkBtns(sc.en):"") +'</p>'+
+    '<div class="mem-sense"><b>听 · 说 · 写</b>（想练哪项点哪项，不必全做完才能过）</div>'+
+    '<div class="row" style="justify-content:flex-start;margin-top:6px">'+
+      '<button type="button" class="mini" id="memHear">🔊 再听单词</button>'+
+      '<button type="button" class="mini" id="memHearEx">🔊 听例句</button>'+
+      '<button type="button" class="spk" id="memSpeak">🎙️ 跟读评分</button>'+
+      '<button type="button" class="mini" id="memMicAllow">① 允许麦克风</button>'+
+      '<button type="button" class="mini" id="memWrite">✍️ 再默写</button>'+
+    '</div>'+
+    '<div class="ss-live" id="memSpeakLive" aria-live="polite"></div>'+
+    '<div id="memSpeakRes"></div>'+
+    '<div id="memWriteBox" style="display:none;margin-top:8px"><input id="memWriteIn" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="不看上面，再拼一次…"/><button type="button" class="mini" id="memWriteGo">检查默写</button><div id="memWriteFb" class="ss-fb"></div></div>'+
+    (r?'<div class="mem-srs">本词：'+srsStatusZh(st)+' · '+srsDueText(r)+(r.lapses?' · 错过 '+r.lapses+' 次':'')+'</div>':'')+
+  '</div>';
+}
+function memAidBind(w){
+  var hear=$("memHear"),hearEx=$("memHearEx"),spk=$("memSpeak"),allow=$("memMicAllow"),wr=$("memWrite");
+  if(hear)hear.onclick=function(){try{speak(w.en);}catch(e){}};
+  if(hearEx)hearEx.onclick=function(){try{speak(w.exEn||w.en);}catch(e){}};
+  if(allow)allow.onclick=function(){
+    SpeakScore.ensureMic(function(ok){
+      var live=$("memSpeakLive");
+      if(live)live.textContent=ok?"麦克风已允许，现在可以点「跟读评分」。":SpeakScore.errZh("not-allowed");
+    });
+  };
+  if(spk)spk.onclick=function(){
+    var live=$("memSpeakLive"),res=$("memSpeakRes");
+    if(!SpeakScore.available()){
+      if(res){res.innerHTML=SpeakScore.recFallbackHtml();SpeakScore.bindRecorder(res);}
+      if(live)live.textContent=SpeakScore.errZh("not-supported");
+      return;
+    }
+    // start() must be in this click
+    SpeakScore.listen({btn:spk,live:live,target:w.en,mode:"word",onFinal:function(txt,r){
+      if(res)res.innerHTML=SpeakScore.card(r,txt);
+      try{srsNoteSpeak(w.id,r.pct);save({silent:true});}catch(e){}
+    }});
+  };
+  if(wr)wr.onclick=function(){
+    var box=$("memWriteBox");if(box)box.style.display=box.style.display==="none"?"":"none";
+    var inp=$("memWriteIn");if(inp){inp.value="";inp.focus();}
+  };
+  var go=$("memWriteGo");
+  if(go)go.onclick=function(){
+    var inp=$("memWriteIn"),fb=$("memWriteFb");if(!inp||!fb)return;
+    var v=String(inp.value||"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim();
+    var want=String(w.en||"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim();
+    var loose=function(s){return s.replace(/['\-]/g,"");};
+    if(!v){fb.textContent="先写下再检查。";return;}
+    if(v===want||loose(v)===loose(want)){fb.innerHTML='<b class="m-good">✅ 默写正确</b>';try{var r=srsEnsure(w.id);if(r.status==="fuzzy"&&(r.okStreak||0)>=0){/* no auto mastered */}save({silent:true});}catch(e){}}
+    else{fb.innerHTML='<b class="m-badt">❌ 再看一眼：'+_esc(w.en)+'</b> （你写的是 '+_esc(inp.value)+'）';try{srsOnFuzzyOrNo(w.id,"wrong");save({silent:true});}catch(e){}}
+  };
+}
+
+window.MemAid={tip:memTipFor,scene:memSceneFor,html:memAidHtml};
+
+/* ========================= Grammar (plain Chinese) ========================= */
+var GRAMMAR_PLAIN=[
+{id:"g01",icon:"🟥",t:"be 动词：am / is / are",theme:["个人信息与家庭","简单描述与感受","天气与季节"],
+ talk:"中文说「我是学生」「她很忙」「今天很热」，这个「是 / 很」在英语里常常要写成 am / is / are，不能省。把它想成一个等号：I = a student → I am a student。最常见的两个坑：①忘了写 be（✗ I very happy）；② be 后面又叠一个动词（✗ I am like music，like 本身已经是动词）。",
+ hook:"我用 am，他她它用 is，你我们他们用 are。形容词前面别忘 be。",
+ ex:[["I am from China.","我来自中国。","个人信息与家庭"],["She is happy today.","她今天很高兴。","简单描述与感受"],["It is sunny this morning.","今天早上是晴天。","天气与季节"]],
+ wrong:"看到形容词（happy / busy / cold）前面，先问：有没有 am/is/are？没有就补上。",
+ prac:[{k:"c",q:"My parents ___ at home.",o:["am","is","are"],a:2,e:"parents 是复数，用 are。"},{k:"f",q:"I ___ a student. （填 am / is / are）",a:["am"],e:"主语是 I，只用 am。"},{k:"c",q:"哪句是对的？",o:["I very tired.","I am very tired.","I am like tired."],a:1,e:"tired 是形容词，前面要 be；不要再叠 like。"}]},
+{id:"g02",icon:"🟧",t:"一般现在时（习惯、事实）",theme:["日常活动","学校与学习"],
+ talk:"想说「平常做什么」「事实是什么」，就用一般现在时：动词用原形。但 he / she / it 后面，动词要加 -s（she works, he goes）。否定和疑问要请 do / does 来帮忙：I don't like… / Does she live…？记住：用了 does，后面动词回到原形（✗ Does she likes）。",
+ hook:"平时习惯用原形；他她它加 s。does 一出现，后面的动词就把 s 脱掉。",
+ ex:[["I get up at seven.","我七点起床。","日常活动"],["She studies English every day.","她每天学英语。","学校与学习"],["My brother doesn't like coffee.","我哥哥不喜欢咖啡。","个人信息与家庭"]],
+ wrong:"he/she 后忘加 s，或 Does she likes 这种「s 加了两次」。",
+ prac:[{k:"c",q:"Tom ___ to school by bus.",o:["go","goes","going"],a:1,e:"Tom 是他，一般现在时动词加 -s：goes。"},{k:"f",q:"She ___ (like) music.",a:["likes"],e:"she 后 like 要加 s。"},{k:"c",q:"___ he live near the park?",o:["Do","Does","Is"],a:1,e:"他 + 实义动词 live，疑问用 Does。"}]},
+{id:"g03",icon:"🟨",t:"名词单复数 & 可数/不可数",theme:["食物与用餐","购物与金钱"],
+ talk:"能数的东西（apple, bag, ticket）有单数、复数：one apple, two apples。不能数的（water, money, rice, music）一般不加 -s，也不说 a water，要说 some water / a bottle of water。复数常见加 -s/-es，注意不规则：man→men, child→children。",
+ hook:"能数就分单复数；水、米、钱通常不可数，用 some，别乱加 s。",
+ ex:[["I'd like some water.","我想要一些水。","食物与用餐"],["These apples are cheap.","这些苹果很便宜。","购物与金钱"],["How many tickets do you need?","你需要几张票？","交通与出行"]],
+ wrong:"✗ two waters / a money / two child。不可数用 some；child 的复数是 children。",
+ prac:[{k:"c",q:"I'd like ___ rice.",o:["a","two","some"],a:2,e:"rice 不可数，用 some。"},{k:"f",q:"I have two ___ (child).",a:["children"],e:"child 的复数是 children。"},{k:"c",q:"How ___ money do you have?",o:["many","much","long"],a:1,e:"money 不可数，问多少用 how much。"}]},
+{id:"g04",icon:"🟩",t:"冠词 a / an / the",theme:["购物与金钱","城市与地点"],
+ talk:"a / an 是「一个」，第一次提到某物常用。an 用在元音音开头：an apple, an hour（h 不发音）。the 是「特指那个」：双方都知道是哪一个，或世界上独一无二的（the sun）。复数或不可数泛指时常常什么都不加：I like apples.",
+ hook:"一个：a；元音音开头用 an。大家都知道是哪个，就用 the。",
+ ex:[["I need a bag.","我需要一个包。","购物与金钱"],["There is a bank near the station. The bank is on the left.","车站附近有家银行。那家银行在左边。","城市与地点"],["An hour later, we arrived.","一小时后我们到了。","时间与日期"]],
+ wrong:"✗ a apple（apple 是元音音，用 an）；第一次说 a bank，第二次再说就要 the bank。",
+ prac:[{k:"c",q:"I have ___ orange.",o:["a","an","the"],a:1,e:"orange 以元音音开头，用 an。"},{k:"c",q:"___ sun is hot today.",o:["A","An","The"],a:2,e:"世界上独一无二的太阳，用 the。"},{k:"f",q:"She is ___ teacher.",a:["a"],e:"第一次说「一名老师」，用 a。"}]},
+{id:"g05",icon:"🟦",t:"代词：I / me / my / mine",theme:["个人信息与家庭","情感与性格"],
+ talk:"I 是「我来做事」（主语），me 是「别人对我做」（宾语：Call me）。my 是「我的…」后面一定要跟名词（my phone），mine 后面不加名词（It's mine.）。he/him/his、she/her/hers、we/us/our/ours 同一套思路。",
+ hook:"做事用 I，被点名用 me；my 后面有东西，mine 后面空着。",
+ ex:[["My name is Li Ming.","我的名字叫李明。","个人信息与家庭"],["This bag is mine.","这个包是我的。","购物与金钱"],["Can you help me?","你能帮我吗？","日常活动"]],
+ wrong:"✗ Me like music（开头要用 I）；✗ This is mine book（有 book 就用 my）。",
+ prac:[{k:"c",q:"This is ___ book.",o:["I","me","my","mine"],a:2,e:"后面有 book，用 my。"},{k:"c",q:"Can you call ___ later?",o:["I","me","my"],a:1,e:"call 的对象是我，用 me。"},{k:"f",q:"The red one is ___ .（我的，后面没有名词）",a:["mine"],e:"后面没有名词，用 mine。"}]},
+{id:"g06",icon:"🟪",t:"There is / There are（某处有某物）",theme:["家居与居住","城市与地点"],
+ talk:"想说「某地方有某东西」，英语不说「A desk has in my room」，而说 There is a desk in my room. 单数/不可数用 is，复数用 are。问句把 is/are 提前：Is there a hotel near here?",
+ hook:"先说 There is/are，再说东西，最后说地点。单数 is，复数 are。",
+ ex:[["There is a bed near the window.","窗边有一张床。","家居与居住"],["There are many shops in this street.","这条街上有很多商店。","城市与地点"],["Is there a bathroom in the flat?","公寓里有卫生间吗？","家居与居住"]],
+ wrong:"✗ Has a park near here. 地点「有」东西，要用 There is/are。",
+ prac:[{k:"c",q:"There ___ two windows in the room.",o:["is","are","have"],a:1,e:"two windows 复数，用 are。"},{k:"f",q:"___ is a kitchen next to the door.",a:["There","there"],e:"固定用 There is。"},{k:"c",q:"___ a station near here?",o:["Is there","Are there","Has there"],a:0,e:"问「有没有一个」，单数用 Is there。"}]},
+{id:"g07",icon:"🟫",t:"现在进行时：正在做",theme:["日常活动","衣服与外表"],
+ talk:"「此刻正在做」用 am/is/are + 动词 ing：I am cooking. 别跟一般现在时混：I cook every day 是习惯；I am cooking now 是正在做。一些动词很少用进行时（like, want, know, have「有」）。",
+ hook:"现在正在做：be + doing。有 now / look / at the moment，优先想 ing。",
+ ex:[["I am cooking dinner now.","我现在正在做晚饭。","日常活动"],["She is wearing a red jacket.","她正穿着一件红夹克。","衣服与外表"],["They are waiting at the station.","他们正在车站等。","交通与出行"]],
+ wrong:"✗ I cooking now（少了 am/is/are）；✗ I am know him（know 不用进行时）。",
+ prac:[{k:"c",q:"Look! It ___ now.",o:["rains","is raining","rain"],a:1,e:"Look 表示此刻，用 is raining。"},{k:"f",q:"I ___ (write) an email at the moment.",a:["am writing"],e:"at the moment = 此刻，用 am writing。"},{k:"c",q:"哪句对？",o:["She wearing a dress.","She is wearing a dress.","She is wear a dress."],a:1,e:"be + wearing。"}]},
+{id:"g08",icon:"⬛",t:"一般过去时（昨天发生的事）",theme:["日常活动","时间与日期"],
+ talk:"事情已经发生在过去（yesterday, last week, ago），动词要改成过去式。规则动词加 -ed（worked, played）；不规则要单记（go→went, have→had, buy→bought）。否定和疑问用 did，后面动词回到原形：I didn't go. / Did you go?",
+ hook:"有昨天、上周、ago，就用过去式。did 一出现，后面动词变回原形。",
+ ex:[["I went to the park yesterday.","我昨天去了公园。","日常活动"],["She bought a cheap jacket last week.","她上周买了一件便宜的夹克。","购物与金钱"],["Did you sleep well last night?","你昨晚睡得好吗？","身体与健康"]],
+ wrong:"✗ I didn't went / Did you went（did 后再加过去式，等于「过去了两次」）。",
+ prac:[{k:"c",q:"I ___ home at six yesterday.",o:["go","went","goes"],a:1,e:"yesterday 用过去式 went。"},{k:"f",q:"She ___ (not like) the food.",a:["didn't like","did not like"],e:"否定用 didn't + 原形 like。"},{k:"c",q:"___ you see the doctor last week?",o:["Do","Did","Are"],a:1,e:"last week 用 Did。"}]},
+{id:"g09",icon:"⬜",t:"将来：will / be going to",theme:["工作与实习","时间与日期"],
+ talk:"还没发生、打算做或预测会做，用将来。will + 原形：即时决定、承诺、预测（I'll help you. It will rain.）。be going to + 原形：已经计划好或有迹象（I'm going to see a film tomorrow.）。两者很多时候都能用，先会一套就能说。",
+ hook:"will 加原形；计划好了用 am/is/are going to + 原形。",
+ ex:[["I will call you tomorrow.","我明天给你打电话。","数字与通讯"],["We are going to have a meeting on Monday.","我们周一要开会。","工作与实习"],["It will be cold this evening.","今晚会冷。","天气与季节"]],
+ wrong:"✗ I will to go / I going to go（will 后直接原形；going to 前要有 be）。",
+ prac:[{k:"c",q:"I ___ help you with the report.",o:["will","wills","am will"],a:0,e:"will + 原形 help。"},{k:"f",q:"She ___ going to apply for the job.",a:["is"],e:"she 配 is going to。"},{k:"c",q:"哪句对？",o:["I will to go.","I'm going to go.","I going to go."],a:1,e:"be going to + 原形。"}]},
+{id:"g10",icon:"🔶",t:"情态动词 can / must / should",theme:["身体与健康","工作与实习"],
+ talk:"情态动词后面永远接动词原形：can swim, must rest, should drink water。can 能/会，must 必须（语气强），should 应该（建议，更温和），may 可以（允许或可能）。否定：can't / must not (mustn't) / shouldn't。",
+ hook:"情态动词后只用原形，不要 to，也不加 -s。",
+ ex:[["I can cook fried rice.","我会做炒饭。","食物与用餐"],["You should go to bed early.","你应该早点睡。","身体与健康"],["You must show your ticket.","你必须出示车票。","交通与出行"]],
+ wrong:"✗ She can sings / I must to go。后面一律原形，也不加 to。",
+ prac:[{k:"c",q:"You should ___ more water.",o:["drinks","drink","to drink"],a:1,e:"should 后用原形 drink。"},{k:"f",q:"He ___ swim well.（会）",a:["can"],e:"表示能力用 can。"},{k:"c",q:"哪句对？",o:["She can sings.","She can sing.","She cans sing."],a:1,e:"can 后原形，can 本身不加 s。"}]},
+{id:"g11",icon:"🔷",t:"形容词、副词和比较",theme:["简单描述与感受","衣服与外表"],
+ talk:"形容词打扮名词或放在 be 后面：a red dress / I am tired。副词多说明动作怎么做，常以 -ly 结尾：speak carefully。比较两样用 -er 或 more：cheaper, more expensive；三样及以上用 -est 或 most：the cheapest。than 用来引出「比谁」。不规则：good→better→best, bad→worse→worst。",
+ hook:"形容事物用形容词；比较两样加 -er / more，后面常跟 than。",
+ ex:[["This jacket is cheaper than that one.","这件夹克比那件便宜。","衣服与外表"],["I feel better today.","我今天感觉好多了。","身体与健康"],["She speaks English carefully.","她说英语很仔细。","学校与学习"]],
+ wrong:"✗ more cheaper（-er 和 more 不要叠）；✗ I am tiredly（be 后用形容词 tired）。",
+ prac:[{k:"c",q:"This bag is ___ than mine.",o:["expensive","more expensive","expensiver"],a:1,e:"expensive 用 more expensive。"},{k:"f",q:"Today is ___ (hot) than yesterday.",a:["hotter"],e:"hot 双写 t 再加 -er。"},{k:"c",q:"I am very ___.",o:["happily","happy","more happily"],a:1,e:"be 后面用形容词 happy。"}]},
+{id:"g12",icon:"🔴",t:"介词 in / on / at（时间地点）",theme:["交通与出行","城市与地点","时间与日期"],
+ talk:"时间口诀：at 点钟（at 7 o'clock）、on 日/星期（on Monday, on 1 May）、in 月/年/早上晚上（in July, in the morning）。地点：at 小点（at the station）、on 表面/街道（on the wall, on Green Street）、in 范围里面（in the room, in London）。有例外，先记高频就够用。",
+ hook:"钟点 at，日子 on，年月早上 in。小点 at，表面 on，里面 in。",
+ ex:[["The train leaves at ten thirty.","火车十点半开。","交通与出行"],["The bank is on your right.","银行在你右边。","城市与地点"],["I stay at home in the evening.","我晚上待在家里。","家居与居住"]],
+ wrong:"✗ in Monday / at July / in 7 o'clock。星期用 on，月份用 in，点钟用 at。",
+ prac:[{k:"c",q:"See you ___ Friday.",o:["in","on","at"],a:1,e:"星期用 on。"},{k:"f",q:"The meeting starts ___ nine.",a:["at"],e:"点钟用 at。"},{k:"c",q:"She lives ___ Shanghai.",o:["at","on","in"],a:2,e:"城市用 in。"}]},
+{id:"g13",icon:"🟠",t:"频率副词和时间表达",theme:["日常活动","时间与日期"],
+ talk:"always / usually / often / sometimes / never 用来讲习惯，通常放在实义动词前、be 动词后：I often walk. / She is always busy. every day, once a week 多放句尾。问频率用 How often…?",
+ hook:"频率词：be 后，实义动词前。every day 放后面。",
+ ex:[["I usually get up early.","我通常起得早。","日常活动"],["He is always busy at work.","他工作上总是很忙。","工作与实习"],["How often do you exercise?","你多久锻炼一次？","身体与健康"]],
+ wrong:"✗ I go often to school（often 一般不放句尾最自然的位置是动词前：I often go）。",
+ prac:[{k:"c",q:"She ___ watches videos in the evening.",o:["is","often","on"],a:1,e:"often 放在实义动词 watches 前。"},{k:"f",q:"They are ___ late.（总是）",a:["always"],e:"always 放在 be 后面。"},{k:"c",q:"___ do you go to the market?",o:["How many","How often","How much"],a:1,e:"问频率用 How often。"}]},
+{id:"g14",icon:"🟡",t:"疑问词：what / where / when / who / how",theme:["学校与学习","数字与通讯"],
+ talk:"特殊疑问句先放疑问词，再按一般疑问句的顺序：What do you study? Where does she live? 别写成 ✗ Where she lives? how many 后接可数复数，how much 后接不可数或问价格。",
+ hook:"疑问词 + do/does/did + 主语 + 动词原形。how many 数得清，how much 数不清或问价钱。",
+ ex:[["What's your phone number?","你的电话号码是多少？","数字与通讯"],["Where is the library?","图书馆在哪？","城市与地点"],["How much is this shirt?","这件衬衫多少钱？","购物与金钱"]],
+ wrong:"✗ Where you live? 缺 do/does；问价格用 How much，不用 How many。",
+ prac:[{k:"c",q:"___ is your address?",o:["When","What","How many"],a:1,e:"问「是什么」用 What。"},{k:"f",q:"___ do you get up?（什么时候）",a:["When"],e:"问时间用 When。"},{k:"c",q:"___ are the apples?",o:["How many","How much","How often"],a:1,e:"问价格用 How much。"}]},
+{id:"g15",icon:"🟢",t:"连词 and / but / because / so",theme:["情感与性格","简单描述与感受"],
+ talk:"and 连接同类（我喜欢 A and B）。but 转折（便宜 but 太小）。because 讲原因，so 讲结果，两边不要叠用：✗ Because I was tired, so I stayed home. 留一个就行。if 表示如果，when 表示当…时候。",
+ hook:"and 一起，but 转折，because 原因，so 结果——两个只留一个。",
+ ex:[["I like the job, but it is far from my flat.","我喜欢这份工作，但它离我住的地方远。","工作与实习"],["I stayed home because it rained.","因为下雨，我待在家里。","天气与季节"],["I'm tired, so I want to rest.","我累了，所以想休息。","身体与健康"]],
+ wrong:"不要 because 和 so 连着用。一个句子里选一个就够。",
+ prac:[{k:"c",q:"I am hungry, ___ I want some bread.",o:["because","but","so"],a:2,e:"前面是原因感觉，后面是结果，用 so。"},{k:"f",q:"She is kind ___ friendly.",a:["and"],e:"两个形容词并列用 and。"},{k:"c",q:"哪句对？",o:["Because I was late, so I ran.","I ran because I was late.","I ran, because so I was late."],a:1,e:"只用 because，不要再加 so。"}]},
+{id:"g16",icon:"🔵",t:"祈使句：请你做 / 不要做",theme:["数字与通讯","学校与学习"],
+ talk:"直接让对方做某事，用动词原形开头：Open the door. Please 可以放前或后，会更客气。否定在前面加 Don't：Don't worry. 这在课堂、留言、说明书里非常常见。",
+ hook:"请人做事：动词原形开头。不许做：Don't + 原形。",
+ ex:[["Please send me a message.","请给我发条消息。","数字与通讯"],["Don't be late for the meeting.","开会别迟到。","工作与实习"],["Turn left at the hotel.","在酒店那里左转。","交通与出行"]],
+ wrong:"✗ You open the window please 不是不行，但祈使句更干净：Open the window, please.",
+ prac:[{k:"c",q:"___ the vegetables, please.",o:["Washing","Wash","Washes"],a:1,e:"祈使句用原形 Wash。"},{k:"f",q:"___ worry.（别担心）",a:["Don't","Do not"],e:"否定祈使句 Don't + 原形。"},{k:"c",q:"哪句更合适？",o:["You sitting down.","Sit down, please.","Sits down."],a:1,e:"动词原形开头，加 please 更礼貌。"}]},
+{id:"g17",icon:"🟤",t:"简单从句：who / which / that",theme:["城市与地点","个人信息与家庭"],
+ talk:"想在名词后面加一句「什么样的人/东西」，可以用 who（人）、which（物）、that（人/物都行）：the teacher who helped me；the flat that is near the station. A1–B1 先会写这种「名词 + that/who + 句子」就够用了，先不必抠所有例外。",
+ hook:"人用 who，物用 which，不会选时先用 that。",
+ ex:[["This is the friend who called me yesterday.","这就是昨天给我打电话的朋友。","个人信息与家庭"],["I like the park that is near my home.","我喜欢家附近的那个公园。","城市与地点"],["This is the report which I wrote.","这就是我写的那份报告。","工作与实习"]],
+ wrong:"关系词后面要有完整信息，但不要重复主语：✗ the man who he is my teacher → the man who is my teacher.",
+ prac:[{k:"c",q:"This is the student ___ sits next to me.",o:["which","who","where"],a:1,e:"人用 who。"},{k:"f",q:"I have a bag ___ is very cheap.",a:["that","which"],e:"物用 that 或 which。"},{k:"c",q:"哪句对？",o:["the man who he is my boss","the man who is my boss","the man who is he my boss"],a:1,e:"who 后面不要再重复 he。"}]},
+{id:"g18",icon:"🟣",t:"现在完成时入门：have/has + 过去分词",theme:["工作与实习","学校与学习"],
+ talk:"想说「到现在为止已经做了 / 经历过」，用 have/has + 过去分词：I have finished the report. She has lived here for two years. 常和 already, yet, ever, never, for, since 一起出现。它不是「昨天做了」（那是过去时），而是「跟现在有关系」。has 只配 he/she/it。",
+ hook:"have/has + 过去分词。he/she/it 用 has。for 一段时间，since 起始点。",
+ ex:[["I have already sent the email.","我已经把邮件发出去了。","数字与通讯"],["She has worked here since 2022.","她从 2022 年起就在这里工作。","工作与实习"],["Have you ever been to this museum?","你去过这家博物馆吗？","城市与地点"]],
+ wrong:"✗ I have finished yesterday（有明确过去时间点，多用过去时：I finished it yesterday）。",
+ prac:[{k:"c",q:"He ___ finished the task.",o:["have","has","is"],a:1,e:"he 用 has + 过去分词。"},{k:"f",q:"I have lived here ___ 2020.",a:["since"],e:"since + 起始时间点。"},{k:"c",q:"哪句更合适？",o:["I have seen him yesterday.","I saw him yesterday.","I have see him yesterday."],a:1,e:"yesterday 是明确过去时间，用过去时。"}]},
+{id:"g19",icon:"⚪",t:"被动语态入门：be + 过去分词",theme:["工作与实习","学校与学习"],
+ talk:"想强调「事情被做了」，不一定要说出是谁做的，用 be + 过去分词：The report was written yesterday. English is spoken here. 一般现在用 am/is/are，一般过去用 was/were。需要说出执行者时加 by：This photo was taken by my friend.",
+ hook:"被动：be + 过去分词。先选对时态的 be，再加动词的过去分词。",
+ ex:[["The room is cleaned every day.","这个房间每天都被打扫。","家居与居住"],["The meeting was finished at five.","会议五点结束了。","工作与实习"],["This message was sent last night.","这条消息是昨晚发出的。","数字与通讯"]],
+ wrong:"✗ The room cleaned every day（少了 is）；不要写成 be + 原形（✗ is clean the room）。",
+ prac:[{k:"c",q:"English ___ spoken in this office.",o:["is","was being","do"],a:0,e:"一般现在的被动：is + spoken。"},{k:"f",q:"The tickets were ___ (buy) online.",a:["bought"],e:"buy 的过去分词是 bought。"},{k:"c",q:"哪句对？",o:["The door opened by Tom.","The door was opened by Tom.","The door was open by Tom yesterday night only."],a:1,e:"过去被动：was + opened。"}]}
+];
+var THEME_GRAMMAR={
+  "个人信息与家庭":"g01","日常活动":"g02","学校与学习":"g02","食物与用餐":"g03",
+  "购物与金钱":"g04","交通与出行":"g12","时间与日期":"g13","简单描述与感受":"g11",
+  "工作与实习":"g09","身体与健康":"g10","天气与季节":"g01","家居与居住":"g06",
+  "衣服与外表":"g11","数字与通讯":"g16","城市与地点":"g12","情感与性格":"g15"
+};
+function gpById(id){return GRAMMAR_PLAIN.find(function(g){return g.id===id;})||null;}
+function gpNorm(s){s=String(s||"").toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g," ").trim();s=s.replace(/\bwon't\b/g,"will not").replace(/\bcan't\b/g,"cannot").replace(/\bcannot\b/g,"can not").replace(/n't\b/g," not");return s.replace(/[.,!?;:"]/g,"").replace(/\s+/g," ").trim();}
+function gpCheckAns(it,val){
+  if(it.k==="c")return +val===it.a;
+  var v=gpNorm(val);return (it.a||[]).some(function(a){return gpNorm(a)===v;});
+}
+function gpRenderList(P){
+  MP.gprac=MP.gprac||{};MP.gwrong=MP.gwrong||{};
+  var n=GRAMMAR_PLAIN.filter(function(g){var r=MP.grammar[g.id];return r&&r[2]===2&&r[0]/r[1]>=0.8;}).length;
+  var next=GRAMMAR_PLAIN.find(function(g){var r=MP.grammar[g.id];return !(r&&r[2]===2&&r[0]/r[1]>=0.8);});
+  P.innerHTML=mHead("📐","语法 · A1–B1 实用点（大白话）","每个点都很短：<b>大白话</b> → <b>口诀</b> → <b>2–3 个生活例句</b> → <b>常见错法</b> → <b>2–3 道小练习</b>。做完先看讲解，不自动跳。跟单词场景能对上号。","已掌握 <b>"+n+"</b> / "+GRAMMAR_PLAIN.length)+
+    '<div class="g gv-route"><div class="m-sub">一天学 1 个点就够。不堆术语，只记会用的。学完一组单词后也会弹出相关语法小卡片，可跳过。</div>'+
+    (next?'<button type="button" class="gv-today" data-gid="'+next.id+'">📌 建议接着学：'+mE(next.t)+' →</button>':'<div class="gv-today">🎉 这些点都过关了，有空复习错题。</div>')+
+    '<button type="button" class="mini" data-gwb="1">📕 错题（'+Object.keys(MP.gwrong||{}).length+'）</button></div>'+
+    mGrid(GRAMMAR_PLAIN.map(function(g,i){var r=MP.grammar[g.id];var badge=r?(r[2]===2&&r[0]/r[1]>=0.8?"🏆 "+r[0]+"/"+r[1]:(r[0]+"/"+r[1])) : "";return mCard('data-gid="'+g.id+'"',g.icon,(i+1)+". "+g.t,"口诀 + 例句 + 小练习",badge);}));
+  P.querySelectorAll("[data-gid]").forEach(function(b){b.onclick=function(){MP.cur.grammar=b.dataset.gid;MP.cur.gstep=0;MP.cur.gqi=0;mSave();renderGrammar();window.scrollTo(0,0);};});
+  var wb=P.querySelector("[data-gwb]");if(wb)wb.onclick=function(){MP.cur.grammar="__wrong";mSave();renderGrammar();window.scrollTo(0,0);};
+}
+function gpItemHtml(it,n,revealed,picked){
+  var h='<div class="gv-it" data-gqi="'+n+'"><div class="tag">第 '+(n+1)+' 题 · '+(it.k==="c"?"选择题":"填空题")+'</div><div class="m-qt">'+mE(it.q)+'</div>';
+  if(it.k==="c")h+='<div class="m-opts">'+it.o.map(function(o,j){var cls=revealed?(j===it.a?"ok":(j===picked?"bad":"")):"";return '<button type="button" class="m-opt '+cls+'" data-gc="'+j+'"'+(revealed?" disabled":"")+'>'+String.fromCharCode(65+j)+'. '+mE(o)+'</button>';}).join("")+'</div>';
+  else h+='<input type="text" id="gpIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="填入单词或短语"'+(revealed?" disabled":"")+'/>';
+  h+='<div class="row" style="justify-content:flex-start;margin-top:8px">'+(it.k!=="c"&&!revealed?'<button type="button" class="b-sub" style="flex:none" id="gpChk">检查</button>':'')+'</div><div class="gv-fb" id="gpFb"></div></div>';
+  return h;
+}
+function gpRenderPoint(P,G){
+  MP.cur.gqi=MP.cur.gqi||0;
+  var idx=GRAMMAR_PLAIN.indexOf(G);
+  var qi=+MP.cur.gqi||0;if(qi<0)qi=0;if(qi>=G.prac.length)qi=G.prac.length-1;
+  var ans=(((MP.gans||{})[G.id])||{})[qi];
+  var revealed=!!(ans&&ans.done);
+  var it=G.prac[qi];
+  P.innerHTML=mBack("返回语法目录")+
+    '<div class="g"><h3>'+G.icon+' '+(idx+1)+'. '+mE(G.t)+'</h3><p class="m-sub">大白话讲解，配口诀和场景例句。练习答完先看讲解，再点「下一题」。可回上一题。</p></div>'+
+    '<div class="g"><h3>🗣️ 跟朋友这么讲</h3><p class="gv-why">'+mE(G.talk)+'</p><div class="mem-tip"><b>口诀：</b>'+mE(G.hook)+'</div></div>'+
+    '<div class="g"><h3>🎬 场景例句</h3>'+G.ex.map(function(x){return '<div class="gv-ex"><div class="en">'+mE(x[0])+spkBtns(x[0])+'</div><div class="zh">'+mE(x[1])+' · <span class="tag">'+mE(x[2]||"")+'</span></div></div>';}).join("")+'</div>'+
+    '<div class="g"><h3>⚠️ 常见错法</h3><p class="m-sub">'+mE(G.wrong)+'</p></div>'+
+    '<div class="g"><h3>✏️ 小练习（'+G.prac.length+' 题）· 第 '+(qi+1)+' / '+G.prac.length+' 题</h3>'+gpItemHtml(it,qi,revealed,ans&&ans.pick)+'<div class="row" style="justify-content:space-between;margin-top:10px">'+
+      '<button type="button" class="mini" id="gpPrev"'+(qi===0?" disabled":"")+'>← 上一题</button>'+
+      (qi<G.prac.length-1?'<button type="button" class="b-sub" style="flex:none" id="gpNext"'+(revealed?"":" disabled")+'>下一题 →</button>':'<button type="button" class="b-sub" style="flex:none" id="gpDone">看本点小结</button>')+
+    '</div><div class="m-score" id="gpScore"></div></div>'+
+    '<div class="row" style="justify-content:space-between">'+(idx>0?'<button type="button" class="mini" data-ggo="'+GRAMMAR_PLAIN[idx-1].id+'">← 上一个语法点</button>':'<span></span>')+(idx<GRAMMAR_PLAIN.length-1?'<button type="button" class="mini" data-ggo="'+GRAMMAR_PLAIN[idx+1].id+'">下一个语法点 →</button>':'')+'</div>';
+  P.querySelector("[data-mback]").onclick=function(){MP.cur.grammar=null;mSave();renderGrammar();};
+  P.querySelectorAll("[data-ggo]").forEach(function(b){b.onclick=function(){MP.cur.grammar=b.dataset.ggo;MP.cur.gqi=0;mSave();renderGrammar();window.scrollTo(0,0);};});
+  function mark(ok,pick,mine){
+    MP.gans=MP.gans||{};MP.gans[G.id]=MP.gans[G.id]||{};
+    MP.gans[G.id][qi]={done:1,ok:!!ok,pick:pick,mine:mine||""};
+    var key=G.id+"|p"+qi;MP.gwrong=MP.gwrong||{};if(ok)delete MP.gwrong[key];else MP.gwrong[key]=1;
+    var all=G.prac.map(function(_,i){return (MP.gans[G.id]||{})[i];});
+    var doneN=all.filter(function(x){return x&&x.done;}).length,right=all.filter(function(x){return x&&x.ok;}).length;
+    if(doneN===G.prac.length){MP.grammar[G.id]=[right,G.prac.length,right/G.prac.length>=0.8?2:1];}
+    mSave();
+    var ref=it.k==="c"?it.o[it.a]:it.a[0];
+    var fb=$("gpFb");if(fb)fb.innerHTML=(ok?'<b class="m-good">✅ 对了！</b> ':'<b class="m-badt">❌ 不对。</b> 参考：<b>'+mE(ref)+'</b>'+spkBtns(ref)+'<br>')+'💡 '+mE(it.e);
+    var nx=$("gpNext");if(nx)nx.disabled=false;
+    var sc=$("gpScore");if(sc&&doneN===G.prac.length)sc.innerHTML="本点练习 <b>"+right+"/"+G.prac.length+"</b>"+(right/G.prac.length>=0.8?" 🏆 过关了！":" · 先回看口诀和例句，再点题目重做。");
+  }
+  if(revealed){
+    var ok=ans.ok,ref=it.k==="c"?it.o[it.a]:it.a[0];
+    var fb=$("gpFb");if(fb)fb.innerHTML=(ok?'<b class="m-good">✅ 对了！</b> ':'<b class="m-badt">❌ 不对。</b> 参考：<b>'+mE(ref)+'</b>'+spkBtns(ref)+'<br>')+'💡 '+mE(it.e);
+    var inp=$("gpIn");if(inp&&ans.mine)inp.value=ans.mine;
+  }else if(it.k==="c"){
+    P.querySelectorAll("[data-gc]").forEach(function(b){b.onclick=function(){if((MP.gans&&MP.gans[G.id]&&MP.gans[G.id][qi]&&MP.gans[G.id][qi].done))return;var j=+b.dataset.gc;P.querySelectorAll("[data-gc]").forEach(function(x,k){x.disabled=true;if(k===it.a)x.classList.add("ok");else if(k===j)x.classList.add("bad");});mark(j===it.a,j);};});
+  }else{
+    var chk=$("gpChk");if(chk)chk.onclick=function(){var inp=$("gpIn");var v=inp?inp.value.trim():"";if(!v){if(inp)inp.focus();return;}if(inp)inp.disabled=true;mark(gpCheckAns(it,v),null,v);};
+  }
+  var pv=$("gpPrev");if(pv)pv.onclick=function(){MP.cur.gqi=Math.max(0,qi-1);mSave();renderGrammar();};
+  var nx=$("gpNext");if(nx)nx.onclick=function(){if(!(MP.gans&&MP.gans[G.id]&&MP.gans[G.id][qi]&&MP.gans[G.id][qi].done))return;MP.cur.gqi=qi+1;mSave();renderGrammar();window.scrollTo(0,0);};
+  var dn=$("gpDone");if(dn)dn.onclick=function(){
+    var all=G.prac.map(function(_,i){return (MP.gans&&MP.gans[G.id]||{})[i];});
+    var doneN=all.filter(function(x){return x&&x.done;}).length,right=all.filter(function(x){return x&&x.ok;}).length;
+    var box=$("gpScore");if(box)box.innerHTML=(doneN<G.prac.length?"还有题没做完。":"本点 <b>"+right+"/"+G.prac.length+"</b>"+(right/G.prac.length>=0.8?" 🏆 已掌握！":"，建议再看口诀后重做。"));
+  };
+}
+function gpWrongBook(P){
+  var keys=Object.keys(MP.gwrong||{});
+  var items=[],ks=[];
+  keys.forEach(function(k){var gid=k.split("|")[0];var G=gpById(gid);if(!G)return;var n=+String(k.split("|")[1]||"p0").replace(/\D/g,"");if(!G.prac[n])return;items.push(G.prac[n]);ks.push(k);});
+  P.innerHTML=mBack("返回语法目录")+'<div class="g"><h3>📕 语法错题（'+items.length+'）</h3><p class="m-sub">做对就会移出。每题先看讲解。</p>'+(items.length?items.map(function(it,i){return '<div class="m-sub">来自：'+mE((gpById(ks[i].split("|")[0])||{}).t||"")+'</div>'+gpItemHtml(it,i,false,null);}).join(""):'<p>🎉 暂时没有错题。</p>')+'</div>';
+  P.querySelector("[data-mback]").onclick=function(){MP.cur.grammar=null;mSave();renderGrammar();};
+  P.querySelectorAll(".gv-it").forEach(function(box,i){
+    var it=items[i],k=ks[i];
+    function fin(ok,mine){if(box.dataset.done)return;box.dataset.done="1";if(ok)delete MP.gwrong[k];mSave();var ref=it.k==="c"?it.o[it.a]:it.a[0];var fb=box.querySelector(".gv-fb");if(fb)fb.innerHTML=(ok?'<b class="m-good">✅ 已移出错题本</b> ':'<b class="m-badt">❌ 再看看。</b> 参考：<b>'+mE(ref)+'</b><br>')+'💡 '+mE(it.e);}
+    if(it.k==="c")box.querySelectorAll("[data-gc]").forEach(function(b){b.onclick=function(){var j=+b.dataset.gc;box.querySelectorAll("[data-gc]").forEach(function(x,q){x.disabled=true;if(q===it.a)x.classList.add("ok");else if(q===j)x.classList.add("bad");});fin(j===it.a);};});
+    else{var chk=box.querySelector("#gpChk")||box.querySelector(".b-sub");if(chk)chk.onclick=function(){var inp=box.querySelector("input");var v=inp?inp.value.trim():"";if(!v)return;if(inp)inp.disabled=true;fin(gpCheckAns(it,v),v);};}
+  });
+}
+function gpThemeCardHtml(theme){
+  var gid=THEME_GRAMMAR[theme];var G=gpById(gid);if(!G)return "";
+  return '<div class="g gp-theme" id="gpThemeCard"><h3>🔗 跟这组单词相关的语法</h3><p class="m-sub">学完「'+mE(theme)+'」这些词，顺手记一个用法。可跳过。</p>'+
+    '<div class="mem-tip"><b>'+mE(G.t)+' · 口诀：</b>'+mE(G.hook)+'</div>'+
+    '<div class="gv-ex"><div class="en">'+mE(G.ex[0][0])+spkBtns(G.ex[0][0])+'</div><div class="zh">'+mE(G.ex[0][1])+'</div></div>'+
+    '<div class="row" style="justify-content:flex-start;margin-top:8px"><button type="button" class="b-sub" style="flex:none" id="gpThemeGo">去练这个语法点 →</button><button type="button" class="mini" id="gpThemeSkip">暂时跳过</button></div></div>';
+}
+
+window.GRAMMAR_PLAIN=GRAMMAR_PLAIN;
+window.THEME_GRAMMAR=THEME_GRAMMAR;
+
+/* ========================= Listening mini-drills ========================= */
+var LD={mode:null,i:0,q:null,answered:false};
+function ldWordPool(){
+  var ids=srsDueIds(ST.theme);
+  if(ids.length<8){
+    var extra=themeIds(ST.theme).filter(function(i){return ids.indexOf(i)<0;});
+    extra=typeof shuffle==="function"?shuffle(extra):extra;
+    ids=ids.concat(extra.slice(0,12-ids.length));
+  }
+  if(!ids.length)ids=themeIds(ST.theme).slice(0,12);
+  return (typeof shuffle==="function"?shuffle(ids):ids).slice(0,10).map(function(i){return W[i];}).filter(Boolean);
+}
+function ldChoices(w,n){
+  n=n||3;var pool=W.filter(function(x){return x&&x.id!==w.id;});
+  pool=typeof shuffle==="function"?shuffle(pool):pool;
+  var opts=[{w:w,ok:true}].concat(pool.slice(0,n).map(function(x){return {w:x,ok:false};}));
+  return typeof shuffle==="function"?shuffle(opts):opts;
+}
+function ldRender(P){
+  if(!LD.mode){
+    P.innerHTML=mHead("🎧","今日听音小练","先听，再选/再填/再跟读。不提前给完整原文。用的是今天待复习和要学的单词。","")+
+      '<div class="g"><p class="m-sub">三种都是「先听后做」。跟读会给出百分制评分和漏词提示（iPhone 请用 Safari，并先允许麦克风）。</p>'+
+      '<div class="row" style="justify-content:flex-start">'+
+        '<button type="button" class="b-sub" style="flex:none" data-ld="pick">👂 听音选词</button>'+
+        '<button type="button" class="b-sub" style="flex:none" data-ld="gap">✍️ 听音填空</button>'+
+        '<button type="button" class="spk" data-ld="echo">🎙️ 跟读评分</button>'+
+      '</div></div>'+
+      '<div id="ldBody"></div>'+
+      '<div class="row" style="margin-top:10px"><button type="button" class="mini" id="ldBackLessons">← 回到听力课文</button></div>';
+    P.querySelectorAll("[data-ld]").forEach(function(b){b.onclick=function(){LD.mode=b.dataset.ld;LD.i=0;LD.q=ldWordPool();LD.answered=false;ldRender(P);};});
+    var bk=$("ldBackLessons");if(bk)bk.onclick=function(){LD.mode=null;MP.cur._ld=false;mSave();if(typeof renderListen==="function")renderListen();};
+    return;
+  }
+  var list=LD.q||[];
+  if(!list.length){P.innerHTML=mBack("返回听音小练")+'<div class="g"><p>暂时没有可练的词。</p></div>';P.querySelector("[data-mback]").onclick=function(){LD.mode=null;ldRender(P);};return;}
+  if(LD.i>=list.length){
+    P.innerHTML=mBack("返回听音小练")+'<div class="g"><h3>🎉 本组听音练完了</h3><p class="m-sub">可以再来一组，或去课文听力。</p><button type="button" class="b-sub" style="flex:none" id="ldAgain">再练一组</button></div>';
+    P.querySelector("[data-mback]").onclick=function(){LD.mode=null;ldRender(P);};
+    var ag=$("ldAgain");if(ag)ag.onclick=function(){LD.i=0;LD.q=ldWordPool();LD.answered=false;ldRender(P);};
+    return;
+  }
+  var w=list[LD.i];
+  var title=LD.mode==="pick"?"听音选词":(LD.mode==="gap"?"听音填空":"跟读评分");
+  var body='<div class="g"><h3>🎧 '+title+' · '+(LD.i+1)+' / '+list.length+'</h3><p class="m-sub">先点播放，听完再作答。当前不显示英文原词。</p>'+
+    '<div class="row" style="justify-content:flex-start"><button type="button" class="spk" id="ldPlay">▶ 播放</button><button type="button" class="mini" id="ldSlow">🐢 慢速</button></div>'+
+    '<div id="ldQ"></div><div id="ldFb" class="lv-fb"></div>'+
+    '<div class="row" style="justify-content:space-between;margin-top:10px"><button type="button" class="mini" id="ldPrev"'+(LD.i?"":" disabled")+'>← 上一题</button><button type="button" class="b-sub" style="flex:none" id="ldNext" '+(LD.answered?"":"disabled")+'>确定，下一题 →</button></div></div>';
+  P.innerHTML=mBack("返回听音小练")+body;
+  P.querySelector("[data-mback]").onclick=function(){LD.mode=null;ldRender(P);};
+  $("ldPlay").onclick=function(){try{speak(w.en,false);}catch(e){}};
+  $("ldSlow").onclick=function(){try{speak(w.en,true);}catch(e){}};
+  var box=$("ldQ"),fb=$("ldFb");
+  if(LD.mode==="pick"){
+    var opts=ldChoices(w,3);
+    box.innerHTML='<p class="m-sub">你听到的是哪个词？</p><div class="m-opts">'+opts.map(function(o,j){return '<button type="button" class="m-opt" data-ldc="'+j+'">'+mE(o.w.en)+' · '+mE(o.w.zh)+'</button>';}).join("")+'</div>';
+    box.querySelectorAll("[data-ldc]").forEach(function(b){b.onclick=function(){
+      if(LD.answered)return;LD.answered=true;
+      var o=opts[+b.dataset.ldc];
+      box.querySelectorAll("[data-ldc]").forEach(function(x,j){x.disabled=true;if(opts[j].ok)x.classList.add("ok");else if(x===b&&!o.ok)x.classList.add("bad");});
+      fb.innerHTML=(o.ok?'<b class="m-good">✅ 听对了！</b> ':'<b class="m-badt">❌ 正确答案是 '+mE(w.en)+'</b> ')+mE(w.zh)+spkBtns(w.en);
+      $("ldNext").disabled=false;
+    };});
+  }else if(LD.mode==="gap"){
+    var mask=String(w.en).split("").map(function(c,i){return /[a-z]/i.test(c)?(i===0?c:"_"):c;}).join(" ");
+    box.innerHTML='<p class="m-sub">听单词，写出英文。提示：'+mE(mask)+'（'+mE(w.zh)+'）</p><input id="ldIn" class="lv-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="写下你听到的词"/><button type="button" class="mini" id="ldChk">检查</button>';
+    $("ldChk").onclick=function(){
+      if(LD.answered)return;
+      var v=String(($("ldIn")&&$("ldIn").value)||"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim();
+      if(!v){$("ldIn").focus();return;}
+      LD.answered=true;
+      var want=String(w.en).toLowerCase().replace(/[’‘`´]/g,"'").replace(/\s+/g," ").trim();
+      var ok=v===want||v.replace(/['\-]/g,"")===want.replace(/['\-]/g,"");
+      fb.innerHTML=(ok?'<b class="m-good">✅ 正确</b>':'<b class="m-badt">❌ 正确是 '+mE(w.en)+'</b>')+' · '+mE(w.zh)+spkBtns(w.en);
+      $("ldNext").disabled=false;
+    };
+  }else{
+    box.innerHTML='<p class="m-sub">先听示范，再跟读这个单词。说完自动打分。</p><p>（中文意思：'+mE(w.zh)+'）</p>'+
+      (SpeakScore.available()?'<div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="ldMicAllow">① 允许麦克风</button><button type="button" class="spk" id="ldEcho">🎙️ 开始跟读</button></div>':'')+
+      '<div class="ss-live" id="ldLive"></div><div id="ldRes"></div>'+
+      (SpeakScore.available()?"":SpeakScore.recFallbackHtml());
+    var al=$("ldMicAllow");if(al)al.onclick=function(){SpeakScore.ensureMic(function(ok){($("ldLive")||fb).textContent=ok?"已允许，现在点「开始跟读」。":SpeakScore.errZh("not-allowed");});};
+    var eb=$("ldEcho");
+    if(eb)eb.onclick=function(){
+      SpeakScore.listen({btn:eb,live:$("ldLive"),target:w.en,mode:"word",onFinal:function(txt,r){
+        var host=$("ldRes")||fb;if(host)host.innerHTML=SpeakScore.card(r,txt);
+        LD.answered=true;$("ldNext").disabled=false;
+        try{srsNoteSpeak(w.id,r.pct);save({silent:true});}catch(e){}
+      }});
+    };
+    if(!SpeakScore.available()){SpeakScore.bindRecorder(box);LD.answered=true;$("ldNext").disabled=false;}
+  }
+  $("ldPrev").onclick=function(){if(!LD.i)return;LD.i--;LD.answered=false;ldRender(P);};
+  $("ldNext").onclick=function(){if(!LD.answered)return;LD.i++;LD.answered=false;ldRender(P);};
+}
+function ldInstallListenWrap(){
+  try{
+    var _rl=renderListen;
+    renderListen=function(){
+      var P=$("p-listen");if(!P)return;
+      if(MP.cur&&MP.cur._ld){ldRender(P);return;}
+      _rl();
+      // prepend entry on list page (no current lesson)
+      try{
+        if(!MP.cur.listen && !(window.LV&&LV.wrongMode)){
+          var head=P.querySelector(".m-head")||P.querySelector(".g");
+          var bar=document.createElement("div");
+          bar.className="g ld-entry";
+          bar.innerHTML='<h3>🎧 今日听音小练</h3><p class="m-sub">听音选词、听音填空、跟读评分。先听后做，适合复习模糊词。</p><button type="button" class="b-sub" style="flex:none" id="ldOpen">开始听音小练 →</button>';
+          if(head&&head.parentNode)head.parentNode.insertBefore(bar,head.nextSibling);
+          else P.insertBefore(bar,P.firstChild);
+          var b=$("ldOpen");if(b)b.onclick=function(){MP.cur._ld=true;mSave();ldRender(P);window.scrollTo(0,0);};
+        }
+      }catch(e){}
+    };
+    if(window.MOD_RENDER)MOD_RENDER.listen=renderListen;
+  }catch(e){}
+}
+
+/* ========================= Upgrade speaking / dictation scoring ========================= */
+function installSpeakWrap(){
+  try{
+    if(typeof mCmpWords==="function"){
+      var _cmp=mCmpWords;
+      mCmpWords=function(said,target){
+        var r=scoreUtterance({said:said,target:target,mode:tokensOf(target).length<=2?"word":"sentence"});
+        return {pct:r.pct,html:r.html,hit:r.hit,total:r.total,saidTokens:r.saidTokens,grade:r.grade,feedback:r.feedback,readOk:r.readOk,tips:r.tips,_v:"MEM_SPEAK_GRAM_V1"};
+      };
+    }
+  }catch(e){}
+  try{
+    var _listen=typeof mListen==="function"?mListen:null;
+    mListen=function(opts){
+      opts=opts||{};
+      // Reuse SpeakScore; keep mListen signature.
+      return SpeakScore.listen({
+        btn:opts.btn,live:opts.live,target:opts.target||"",mode:opts.mode,
+        lang:opts.lang,onInterim:opts.onInterim,
+        onFinal:function(txt,r){if(opts.onFinal)opts.onFinal(txt,r);}
+      });
+    };
+  }catch(e){}
+  // Rebind sentence / twist mics to Safari-safe start
+  try{
+    ["sentMic","twistMic"].forEach(function(id){
+      var b=$(id);if(!b)return;
+      b.style.display="";
+      if(!SpeakScore.available()){
+        var tip=$(id==="sentMic"?"sentNoMic":"twistMsg");
+        if(tip)tip.textContent="这个浏览器不能语音识别。请用 Safari（https）并允许麦克风，或直接打字。";
+        return;
+      }
+      b.onclick=function(){
+        var ta=$(id==="sentMic"?"sentIn":"twistIn");
+        var base=(ta&&ta.value)||"";
+        var liveBox=document.createElement("div"); // use sMsg
+        SpeakScore.listen({btn:b,live:null,mode:"sentence",onInterim:function(t){
+          if(ta)ta.value=(base?base.replace(/\s+$/,"")+" ":"")+t;
+        },onFinal:function(txt){
+          if(!ta)return;
+          var add=String(txt||"").trim();if(!add)return;
+          var prev=String(base||"").replace(/\s+$/,"");
+          ta.value=prev?(prev.replace(/[.!?]"?$/,"")?prev+(/[.!?]"?$/.test(prev)?" ":" ")+add:add):add.charAt(0).toUpperCase()+add.slice(1);
+          try{if(id==="sentMic")dFlushFromInput({flash:true});}catch(e){}
+          try{if(id==="sentMic")sMsg("✅ 听到了，可改一改再点「检测」。");else sMsgTwist("✅ 听到了，可改一改再点「检测加戏」。");}catch(e){}
+        }});
+      };
+    });
+  }catch(e){}
+}
+
+/* ========================= Progress / today / words UI wraps ========================= */
+function installWordUiHooks(){
+  try{
+    var _rw=renderWords;
+    renderWords=function(){
+      _rw.apply(this,arguments);
+      try{
+        var w=cur();
+        var ids=themeIds(ST.theme);
+        var due=srsDueIds(ST.theme).length;
+        var left=new Set(ST.queue||[]).size;
+        if($("cRep")){
+          $("cRep").textContent=due;
+          var lab=$("cRep").parentNode&&$("cRep").parentNode.querySelector("span");
+          if(lab)lab.textContent="待复习";
+        }
+        var phase=$("phase");
+        if(phase&&w){
+          var r=srsGet(w.id);
+          var kind=r&&srsIsDue(w.id)&&(ST.known.indexOf(w.id)>=0||(r&&r.reviews))?"复习":"新学";
+          var todayInfo=ST._srsToday||{review:due,fresh:Math.max(0,left-due)};
+          phase.textContent=(ST.theme===ALLTH?"📚 全部 200 词":"🗂️ "+ST.theme)+" · 今天复习 "+due+" · 新学约 "+Math.min(SRS_NEW_CAP,(todayInfo.fresh||0))+"（上限 "+SRS_NEW_CAP+"） · 当前："+kind;
+        }
+        // inject memory aid after reveal
+        var host=$("ex");
+        if(w&&ST.revealed&&host){
+          var box=$("memAid");
+          if(!box){box=document.createElement("div");box.id="memAidWrap";host.parentNode.insertBefore(box,host.nextSibling);}
+          box.innerHTML=memAidHtml(w);memAidBind(w);
+        }else{
+          var wrap=$("memAidWrap")||$("memAid");if(wrap)wrap.innerHTML="";
+        }
+        var rep=$("repTag");
+        if(rep&&w){
+          var rr=srsGet(w.id);
+          if(rr&&srsIsDue(w.id)&&rr.status!=="new"){rep.style.display="";rep.textContent="到期复习 · "+srsStatusZh(rr.status);}
+        }
+      }catch(e){}
+    };
+  }catch(e){}
+  try{
+    var _rd=renderDone;
+    renderDone=function(){
+      _rd.apply(this,arguments);
+      try{
+        if(ST.theme&&ST.theme!==ALLTH){
+          var done=$("done");if(!done)return;
+          if($("gpThemeCard"))return;
+          var html=gpThemeCardHtml(ST.theme);if(!html)return;
+          var hold=document.createElement("div");hold.innerHTML=html;
+          var card=hold.firstChild;
+          var row=done.querySelector("#bRetest")?done.querySelector("#bRetest").parentNode:null;
+          if(row&&row.parentNode)row.parentNode.insertBefore(card,row);
+          else done.appendChild(card);
+          var go=$("gpThemeGo"),sk=$("gpThemeSkip");
+          if(go)go.onclick=function(){ST.tab="grammar";MP.cur.grammar=THEME_GRAMMAR[ST.theme];MP.cur.gqi=0;save();renderAll();window.scrollTo(0,0);};
+          if(sk)sk.onclick=function(){var c=$("gpThemeCard");if(c)c.style.display="none";};
+        }
+      }catch(e){}
+    };
+  }catch(e){}
+  try{
+    var _rt=renderTodayLearn;
+    renderTodayLearn=function(){
+      _rt.apply(this,arguments);
+      try{
+        var el=$("todayLearn");if(!el)return;
+        srsMigrate(ST);srsRolloverDay();
+        var due=srsDueIds(ALLTH).length;
+        var c=srsCounts(ALLTH);
+        var started=(ST.srsDay.newIds||[]).length;
+        var add=document.createElement("div");
+        add.className="tl-srs";
+        add.innerHTML='<div>🧠 记忆安排：待复习 <b>'+due+'</b> 个（优先出现）· 今日已点开新词 <b>'+started+'</b> / '+SRS_NEW_CAP+' · 掌握分布：已掌握 '+c.mastered+' · 模糊 '+c.fuzzy+' · 学习中 '+c.learning+' · 新词 '+c.new+'</div>';
+        // avoid duplicate
+        var old=el.querySelector(".tl-srs");if(old)old.remove();
+        el.appendChild(add);
+      }catch(e){}
+    };
+  }catch(e){}
+  try{
+    var _rm=renderMem;
+    renderMem=function(){
+      _rm.apply(this,arguments);
+      try{
+        srsMigrate(ST);
+        var P=$("p-mem");if(!P)return;
+        var first=P.querySelector(".g");
+        var dueIds=srsDueIds(ALLTH);
+        var fuzzyIds=[];
+        (typeof W!=="undefined"?W:[]).forEach(function(w){
+          var r=srsGet(w.id);
+          if(r&&(r.status==="fuzzy"||(r.spellWrong||0)>=2||(r.lapses||0)>=2))fuzzyIds.push(w.id);
+        });
+        var seen={};fuzzyIds=fuzzyIds.filter(function(i){if(seen[i])return false;seen[i]=1;return true;});
+        fuzzyIds.sort(function(a,b){var ra=srsGet(a)||{},rb=srsGet(b)||{};return (rb.lapses||0)-(ra.lapses||0);});
+        var c=srsCounts(ALLTH);
+        var box=document.createElement("div");
+        box.id="srsMem";
+        function wline(i){
+          var w=W[i],r=srsGet(i);if(!w)return "";
+          return '<div class="sent">'+(r?srsStatusZh(r.status):"")+' <b>'+mE(w.en)+'</b> '+mE(w.ph)+' '+mE(w.zh)+
+            (r?' · 错过 '+(r.lapses||0)+' 次 · '+srsDueText(r):'')+spkBtns(w.en)+'</div>';
+        }
+        box.innerHTML='<div class="g"><h3>🧠 今天该复习什么</h3>'+
+          '<div class="big">待复习 <b>'+dueIds.length+'</b> 个 · 易错/模糊 <b>'+fuzzyIds.length+'</b> 个</div>'+
+          '<div class="srs-dist">新词 '+c.new+' · 学习中 '+c.learning+' · 模糊 '+c.fuzzy+' · 已掌握 '+c.mastered+'</div>'+
+          '<p class="m-sub">规则很简单：错了或点「模糊 / 不会」，几小时到 1 天内会再出现；连续答对就拉长到几天后再见，最长 30 天。每天新词大约 50 个，复习词会排在前面。</p>'+
+          '<div class="row" style="justify-content:flex-start"><button type="button" class="b-sub" style="flex:none" id="srsGoReview">去复习到期的词 →</button></div></div>'+
+          '<div class="g"><h3>📋 待复习（到期）</h3>'+(dueIds.length?dueIds.slice(0,40).map(wline).join("")+(dueIds.length>40?"<div class='m-sub'>只显示前 40 个。</div>":""):"现在没有到期的词 👍")+'</div>'+
+          '<div class="g"><h3>⚠️ 易错词</h3>'+(fuzzyIds.length?fuzzyIds.slice(0,40).map(wline).join(""):"还没有明显易错词。")+'</div>';
+        var old=$("srsMem");if(old)old.remove();
+        if(first&&first.parentNode)first.parentNode.insertBefore(box,first.nextSibling);
+        else P.insertBefore(box,P.firstChild);
+        var go=$("srsGoReview");
+        if(go)go.onclick=function(){
+          ST.theme=ALLTH;
+          if(dueIds.length){ST.queue=dueIds.slice();ST.round="final";ST.revealed=false;ST.pending=null;ST.tab="words";save();renderAll();window.scrollTo(0,0);}
+          else{ST.tab="words";save();renderAll();}
+        };
+        try{if(typeof syncBindMem==="function")syncBindMem();}catch(e){}
+      }catch(e){}
+    };
+  }catch(e){}
+}
+
+function installGrammarOverride(){
+  try{
+    renderGrammar=function(){
+      var P=$("p-grammar");if(!P)return;
+      try{mStop();}catch(e){}
+      MP.gprac=MP.gprac||{};MP.gwrong=MP.gwrong||{};
+      if(MP.cur.grammar==="__wrong")return gpWrongBook(P);
+      var G=gpById(MP.cur.grammar);
+      if(!G)return gpRenderList(P);
+      return gpRenderPoint(P,G);
+    };
+    if(window.MOD_RENDER)MOD_RENDER.grammar=renderGrammar;
+  }catch(e){}
+}
+
+function installAnswerButtons(){
+  try{
+    var bf=$("bFuz");
+    if(bf){
+      var old=bf.onclick;
+      bf.onclick=function(){
+        var w=cur();
+        if(typeof old==="function")old();
+        if(w)srsOnFuzzyOrNo(w.id,"fuzzy");
+      };
+    }
+    var bn=$("bNo");
+    if(bn){
+      var oldn=bn.onclick;
+      bn.onclick=function(){
+        var w=cur();
+        if(typeof oldn==="function")oldn();
+        if(w)srsOnFuzzyOrNo(w.id,"no");
+      };
+    }
+  }catch(e){}
+}
+
+function installCss(){
+  if($("mem-speak-gram-v1-css"))return;
+  var s=document.createElement("style");s.id="mem-speak-gram-v1-css";
+  s.textContent=
+    '.mem-aid{width:100%;max-width:520px;margin:10px auto 0;padding:12px 14px;border:1px solid var(--border);background:var(--paper);border-radius:var(--radius);text-align:left}'+
+    '.mem-aid .mem-h{font-weight:700;color:var(--accent2);margin:0 0 6px}'+
+    '.mem-tip,.mem-sc{margin:0 0 8px;line-height:1.55;font-size:.92rem}'+
+    '.mem-sense{font-size:.88rem;color:var(--muted)}'+
+    '.mem-srs{margin-top:8px;font-size:.82rem;color:var(--muted)}'+
+    '.ss-card{border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin:8px 0;background:var(--card);text-align:left}'+
+    '.ss-card.ss-ok{border-color:#9cc9a3;background:#f6fbf6}'+
+    '.ss-card.ss-mid{border-color:#d4c4a0;background:#fbf7ee}'+
+    '.ss-card.ss-bad{border-color:#e0b8b2;background:#fdf6f5}'+
+    '.ss-pct{font-size:1.8rem;color:var(--accent2);margin-right:8px}'+
+    '.ss-scoreline{display:flex;align-items:baseline;gap:6px;margin-bottom:4px}'+
+    '.ss-kv,.ss-heard,.ss-fb,.ss-tip{font-size:.9rem;line-height:1.5;margin:4px 0}'+
+    '.ss-cmp{margin:6px 0;line-height:1.7}'+
+    '.ss-cmp .m-hit{color:var(--good);font-weight:700}'+
+    '.ss-cmp .m-soft{color:#2f6b4e;border-bottom:1px dashed #2f6b4e}'+
+    '.ss-cmp .m-miss{color:var(--bad);text-decoration:underline}'+
+    '.ss-live{min-height:1.2em;margin-top:6px;font-size:.9rem;color:var(--accent2)}'+
+    '.ss-fallback{margin-top:8px;font-size:.9rem}'+
+    '.tl-srs{margin-top:6px;font-size:.88rem;line-height:1.5;color:var(--ink)}'+
+    '.srs-dist{margin:6px 0;font-size:.92rem}'+
+    '.ld-entry{border:1px solid #e0c8c8;background:var(--accent-soft)}'+
+    '.gp-theme{border:1px solid #e0c8c8;background:#faf6f4}'+
+    '#memWriteIn{width:100%;padding:10px 12px;margin:6px 0;border:1px solid var(--border);border-radius:var(--radius);font-size:16px}'+
+    '.gv-today{border-color:var(--accent)!important;background:var(--accent-soft)!important}'+
+    '.gv-why{font-size:.95rem;line-height:1.7;margin:0}'+
+    '.m-soft{color:#2f6b4e}';
+  document.head.appendChild(s);
+}
+
+/* boot */
+try{installCss();}catch(e){}
+function srsInjectDueIntoQueue(){
+  try{
+    srsMigrate(ST);srsRolloverDay();
+    var due=srsDueIds(ST.theme);
+    if(!due.length)return;
+    var q=ST.queue||[];
+    var have={};q.forEach(function(i){have[i]=1;});
+    var add=due.filter(function(i){return !have[i];});
+    if(add.length)ST.queue=add.concat(q);
+  }catch(e){}
+}
+try{srsInstallStateHooks();srsMigrate(ST);srsInjectDueIntoQueue();srsInstallSyncHook();srsInstallAnswerHooks();installAnswerButtons();installWordUiHooks();installGrammarOverride();installSpeakWrap();ldInstallListenWrap();}catch(e){try{if(window.__tfErr)__tfErr("MEM_SPEAK_GRAM_V1",e);}catch(x){}}
+try{
+  if(typeof renderAll==="function"){
+    // refresh current view with new UI (safe)
+    if(ST&&ST.tab)renderAll();
+  }
+}catch(e){}
+try{window.SpeakScore=window.SpeakScore;window.SRS=window.SRS;}catch(e){}
+})();
+
+</script>
+</body></html>
