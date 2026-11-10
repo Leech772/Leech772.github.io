@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><!-- MEM_SPEAK_GRAM_V1 --><!-- DROP_SCENE_EX_V1 --><!-- SPEAK_TAP_UX_V1 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><!-- MEM_SPEAK_GRAM_V1 --><!-- DROP_SCENE_EX_V1 --><!-- SPEAK_TAP_UX_V1 --><!-- SPEAK_HEAR_FIX_V1 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -4968,19 +4968,37 @@ function scoreCardHtml(r,said){
   '</div>';
 }
 
-var _micStream=null,_micDenied=false,_micTried=false,_rec=null,_listenOn=false;
+var _micStream=null,_micDenied=false,_micTried=false,_micGranted=false,_rec=null,_listenOn=false;
 function srAPI(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
 function micHint(){
-  return "iPhone 请用自带 Safari 打开本页（不要用微信），在「设置 → Safari → 麦克风」里允许。电脑可用 Chrome 或 Edge。";
+  return "iPhone 请用自带 Safari 打开本页（不要用微信或 Chrome），在「设置 → Safari → 麦克风」里允许。电脑可用 Chrome 或 Edge。";
+}
+function releaseMicStream(){
+  /* SPEAK_HEAR_FIX_V1: never keep a live MediaStream across SpeechRecognition. */
+  try{
+    if(_micStream){
+      var ts=_micStream.getTracks?_micStream.getTracks():[];
+      for(var i=0;i<ts.length;i++){try{ts[i].stop();}catch(e){}}
+    }
+  }catch(e){}
+  _micStream=null;
 }
 function ensureMic(cb){
-  // Does NOT delay recognition start. Optional callback after permission settles.
-  if(_micStream){if(cb)cb(true);return;}
+  // Permission probe only (「还没开麦克风？」). After getUserMedia succeeds,
+  // immediately stop tracks so the stream cannot steal the mic from webkitSpeechRecognition on iOS Safari.
+  if(_micGranted){if(cb)cb(true);return;}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){if(cb)cb(false);return;}
   _micTried=true;
   try{
     var p=navigator.mediaDevices.getUserMedia({audio:true});
-    if(p&&p.then)p.then(function(s){_micStream=s;_micDenied=false;if(cb)cb(true);}).catch(function(){_micDenied=true;if(cb)cb(false);});
+    if(p&&p.then)p.then(function(s){
+      _micGranted=true;_micDenied=false;
+      try{
+        var ts=s&&s.getTracks?s.getTracks():[];
+        for(var i=0;i<ts.length;i++){try{ts[i].stop();}catch(e){}}
+      }catch(e){}
+      if(cb)cb(true);
+    }).catch(function(){_micDenied=true;_micGranted=false;if(cb)cb(false);});
   }catch(e){if(cb)cb(false);}
 }
 function stopRec(){
@@ -5000,35 +5018,52 @@ function listenOnce(opts){
     else if(typeof alert==="function")try{alert(msg);}catch(e){}
     return {ok:false,reason:"not-supported"};
   }
-  // Stop previous, then start() SYNCHRONOUSLY in this click.
+  // SPEAK_HEAR_FIX_V1: release any held MediaStream first; do not probe or open the mic here.
+  // Recognition start stays synchronous in this click so it can request the microphone itself.
+  releaseMicStream();
   try{if(_rec){_rec.onend=null;_rec.onerror=null;_rec.onresult=null;_rec.stop();}}catch(e){}
   _rec=null;
   try{if(typeof mStop==="function")mStop();}catch(e){}
-  // Kick permission in the same gesture; do not await.
-  ensureMic();
+  try{if(typeof mStopOthers==="function")mStopOthers();}catch(e){}
   var rec=new SR();
   _rec=rec;_listenOn=true;
   rec.lang=(opts.lang)||(typeof mSrLang==="function"?mSrLang():"en-US")||"en-US";
-  // iOS Safari: continuous is unstable. Always default false.
-  rec.continuous=false;
-  rec.interimResults=_isAppleWebKit()?false:true; // iOS often only final
+  rec.continuous=true;
+  rec.interimResults=true;
   rec.maxAlternatives=3;
   var old=btn?btn.textContent:"";
   var finalTxt="",interimTxt="",stopped=false,got=false,t0=_now();
-  var needSecondTap=!_micStream;
+  var needSecondTap=!_micGranted;
+  var maxMs=9000, settleMs=mode==="word"?700:1000;
+  var maxTimer=null,settleTimer=null;
+  function clearTimers(){
+    try{if(maxTimer){clearTimeout(maxTimer);maxTimer=null;}}catch(e){}
+    try{if(settleTimer){clearTimeout(settleTimer);settleTimer=null;}}catch(e){}
+  }
+  function listeningHint(){return "正在听… 请马上大声把词或句子说完";}
   if(btn)btn.textContent="⏹️ 正在听";
   if(live){
     live.classList.add("on");
-    live.textContent=needSecondTap?"如果弹出「允许麦克风」，请点允许，然后再点一次按钮，看到「正在听」就马上大声说。":"正在听… 请马上用英语大声把词说完";
+    live.textContent=needSecondTap?"如果弹出「允许麦克风」，请先允许，再点一次。看到「正在听」后马上大声说完。":listeningHint();
     try{live.scrollIntoView({block:"center",behavior:"smooth"});}catch(e){}
   }
   function finish(why){
     if(stopped)return;stopped=true;_listenOn=false;
+    clearTimers();
     var dur=_now()-t0;
     try{rec.stop();}catch(e){}
     if(btn)btn.textContent=old||"🎙️ 跟读评分";
     var best=(finalTxt||interimTxt||"").trim();
-    if(live){live.classList.remove("on");if(!best&&why)live.textContent=errZh(why);else if(!best)live.textContent="没识别到英文。请靠近麦克风，再点一次并马上说。";else live.textContent="识别完成";}
+    if(live){
+      live.classList.remove("on");
+      if(best){live.textContent="识别完成";}
+      else{
+        var tip=needSecondTap?"如果刚才弹出了麦克风权限，请先允许，再点一次。看到「正在听」后马上大声说完。":(why?errZh(why):"没识别到英文。看到「正在听」后请马上大声说完，再点「再试一次」。");
+        live.innerHTML=_esc(tip)+' <button type="button" class="mini ss-resume">再试一次</button>';
+        var rb=live.querySelector(".ss-resume");
+        if(rb)rb.onclick=function(){listenOnce(opts);};
+      }
+    }
     if(best){
       var r=target?scoreUtterance({said:best,target:target,durationMs:dur,mode:mode}):null;
       if(onFinal)onFinal(best,r);
@@ -5037,7 +5072,10 @@ function listenOnce(opts){
     if(btn)btn.onclick=function(){listenOnce(opts);};
     _rec=null;
   }
-  rec.onstart=function(){if(live){live.classList.add("on");live.textContent="正在听… 请用英语大声说完整";}};
+  rec.onstart=function(){
+    _micGranted=true;_micDenied=false;
+    if(live){live.classList.add("on");live.textContent=listeningHint();}
+  };
   rec.onresult=function(e){
     got=true;var finals="",inter="";
     for(var i=e.resultIndex;i<e.results.length;i++){
@@ -5052,40 +5090,41 @@ function listenOnce(opts){
     }
     if(finals){finalTxt=(finalTxt?finalTxt+" ":"")+finals;interimTxt="";}else interimTxt=inter;
     var show=((finalTxt?finalTxt+" ":"")+(interimTxt||"")).trim();
-    if(live){live.classList.add("on");live.textContent="正在听… "+(show||"请说英语");}
+    if(live){live.classList.add("on");live.textContent="正在听… "+(show||"请马上大声说完");}
     if(onInterim&&show)onInterim(show);
+    if(finalTxt){
+      if(settleTimer)try{clearTimeout(settleTimer);}catch(e){}
+      settleTimer=setTimeout(function(){if(finalTxt||interimTxt)finish("");}, settleMs);
+    }
   };
   rec.onerror=function(e){
     var er=(e&&e.error)||"error";
     if(er==="aborted")return;
     if(er==="no-speech"&&(finalTxt||interimTxt))return;
+    if(er==="not-allowed"||er==="service-not-allowed"){ _micDenied=true;_micGranted=false; }
     if(live)live.textContent=errZh(er);
-    if(er==="not-allowed"||er==="service-not-allowed"){ _micDenied=true; try{alert(errZh(er));}catch(x){} }
+    if(er==="not-allowed"||er==="service-not-allowed"){ try{alert(errZh(er));}catch(x){} }
   };
   rec.onend=function(){
-    // Do NOT auto-restart here (async, iOS would fail / loop). Offer a button instead.
+    // Do not auto-restart recognition here (async restart on iOS fails or loops).
     if(stopped){if(btn){btn.textContent=old||"🎙️ 开始跟读";btn.onclick=function(){listenOnce(opts);};}return;}
-    if(!got&&!finalTxt&&!interimTxt&&live){
-      var tip=needSecondTap?"如果刚才弹出了麦克风权限，请先允许，再点一次，看到「正在听」后马上大声说。":errZh("no-speech");
-      live.innerHTML=tip+' <button type="button" class="mini ss-resume">再点一次，开始说</button>';
-      var rb=live.querySelector(".ss-resume");
-      if(rb)rb.onclick=function(){listenOnce(opts);};
-    }
-    finish(got?"":"no-speech");
+    finish(got||finalTxt||interimTxt?"":"no-speech");
   };
   if(btn)btn.onclick=function(){if(_rec===rec&&!stopped)finish("");};
   try{rec.start();}catch(err){
+    clearTimers();
     if(btn){btn.textContent=old||"🎙️ 跟读评分";btn.onclick=function(){listenOnce(opts);};}
-    var msg=errZh("start-failed");
-    if(live)live.textContent=msg;
-    try{alert(msg);}catch(e){}
+    var msg2=errZh("start-failed");
+    if(live)live.textContent=msg2;
+    try{alert(msg2);}catch(e){}
     return {ok:false,reason:"start-failed"};
   }
+  maxTimer=setTimeout(function(){finish((finalTxt||interimTxt)?"":"no-speech");}, maxMs);
   return {ok:true};
 }
 function errZh(code){
   if(code==="not-allowed"||code==="service-not-allowed")return "麦克风权限被拒绝。请到「设置 → Safari → 麦克风」允许后，用 Safari 打开本页，再点「跟读评分」。不要用微信打开。";
-  if(code==="no-speech")return "没听到声音。请靠近麦克风，用英语把整句说完，再点「继续说」。";
+  if(code==="no-speech")return "没听到声音。看到「正在听」后请马上用英语大声把词或句子说完，再点「再试一次」。";
   if(code==="audio-capture")return "找不到麦克风。请检查手机麦克风是否可用。";
   if(code==="network")return "语音识别需要联网，请检查网络后重试。";
   if(code==="language-not-supported")return "当前识别语言不被支持，试试把语言换成 en-US。";
@@ -5103,15 +5142,31 @@ function bindRecorder(root){
   var chunks=[],mr=null,url=null,recording=false;
   recBtn.onclick=function(){
     if(recording){try{mr.stop();}catch(e){}return;}
-    ensureMic(function(ok){
-      if(!ok||!_micStream){if(msg)msg.textContent="无法使用麦克风。"+micHint();return;}
-      try{
-        chunks=[];mr=new MediaRecorder(_micStream);
-        mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data);};
-        mr.onstop=function(){recording=false;recBtn.textContent="⏺️ 开始录音";var blob=new Blob(chunks,{type:mr.mimeType||"audio/webm"});if(url)try{URL.revokeObjectURL(url);}catch(e){}url=URL.createObjectURL(blob);if(playBtn){playBtn.hidden=false;playBtn.onclick=function(){var a=new Audio(url);a.play();};}if(msg)msg.textContent="已录好，点回放对照示范。这个浏览器不能自动评分。";};
-        mr.start();recording=true;recBtn.textContent="⏹️ 停止录音";if(msg)msg.textContent="正在录音…说完点停止。";
-      }catch(e){if(msg)msg.textContent="此浏览器不支持录音回放。";}
-    });
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){if(msg)msg.textContent="无法使用麦克风。"+micHint();return;}
+    _micTried=true;
+    try{
+      var p=navigator.mediaDevices.getUserMedia({audio:true});
+      if(!p||!p.then){if(msg)msg.textContent="无法使用麦克风。"+micHint();return;}
+      p.then(function(s){
+        _micGranted=true;_micDenied=false;
+        releaseMicStream();
+        _micStream=s;
+        try{
+          chunks=[];mr=new MediaRecorder(_micStream);
+          mr.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data);};
+          mr.onstop=function(){
+            recording=false;recBtn.textContent="⏺️ 开始录音";
+            releaseMicStream();
+            var blob=new Blob(chunks,{type:mr.mimeType||"audio/webm"});
+            if(url)try{URL.revokeObjectURL(url);}catch(e){}
+            url=URL.createObjectURL(blob);
+            if(playBtn){playBtn.hidden=false;playBtn.onclick=function(){var a=new Audio(url);a.play();};}
+            if(msg)msg.textContent="已录好，点回放对照示范。这个浏览器不能自动评分。";
+          };
+          mr.start();recording=true;recBtn.textContent="⏹️ 停止录音";if(msg)msg.textContent="正在录音…说完点停止。";
+        }catch(e){releaseMicStream();if(msg)msg.textContent="此浏览器不支持录音回放。";}
+      }).catch(function(){_micDenied=true;_micGranted=false;if(msg)msg.textContent="无法使用麦克风。"+micHint();});
+    }catch(e){if(msg)msg.textContent="无法使用麦克风。"+micHint();}
   };
 }
 
@@ -5409,7 +5464,7 @@ function memAidHtml(w){
       '<button type="button" class="mini" id="memMicAllow">还没开麦克风？</button>'+
       '<button type="button" class="mini" id="memWrite">✍️ 再默写</button>'+
     '</div>'+
-    '<p class="m-sub">点「跟读评分」后请马上大声说。第一次若弹出权限，允许后再点一次。</p>'+
+    '<p class="m-sub">点「跟读评分」后，看到「正在听」就马上大声把词说完。若弹出权限，请先允许，再点一次。</p>'+
     '<div class="ss-live" id="memSpeakLive" aria-live="polite"></div>'+
     '<div id="memSpeakRes"></div>'+
     '<div id="memWriteBox" style="display:none;margin-top:8px"><input id="memWriteIn" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="不看上面，再拼一次…"/><button type="button" class="mini" id="memWriteGo">检查默写</button><div id="memWriteFb" class="ss-fb"></div></div>'+
@@ -5424,7 +5479,7 @@ function memAidBind(w){
     var live=$("memSpeakLive");
     if(live){live.classList.add("on");live.textContent="请在弹窗里允许麦克风…";try{live.scrollIntoView({block:"center",behavior:"smooth"});}catch(e){}}
     SpeakScore.ensureMic(function(ok){
-      if(live){live.classList.remove("on");live.textContent=ok?"麦克风已允许。现在点「跟读评分」，看到「正在听」就马上说。":SpeakScore.errZh("not-allowed");}
+      if(live){live.classList.remove("on");live.textContent=ok?"麦克风已允许。现在点「跟读评分」，看到「正在听」就马上大声说完。":SpeakScore.errZh("not-allowed");}
     });
   };
   if(spk)spk.onclick=function(){
@@ -5754,10 +5809,10 @@ function ldRender(P){
     };
   }else{
     box.innerHTML='<p class="m-sub">先听示范，再跟读这个单词。说完自动打分。</p><p>（中文意思：'+mE(w.zh)+'）</p>'+
-      (SpeakScore.available()?'<p class="m-sub">点「开始跟读」后请马上说。第一次若弹出权限，允许后再点一次。</p><div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="ldMicAllow">还没开麦克风？</button><button type="button" class="spk" id="ldEcho">🎙️ 开始跟读</button></div>':'')+
+      (SpeakScore.available()?'<p class="m-sub">点「开始跟读」后，看到「正在听」就马上大声把词说完。若弹出权限，请先允许，再点一次。</p><div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="ldMicAllow">还没开麦克风？</button><button type="button" class="spk" id="ldEcho">🎙️ 开始跟读</button></div>':'')+
       '<div class="ss-live" id="ldLive"></div><div id="ldRes"></div>'+
       (SpeakScore.available()?"":SpeakScore.recFallbackHtml());
-    var al=$("ldMicAllow");if(al)al.onclick=function(){var live=$("ldLive")||fb;if(live)live.textContent="请在弹窗里允许麦克风…";SpeakScore.ensureMic(function(ok){(live||fb).textContent=ok?"已允许。现在点「开始跟读」，看到「正在听」就马上说。":SpeakScore.errZh("not-allowed");});};
+    var al=$("ldMicAllow");if(al)al.onclick=function(){var live=$("ldLive")||fb;if(live)live.textContent="请在弹窗里允许麦克风…";SpeakScore.ensureMic(function(ok){(live||fb).textContent=ok?"已允许。现在点「开始跟读」，看到「正在听」就马上大声说完。":SpeakScore.errZh("not-allowed");});};
     var eb=$("ldEcho");
     if(eb)eb.onclick=function(){
       SpeakScore.listen({btn:eb,live:$("ldLive"),target:w.en,mode:"word",onFinal:function(txt,r){
