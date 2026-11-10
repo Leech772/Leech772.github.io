@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><!-- MEM_SPEAK_GRAM_V1 --><!-- DROP_SCENE_EX_V1 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
+<html lang="zh-CN"><!-- oxford100-sr-enUS-v2 --><!-- GRAMMAR_V2_DEEP --><!-- GRAMMAR_V3_DEEP --><!-- SYNC_CROSS_DEVICE_V1 --><!-- IOS_TAPFIX_V1 --><!-- ESSAY_V2_REF --><!-- ESSAY_GROUP_AI_V1 --><!-- ROOTFAM_LISTEN_V2 --><!-- IOS_TAPFIX_V2 --><!-- MEM_SPEAK_GRAM_V1 --><!-- DROP_SCENE_EX_V1 --><!-- SPEAK_TAP_UX_V1 --><head><meta charset="UTF-8"/><script>/* IOS_TAPFIX_V2: 全局保护——任何模块报错只记录，不让整页点不动 */window.__tfErrs=[];window.__tfErr=function(where,e){try{window.__tfErrs.push([where,String(e&&e.message||e)]);if(window.__tfErrs.length>30)window.__tfErrs.shift();console.error("[IOS_TAPFIX_V2]",where,e);}catch(_){}};window.addEventListener("error",function(ev){window.__tfErr("window",ev&&ev.error||ev&&ev.message);});window.addEventListener("unhandledrejection",function(ev){window.__tfErr("promise",ev&&ev.reason);});</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -1711,7 +1711,7 @@ function renderSpeak(){const P=$("p-speak");const T=SPEAK.find(x=>x.id===MP.cur.
  '<div class="g m-topic"><div class="tag">Part 1 · 话题 '+(idx+1)+'</div><h3 class="m-bigq">'+T.icon+' '+mE(T.q)+'</h3><div class="m-zhp">💭 '+mE(T.zh)+'</div><div class="m-tip">🧭 答题思路：'+mE(T.tip)+'</div></div>'+
  '<div class="g"><h3>🧩 可用句型</h3>'+T.pat.map(p=>'<div class="sent m-pat"><b>'+mE(p[0])+'</b><br><span class="zhl">'+mE(p[1])+'</span></div>').join("")+'</div>'+
  '<div class="g m-player"><h3>🎧 示范回答（Jessica）</h3><div class="row m-ctrl" style="justify-content:flex-start"><button type="button" class="spk" data-mplay="'+T.id+'" data-lbl="▶ 听示范">▶ 听示范</button>'+mRateBtns()+'</div><div class="m-lines">'+T.ans.map((s,i)=>'<div class="m-line" data-mline="'+i+'" data-aid="'+T.id+'" data-mseg="'+T.id+'|'+i+'"><span class="m-en">'+mE(s)+'</span></div>').join("")+'</div></div>'+
- '<div class="g"><h3>🔁 逐句跟读</h3><p class="m-sub">每句：🔊 听 → '+(SR_API?'🎙️ 说英语（实时显示听到的词，绿色=对上了；说完自动打分）':'自己大声说 2 遍')+' → 觉得说顺了就点 ✓ 打勾（自评后备）。</p>'+(SR_API?'<div class="m-lang">识别语言 <select id="mSrLang"><option value="en-US"'+(mSrLang()==="en-US"?" selected":"")+'>en-US 美式</option><option value="en-GB"'+(mSrLang()==="en-GB"?" selected":"")+'>en-GB 英式</option></select> · 请允许麦克风 · Chrome/Edge 效果最好</div>':'')+
+ '<div class="g"><h3>🔁 逐句跟读</h3><p class="m-sub">每句：🔊 听 → '+(SR_API?'🎙️ 说英语（实时显示听到的词，绿色=对上了；说完自动打分）':'自己大声说 2 遍')+' → 觉得说顺了就点 ✓ 打勾（自评后备）。</p>'+(SR_API?'<div class="m-lang">识别语言 <select id="mSrLang"><option value="en-US"'+(mSrLang()==="en-US"?" selected":"")+'>en-US 美式</option><option value="en-GB"'+(mSrLang()==="en-GB"?" selected":"")+'>en-GB 英式</option></select> · 请允许麦克风 · iPhone 请用 Safari，电脑可用 Chrome 或 Edge。点下去后请马上说，第一次若弹出权限，允许后再点一次</div>':'')+
  T.ans.map((s,i)=>'<div class="m-shadow'+(done.has(i)?" done":"")+'" data-si="'+i+'"><div class="m-sh-t">'+mE(s)+'</div><div class="row" style="justify-content:flex-start"><button type="button" class="mini" data-mseg="'+T.id+'|'+i+'">🔊 听</button>'+(SR_API?'<button type="button" class="mini m-mic">🎙️ 我说</button><button type="button" class="mini m-again" hidden>🔄 再说一次</button>':'')+'<button type="button" class="mini m-ok">'+(done.has(i)?"✅ 已会":"✓ 我说顺了")+'</button></div><div class="m-live" aria-live="polite"></div><div class="m-sh-r"></div></div>').join("")+'</div>'+
  '<div class="g"><h3>✍️ 换成我自己的回答</h3><p class="m-sub">用上面的句型，把示范里的内容换成你自己的（家乡、学校、爱好…），写下来再大声说 3 遍。会自动保存。</p><textarea id="mMyAns" rows="4" placeholder="例如：My hometown is ...">'+mE((MP.speak[T.id+"_my"]||""))+'</textarea>'+(SR_API?'<div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="mMyMic">🎙️ 说出来转文字</button></div>':'')+'</div>'+
  '<div class="row" style="justify-content:space-between">'+(idx>0?'<button type="button" class="mini" data-sgo="'+SPEAK[idx-1].id+'">← 上一个</button>':'<span></span>')+(idx<SPEAK.length-1?'<button type="button" class="b-sub" style="flex:none" data-sgo="'+SPEAK[idx+1].id+'">下一个话题 →</button>':'')+'</div>';
@@ -1735,7 +1735,7 @@ function mSrErrZh(code){const safari=mSrSafariHint();
   if(code==="audio-capture")return"找不到麦克风：请检查手机/电脑麦克风是否可用。";
   if(code==="network")return"语音识别需要联网，请检查网络后重试。";
   if(code==="language-not-supported")return"当前浏览器不支持该英语识别语言，试试切换 en-US / en-GB。";
-  if(!SR_API||code==="not-supported")return"这个浏览器不支持英语语音识别"+(safari?"（iPhone/iPad 的 Safari 通常不支持，请用 Chrome / Edge，或改用「✓ 我说顺了」自评）":"。请用 Chrome / Edge，或改用自评打勾。");
+  if(!SR_API||code==="not-supported")return"这个浏览器不支持英语语音识别。iPhone 请用自带 Safari 打开（不要用微信或第三方浏览器）；电脑可用 Chrome 或 Edge。也可改用「✓ 我说顺了」自评。";
   return"语音识别出错（"+code+"）。可点「再说一次」，或用「✓ 我说顺了」自评。";}
 function mListen(opts){opts=opts||{};const btn=opts.btn,live=opts.live,onFinal=opts.onFinal,onInterim=opts.onInterim;
   if(!SR_API){alert(mSrErrZh("not-supported"));return;}
@@ -3036,7 +3036,7 @@ function renderSentence(){const box=$("sentArea");if(!box)return;const w=sCurWor
 function sMsg(t){$("sentMsg").textContent=t;}
 let sRec=null;
 try{(function initMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const b=$("sentMic");if(!b)return;
- if(!SR){b.style.display="none";$("sentNoMic").textContent="（这个浏览器不支持语音识别"+(/(iPhone|iPad|iPod)/.test(navigator.userAgent)||(/Safari/.test(navigator.userAgent)&&!/Chrome|Chromium|Edg|CriOS|FxiOS/.test(navigator.userAgent))?"，Safari/iPhone 通常不行，请用 Chrome/Edge":"")+"，可直接打字）";return;}
+ if(!SR){b.style.display="none";$("sentNoMic").textContent="（这个浏览器不支持语音识别。iPhone 请用自带 Safari 打开本页，不要用微信；电脑可用 Chrome 或 Edge。也可直接打字）";return;}
  let listening=false,baseText="",committed="",interim="",wantStop=false;
  const normQ=s=>String(s||"").replace(/[\u2018\u2019\u201A\u201B]/g,"'").replace(/[\u201C\u201D\u201E\u201F]/g,'"').replace(/\u2026/g,"...").replace(/\s+/g," ").trim();
  const pickAlt=res=>{if(!res||!res.length)return"";let best="",bestC=-1;for(let i=0;i<Math.min(res.length,3);i++){const a=res[i];if(!a)continue;const t=normQ(a.transcript);if(!t)continue;const c=typeof a.confidence==="number"?a.confidence:-1;if(c>bestC||(c===bestC&&t.length>best.length)||(bestC<0&&t.length>best.length)){best=t;bestC=c;}}return best;};
@@ -4971,7 +4971,7 @@ function scoreCardHtml(r,said){
 var _micStream=null,_micDenied=false,_micTried=false,_rec=null,_listenOn=false;
 function srAPI(){return window.SpeechRecognition||window.webkitSpeechRecognition||null;}
 function micHint(){
-  return "请用 Safari 打开本页（必须是 https），在系统设置里允许 Safari 使用麦克风，然后再点「允许麦克风」。安卓可用 Chrome。";
+  return "iPhone 请用自带 Safari 打开本页（不要用微信），在「设置 → Safari → 麦克风」里允许。电脑可用 Chrome 或 Edge。";
 }
 function ensureMic(cb){
   // Does NOT delay recognition start. Optional callback after permission settles.
@@ -5015,15 +5015,20 @@ function listenOnce(opts){
   rec.maxAlternatives=3;
   var old=btn?btn.textContent:"";
   var finalTxt="",interimTxt="",stopped=false,got=false,t0=_now();
-  if(btn)btn.textContent="⏹️ 停";
-  if(live){live.classList.add("on");live.textContent="正在听… 请用英语大声说完整";}
+  var needSecondTap=!_micStream;
+  if(btn)btn.textContent="⏹️ 正在听";
+  if(live){
+    live.classList.add("on");
+    live.textContent=needSecondTap?"如果弹出「允许麦克风」，请点允许，然后再点一次按钮，看到「正在听」就马上大声说。":"正在听… 请马上用英语大声把词说完";
+    try{live.scrollIntoView({block:"center",behavior:"smooth"});}catch(e){}
+  }
   function finish(why){
     if(stopped)return;stopped=true;_listenOn=false;
     var dur=_now()-t0;
     try{rec.stop();}catch(e){}
-    if(btn)btn.textContent=old||"🎙️ 开始跟读";
+    if(btn)btn.textContent=old||"🎙️ 跟读评分";
     var best=(finalTxt||interimTxt||"").trim();
-    if(live){live.classList.remove("on");if(!best&&why)live.textContent=errZh(why);else if(!best)live.textContent="没识别到英文。请靠近麦克风再说，或点「继续说」。";else live.textContent="识别完成";}
+    if(live){live.classList.remove("on");if(!best&&why)live.textContent=errZh(why);else if(!best)live.textContent="没识别到英文。请靠近麦克风，再点一次并马上说。";else live.textContent="识别完成";}
     if(best){
       var r=target?scoreUtterance({said:best,target:target,durationMs:dur,mode:mode}):null;
       if(onFinal)onFinal(best,r);
@@ -5061,7 +5066,8 @@ function listenOnce(opts){
     // Do NOT auto-restart here (async, iOS would fail / loop). Offer a button instead.
     if(stopped){if(btn){btn.textContent=old||"🎙️ 开始跟读";btn.onclick=function(){listenOnce(opts);};}return;}
     if(!got&&!finalTxt&&!interimTxt&&live){
-      live.innerHTML=errZh("no-speech")+' <button type="button" class="mini ss-resume">继续说</button>';
+      var tip=needSecondTap?"如果刚才弹出了麦克风权限，请先允许，再点一次，看到「正在听」后马上大声说。":errZh("no-speech");
+      live.innerHTML=tip+' <button type="button" class="mini ss-resume">再点一次，开始说</button>';
       var rb=live.querySelector(".ss-resume");
       if(rb)rb.onclick=function(){listenOnce(opts);};
     }
@@ -5069,8 +5075,8 @@ function listenOnce(opts){
   };
   if(btn)btn.onclick=function(){if(_rec===rec&&!stopped)finish("");};
   try{rec.start();}catch(err){
-    if(btn){btn.textContent=old||"🎙️ 开始跟读";btn.onclick=function(){listenOnce(opts);};}
-    var msg=errZh("not-supported");
+    if(btn){btn.textContent=old||"🎙️ 跟读评分";btn.onclick=function(){listenOnce(opts);};}
+    var msg=errZh("start-failed");
     if(live)live.textContent=msg;
     try{alert(msg);}catch(e){}
     return {ok:false,reason:"start-failed"};
@@ -5078,12 +5084,13 @@ function listenOnce(opts){
   return {ok:true};
 }
 function errZh(code){
-  if(code==="not-allowed"||code==="service-not-allowed")return "麦克风权限被拒绝。请到「设置 → Safari → 麦克风」允许，并确保用 Safari 打开本 https 页面，然后先点「允许麦克风」。";
+  if(code==="not-allowed"||code==="service-not-allowed")return "麦克风权限被拒绝。请到「设置 → Safari → 麦克风」允许后，用 Safari 打开本页，再点「跟读评分」。不要用微信打开。";
   if(code==="no-speech")return "没听到声音。请靠近麦克风，用英语把整句说完，再点「继续说」。";
   if(code==="audio-capture")return "找不到麦克风。请检查手机麦克风是否可用。";
   if(code==="network")return "语音识别需要联网，请检查网络后重试。";
   if(code==="language-not-supported")return "当前识别语言不被支持，试试把语言换成 en-US。";
-  if(code==="not-supported"||!srAPI())return "这个浏览器不能做英语语音识别。请用 iPhone 自带 Safari（https 打开），或改用「听示范 + 自己对照」。不要用微信内置浏览器。";
+  if(code==="not-supported"||!srAPI())return "这个浏览器不能做英语语音识别。iPhone 请用自带 Safari 打开（不要用微信或 Chrome）；电脑可用 Chrome 或 Edge。也可以先听示范，自己对照。";
+  if(code==="start-failed")return "这次没能开始听。请再点一次「跟读评分」。若刚弹出过权限，允许之后一定要再点一次，然后马上说话。";
   return "语音识别出错（"+code+"）。可再点一次，或先听示范自己跟读。";
 }
 function recFallbackHtml(){
@@ -5399,9 +5406,10 @@ function memAidHtml(w){
       '<button type="button" class="mini" id="memHear">🔊 再听单词</button>'+
       '<button type="button" class="mini" id="memHearEx">🔊 听例句</button>'+
       '<button type="button" class="spk" id="memSpeak">🎙️ 跟读评分</button>'+
-      '<button type="button" class="mini" id="memMicAllow">① 允许麦克风</button>'+
+      '<button type="button" class="mini" id="memMicAllow">还没开麦克风？</button>'+
       '<button type="button" class="mini" id="memWrite">✍️ 再默写</button>'+
     '</div>'+
+    '<p class="m-sub">点「跟读评分」后请马上大声说。第一次若弹出权限，允许后再点一次。</p>'+
     '<div class="ss-live" id="memSpeakLive" aria-live="polite"></div>'+
     '<div id="memSpeakRes"></div>'+
     '<div id="memWriteBox" style="display:none;margin-top:8px"><input id="memWriteIn" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="不看上面，再拼一次…"/><button type="button" class="mini" id="memWriteGo">检查默写</button><div id="memWriteFb" class="ss-fb"></div></div>'+
@@ -5413,9 +5421,10 @@ function memAidBind(w){
   if(hear)hear.onclick=function(){try{speak(w.en);}catch(e){}};
   if(hearEx)hearEx.onclick=function(){try{speak(w.exEn||w.en);}catch(e){}};
   if(allow)allow.onclick=function(){
+    var live=$("memSpeakLive");
+    if(live){live.classList.add("on");live.textContent="请在弹窗里允许麦克风…";try{live.scrollIntoView({block:"center",behavior:"smooth"});}catch(e){}}
     SpeakScore.ensureMic(function(ok){
-      var live=$("memSpeakLive");
-      if(live)live.textContent=ok?"麦克风已允许，现在可以点「跟读评分」。":SpeakScore.errZh("not-allowed");
+      if(live){live.classList.remove("on");live.textContent=ok?"麦克风已允许。现在点「跟读评分」，看到「正在听」就马上说。":SpeakScore.errZh("not-allowed");}
     });
   };
   if(spk)spk.onclick=function(){
@@ -5745,10 +5754,10 @@ function ldRender(P){
     };
   }else{
     box.innerHTML='<p class="m-sub">先听示范，再跟读这个单词。说完自动打分。</p><p>（中文意思：'+mE(w.zh)+'）</p>'+
-      (SpeakScore.available()?'<div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="ldMicAllow">① 允许麦克风</button><button type="button" class="spk" id="ldEcho">🎙️ 开始跟读</button></div>':'')+
+      (SpeakScore.available()?'<p class="m-sub">点「开始跟读」后请马上说。第一次若弹出权限，允许后再点一次。</p><div class="row" style="justify-content:flex-start"><button type="button" class="mini" id="ldMicAllow">还没开麦克风？</button><button type="button" class="spk" id="ldEcho">🎙️ 开始跟读</button></div>':'')+
       '<div class="ss-live" id="ldLive"></div><div id="ldRes"></div>'+
       (SpeakScore.available()?"":SpeakScore.recFallbackHtml());
-    var al=$("ldMicAllow");if(al)al.onclick=function(){SpeakScore.ensureMic(function(ok){($("ldLive")||fb).textContent=ok?"已允许，现在点「开始跟读」。":SpeakScore.errZh("not-allowed");});};
+    var al=$("ldMicAllow");if(al)al.onclick=function(){var live=$("ldLive")||fb;if(live)live.textContent="请在弹窗里允许麦克风…";SpeakScore.ensureMic(function(ok){(live||fb).textContent=ok?"已允许。现在点「开始跟读」，看到「正在听」就马上说。":SpeakScore.errZh("not-allowed");});};
     var eb=$("ldEcho");
     if(eb)eb.onclick=function(){
       SpeakScore.listen({btn:eb,live:$("ldLive"),target:w.en,mode:"word",onFinal:function(txt,r){
@@ -6022,7 +6031,7 @@ function installCss(){
     '.ss-cmp .m-hit{color:var(--good);font-weight:700}'+
     '.ss-cmp .m-soft{color:#2f6b4e;border-bottom:1px dashed #2f6b4e}'+
     '.ss-cmp .m-miss{color:var(--bad);text-decoration:underline}'+
-    '.ss-live{min-height:1.2em;margin-top:6px;font-size:.9rem;color:var(--accent2)}'+
+    '.ss-live{min-height:1.2em;margin-top:6px;font-size:.9rem;color:var(--accent2)}'+'.ss-live.on{font-weight:700;padding:8px 10px;border:1px solid var(--accent,#b42318);border-radius:10px;background:#fff5f4}'+
     '.ss-fallback{margin-top:8px;font-size:.9rem}'+
     '.tl-srs{margin-top:6px;font-size:.88rem;line-height:1.5;color:var(--ink)}'+
     '.srs-dist{margin:6px 0;font-size:.92rem}'+
