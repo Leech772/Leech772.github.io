@@ -1,13 +1,13 @@
 /* oxford100 service worker · OFFLINE_SW_V1
-   - 预缓存新版单词小程序（index.html、manifest、Jessica 发音包、图标）
+   - 预缓存新版单词小程序（index.html、manifest、Jessica 发音包；图标已内嵌为 data URI）
    - index.html：网络优先（3 秒超时），失败用缓存 → 有更新时仍能拿到新版
    - 有道单词发音：第一次播放时顺手缓存（最多 300 个），之后离线也能播
    - legacy.html 及其资源不拦截，照常走网络 */
-const VERSION = "fow1-off1";
+const VERSION = "fow1-off2";
 const CORE = "oxford100-core-" + VERSION;
 const AUDIO = "oxford100-yd-audio-v1";   // 发音缓存跨版本保留
 const MAX_AUDIO = 300;
-const PRECACHE = ["./", "./index.html", "./manifest.json", "./jessica_audio.js?v=1", "./icon-192.png", "./icon-512.png"];
+const PRECACHE = ["./", "./index.html", "./manifest.json", "./jessica_audio.js?v=1"];
 const BASE = new URL("./", self.location).pathname;           // "/oxford100/"
 const INDEX_PATHS = [BASE, BASE + "index.html"];
 
@@ -95,6 +95,6 @@ self.addEventListener("fetch", e => {
     if (INDEX_PATHS.includes(url.pathname)) e.respondWith(indexNetworkFirst(req));
     return; // legacy.html 等其他页面：不拦截
   }
-  if (["manifest.json", "jessica_audio.js", "icon-192.png", "icon-512.png"].includes(rel)) { e.respondWith(cacheFirst(req)); return; }
+  if (["manifest.json", "jessica_audio.js"].includes(rel)) { e.respondWith(cacheFirst(req)); return; }
   // 其他（legacy 的 audio_modules_*.js、assets/ 等）：不拦截
 });
