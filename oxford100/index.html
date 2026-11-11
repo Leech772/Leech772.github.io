@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><!-- FULL_OXFORD_WEEKLY_V1 · words only · 2383 words · 8 weeks --><head><meta charset="UTF-8"/>
+<html lang="zh-CN"><!-- FULL_OXFORD_WEEKLY_V1 · OFFLINE_SW_V1 · words only · 2383 words · 8 weeks --><head><meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -914,13 +914,21 @@ try{if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickV
 function tts(t,slow){if(!window.speechSynthesis||typeof SpeechSynthesisUtterance==="undefined"){aMsg("这个浏览器不能朗读");return;}
  try{const u=new SpeechSynthesisUtterance(t);if(voice)u.voice=voice;u.lang=(voice&&voice.lang)||"en-US";u.rate=slow?0.7:0.92;speechSynthesis.cancel();speechSynthesis.resume();speechSynthesis.speak(u);}catch(e){}}
 function stopAudio(){try{if(_au){_au.pause();_au.src="";_au=null;}}catch(e){}try{if(window.speechSynthesis)speechSynthesis.cancel();}catch(e){}}
-function playUrl(src,slow,fallback){stopAudio();const a=new Audio();_au=a;let done=false;const fb=()=>{if(done||_au!==a)return;done=true;try{a.pause();}catch(e){}if(fallback)fallback();};
- const tm=setTimeout(fb,3500);a.addEventListener("playing",()=>{done=true;clearTimeout(tm);});a.addEventListener("error",()=>{clearTimeout(tm);fb();});
+function playUrl(src,slow,fallback,ms,onOk){stopAudio();const a=new Audio();_au=a;let done=false;const fb=()=>{if(done||_au!==a)return;done=true;try{a.pause();}catch(e){}if(fallback)fallback();};
+ const tm=setTimeout(fb,ms||3500);a.addEventListener("playing",()=>{done=true;clearTimeout(tm);if(onOk)onOk();});a.addEventListener("error",()=>{clearTimeout(tm);fb();});
  a.src=src;try{a.playbackRate=slow?0.72:1;}catch(e){}const p=a.play();if(p&&p.catch)p.catch(err=>{clearTimeout(tm);if(err&&err.name==="NotAllowedError"){done=true;aMsg("请再点一下 🔊");}else fb();});}
 function speakWord(t,slow){t=String(t||"").trim();if(!t)return;const pack=window.JESSICA_AUDIO;
  if(pack&&(pack[t]||pack[t.toLowerCase()])){playUrl(pack[t]||pack[t.toLowerCase()],slow,()=>tts(t,slow));return;}
  if(/[.?!,]/.test(t)||t.split(/\s+/).length>3){stopAudio();tts(t,slow);return;}
- playUrl("https://dict.youdao.com/dictvoice?type=2&audio="+encodeURIComponent(t),slow,()=>tts(t,slow));}
+ const k=t.toLowerCase(),url=ydUrl(t);
+ /* OFFLINE_SW_V1：离线时，没听过（没缓存）的词直接用系统朗读，不等待 */
+ if(isOffline()&&!HEARD.has(k)){stopAudio();tts(t,slow);return;}
+ playUrl(url,slow,()=>tts(t,slow),isOffline()?1500:3500,()=>{if(!HEARD.has(k)){HEARD.add(k);swCacheAudio(url);}});}
+function ydUrl(t){return "https://dict.youdao.com/dictvoice?type=2&audio="+encodeURIComponent(String(t).toLowerCase());}
+function isOffline(){return typeof navigator!=="undefined"&&navigator.onLine===false;}
+const HEARD=new Set();
+function swCacheAudio(url){try{const c=navigator.serviceWorker&&navigator.serviceWorker.controller;if(c)c.postMessage({type:"cacheAudio",url:url});}catch(e){}}
+function loadHeard(){try{if(!window.caches)return;caches.open("oxford100-yd-audio-v1").then(c=>c.keys()).then(ks=>{ks.forEach(r=>{try{const w=new URL(r.url).searchParams.get("audio");if(w)HEARD.add(w.toLowerCase());}catch(e){}});}).catch(()=>{});}catch(e){}}
 function speakSent(t,slow){stopAudio();tts(String(t||""),slow);}
 function aMsg(t){const a=$("audioStatus");if(a){a.textContent=t;clearTimeout(aMsg.t);aMsg.t=setTimeout(()=>{a.textContent="";},2500);}}
 function spk(t,sent){const e=esc(t);return sent?' <button type="button" class="mini" data-sent="'+e+'">🔊</button>':' <button type="button" class="mini" data-say="'+e+'">🔊</button>';}
@@ -1019,7 +1027,7 @@ function renderPlan(){const P=$("p-plan");const tot=W.length;const c={A1:0,A2:0,
 function renderMem(){const P=$("p-mem");const tot=W.length;const kn=ST.known.length;const due=srsDueIds().length;
  const lvRow=l=>{const ids=W.filter(w=>w.lv===l).map(w=>w.id);const k=ids.filter(i=>ST.known.includes(i)).length;return '<div class="throw"><span>'+l+'</span><span class="progress thbar"><i style="width:'+(k/ids.length*100)+'%"></i></span><b>'+k+'/'+ids.length+'</b></div>';};
  const miss=ST.missed.slice(-120).reverse().map(i=>W[i]).filter(Boolean);
- P.innerHTML='<div class="g"><h3>📊 总进度</h3><div class="big">已掌握 <b>'+kn+'</b> / '+tot+'</div><div class="progress"><i style="width:'+(kn/tot*100)+'%"></i></div>'+
+ P.innerHTML='<div id="offStatus" class="sub" style="text-align:left;margin:0 0 8px;font-size:.85rem;color:#3d6b4f">'+offText()+'</div><div class="g"><h3>📊 总进度</h3><div class="big">已掌握 <b>'+kn+'</b> / '+tot+'</div><div class="progress"><i style="width:'+(kn/tot*100)+'%"></i></div>'+
  '<div style="margin-top:6px">待复习（到期）：'+due+' 词 · 待重复：'+Object.keys(ST.reps).length+' 词 · 错过/模糊过：'+ST.missed.length+' 词<br>上次保存：'+(ST.updated?new Date(ST.updated).toLocaleString():"—")+'</div>'+
  (due?'<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-sub" style="flex:none" id="mRev">🔁 开始复习到期的词</button></div>':'')+'</div>'+
  '<div class="g"><h3>📈 按级别</h3>'+lvRow("A1")+lvRow("A2")+lvRow("B1")+'</div>'+
@@ -1030,7 +1038,7 @@ function renderMem(){const P=$("p-mem");const tot=W.length;const kn=ST.known.len
  '<div class="row" style="margin-top:8px;justify-content:flex-start;gap:8px"><button type="button" class="b-pc" id="syncGen">生成本机同步码</button><button type="button" class="b-pc2" id="syncUp">上传本机进度</button><button type="button" class="mini" id="syncPull">输入同步码拉取</button></div>'+
  '<div id="syncPullBox" style="display:none;margin-top:10px"><input id="syncIn" type="text" placeholder="粘贴同步码，如 ec:abc123 或 jb:…" style="width:100%;max-width:420px;padding:10px 12px;border-radius:2px;border:1px solid #ccc;font-size:1rem"/><div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-pc2" id="syncDoPull">拉取并合并</button></div></div>'+
  '<label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.95rem"><input type="checkbox" id="syncAuto"/> 自动同步（保存后上传；打开页面时若云端更新则合并）</label><div id="syncMsg" class="sub" style="text-align:left;margin-top:8px;min-height:1.2em"></div></div>'+
- '<div class="g"><h3>🔊 发音</h3>原来的 200 词用 Jessica 真人女声；其余单词用有道词典真人发音（需联网），连不上时自动改用手机/电脑自带朗读；例句用自带朗读。<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="mini" data-say="family">试听 family（Jessica）</button><button type="button" class="mini" data-say="according to">试听 according to</button></div>'+
+ '<div class="g"><h3>🔊 发音</h3>原来的 200 词用 Jessica 真人女声（离线也能播）；其余单词用有道词典真人发音：联网时播放过的词（最近约 300 个）会存在本机，离线也能播，没存过的词离线时自动改用手机/电脑自带朗读；例句用自带朗读。<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="mini" data-say="family">试听 family（Jessica）</button><button type="button" class="mini" data-say="according to">试听 according to</button></div>'+
  '<label class="auto" style="margin-top:8px"><input type="checkbox" id="autoChk"/> 拼写模式下出新卡也自动读单词</label></div>'+
  '<div class="g"><h3>💾 备份 / 重置</h3>进度自动保存在本机。也可以导出文件备份。<div class="row" style="margin-top:8px;justify-content:flex-start"><button type="button" class="b-pc" id="mExport">💾 导出进度</button><button type="button" class="b-pc2" id="mImport">📂 导入进度</button><button type="button" class="danger" id="mReset">⚠ 清空单词进度</button></div>'+
  '<p class="sub" style="text-align:left;margin-top:10px">旧版（含听力、口语、语法、作文）已保留，以后要检查可以打开：<a href="legacy.html">旧版小程序</a></p></div>';
@@ -1061,6 +1069,20 @@ $("bRetest").onclick=()=>{ST.sess="retest";buildQueue();save();renderAll();};
 $("bNextDay").onclick=()=>{const nx=nextDay();if(nx)startDay(nx[0],nx[1]);};
 $("bRestart").onclick=()=>{const ids=sessIds();ST.known=ST.known.filter(i=>!ids.includes(i));buildQueue();save();renderAll();};
 document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{if(ST.mode===b.dataset.mode)return;ST.mode=b.dataset.mode;ST.revealed=false;ST.lastFb=null;ST.hint=false;save({silent:true});renderAll();const w=cur();if(w&&ST.mode==="recog")speakWord(w.en);});
+
+/* ---------- OFFLINE_SW_V1：离线模式 ---------- */
+let SW_STATE="init";
+function offText(){const net=isOffline()?"（现在是离线状态）":"";
+ if(SW_STATE==="ready")return "✅ 离线可用"+net+" · 没网也能学，联网时自动更新";
+ if(SW_STATE==="nosupport")return "这个浏览器不支持离线缓存，需要联网使用。"+net;
+ if(SW_STATE==="error")return "离线缓存暂时没准备好，联网刷新一次再试。"+net;
+ return "⏳ 正在准备离线缓存…"+net;}
+function offRender(){const el=$("offStatus");if(el)el.textContent=offText();}
+function swInit(){
+ if(!("serviceWorker" in navigator)||!/^https?:$/.test(location.protocol)){SW_STATE="nosupport";offRender();return;}
+ try{navigator.serviceWorker.register("sw.js",{scope:"./",updateViaCache:"none"}).catch(()=>{SW_STATE="error";offRender();});
+  navigator.serviceWorker.ready.then(()=>{SW_STATE="ready";offRender();loadHeard();}).catch(()=>{});}catch(e){SW_STATE="error";offRender();}}
+window.addEventListener("online",offRender);window.addEventListener("offline",offRender);
 </script>
 <script>/* SYNC_CROSS_DEVICE_V1（保留）：手机电脑云同步，JSONBlob 优先，失败则 ExtendsClass。同步码 key 不变。 */
 var SYNC_ID_KEY="oxford100_sync_id_v1",SYNC_AUTO_KEY="oxford100_sync_auto_v1",SYNC_META_KEY="oxford100_sync_meta_v1";
@@ -1119,16 +1141,18 @@ function syncCreate(pack){return syncJB_create(pack).catch(function(e1){return s
 function syncPut(fullId,pack){var p=syncParseId(fullId);if(!p)return syncCreate(pack);if(p.be==="jsonblob")return syncJB_put(p.id,pack).catch(function(){return syncEC_create(pack);});return syncEC_put(p.id,pack);}
 function syncGet(fullId){var p=syncParseId(fullId);if(!p)return Promise.reject(new Error("请输入同步码"));if(p.be==="jsonblob")return syncJB_get(p.id).catch(function(e){if(/^[0-9a-f]{7,32}$/i.test(p.id))return syncEC_get(p.id);throw e;});return syncEC_get(p.id);}
 var _syncUpTimer=null,_syncBusy=false;
-function syncPushNow(opt){opt=opt||{};if(_syncBusy)return Promise.resolve();_syncBusy=true;var pack=syncPack();var id=syncGetId();syncMsg(opt.creating?"正在生成同步码…":"正在上传进度…");
+function syncPushNow(opt){opt=opt||{};if(_syncBusy)return Promise.resolve();if(syncOffline()){_syncPendingOffline=true;syncMsg("📴 现在离线，进度已存在本机；联网后会自动上传。",false);return Promise.resolve();}_syncBusy=true;var pack=syncPack();var id=syncGetId();syncMsg(opt.creating?"正在生成同步码…":"正在上传进度…");
  var op=id?syncPut(id,pack):syncCreate(pack);
  return op.then(function(newId){var changed=id&&newId&&newId!==id;syncSetId(newId);syncSetMeta(Object.assign(syncMeta(),{lastPush:Date.now(),be:syncParseId(newId).be,updated:pack.updated}));
   var tip="✅ 已上传"+(changed?"（同步码已更新，请复制到另一台）":"");if(opt.creating)tip="✅ 已生成同步码，复制到另一台设备即可拉取";try{syncBindMem();}catch(e){}syncMsg(tip,true);return newId;})
  .catch(function(e){syncMsg("❌ "+syncFriendlyErr(e),false);throw e;}).then(function(v){_syncBusy=false;return v;},function(e){_syncBusy=false;return Promise.reject(e);});}
-function syncPullNow(code){var id=(code!=null&&String(code).trim())?String(code).trim():syncGetId();if(!id)return Promise.reject(new Error("还没有同步码"));syncMsg("正在拉取云端进度…");
+function syncPullNow(code){var id=(code!=null&&String(code).trim())?String(code).trim():syncGetId();if(!id)return Promise.reject(new Error("还没有同步码"));if(syncOffline()){syncMsg("📴 现在离线，联网后再拉取。",false);return Promise.reject(new Error("offline"));}syncMsg("正在拉取云端进度…");
  return syncGet(id).then(function(pack){var info=syncApplyPack(pack,{});var p=syncParseId(id);syncSetId(syncFmtId(p.be,p.id));try{syncBindMem();}catch(e){}syncMsg("✅ 已合并云端进度（掌握 "+info.known+" 词）",true);return info;})
  .catch(function(e){syncMsg("❌ "+syncFriendlyErr(e),false);throw e;});}
-function syncSchedulePush(){if(!syncAutoOn()||!syncGetId())return;clearTimeout(_syncUpTimer);_syncUpTimer=setTimeout(function(){syncPushNow({}).catch(function(){});},2500);}
-function syncBootPull(){if(!syncAutoOn())return;var id=syncGetId();if(!id)return;syncGet(id).then(function(pack){var cu=pack.updated||(pack.state&&pack.state.updated)||0;var lu=Math.max(ST.updated||0,(syncMeta().updated)||0);if(cu>lu+500){syncApplyPack(pack,{});syncMsg("☁️ 已自动合并云端更新",true);}}).catch(function(){});}
+var _syncPendingOffline=false;
+function syncOffline(){return navigator.onLine===false;}
+function syncSchedulePush(){if(!syncAutoOn()||!syncGetId())return;if(syncOffline()){_syncPendingOffline=true;return;}clearTimeout(_syncUpTimer);_syncUpTimer=setTimeout(function(){syncPushNow({}).catch(function(){});},2500);}
+function syncBootPull(){if(!syncAutoOn()||syncOffline())return;var id=syncGetId();if(!id)return;syncGet(id).then(function(pack){var cu=pack.updated||(pack.state&&pack.state.updated)||0;var lu=Math.max(ST.updated||0,(syncMeta().updated)||0);if(cu>lu+500){syncApplyPack(pack,{});syncMsg("☁️ 已自动合并云端更新",true);}}).catch(function(){});}
 function syncBindMem(){var id=syncGetId();var idEl=$("syncIdView");if(idEl)idEl.textContent=id||"（尚未生成）";var autoEl=$("syncAuto");if(autoEl)autoEl.checked=syncAutoOn();
  var b;
  if((b=$("syncCopy")))b.onclick=function(){var v=syncGetId();if(!v){syncMsg("还没有同步码，请先生成",false);return;}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(function(){syncMsg("已复制同步码",true);}).catch(function(){prompt("复制同步码：",v);});else prompt("复制同步码：",v);};
@@ -1137,6 +1161,8 @@ function syncBindMem(){var id=syncGetId();var idEl=$("syncIdView");if(idEl)idEl.
  if((b=$("syncPull")))b.onclick=function(){var box=$("syncPullBox");if(box)box.style.display=box.style.display==="none"?"block":"none";};
  if((b=$("syncDoPull")))b.onclick=function(){var inp=$("syncIn");var code=inp?inp.value.trim():"";if(!code){syncMsg("请粘贴同步码",false);return;}syncPullNow(code).then(function(){if(inp)inp.value="";}).catch(function(){});};
  if((b=$("syncAuto")))b.onchange=function(){syncSetAuto(b.checked);syncMsg(b.checked?"已开启自动同步":"已关闭自动同步",true);if(b.checked){if(syncGetId())syncBootPull();else syncMsg("开启后请先生成同步码",false);}};}
+
+window.addEventListener("online",function(){setTimeout(function(){try{if(syncGetId()&&(_syncPendingOffline||syncAutoOn())){var was=_syncPendingOffline;_syncPendingOffline=false;if(syncAutoOn())syncBootPull();if(was||syncAutoOn())syncPushNow({}).catch(function(){});}}catch(e){}},1500);});
 </script>
 <script>try{load();}catch(e){console.error("load",e);ST=defState();ST.planV=1;buildQueue();}
 try{renderAll();}catch(e){console.error(e);}
@@ -1146,5 +1172,7 @@ window.addEventListener("pagehide",function(){save({silent:true});});
 document.addEventListener("visibilitychange",function(){if(document.hidden)save({silent:true});});
 /* iOS：第一次点屏幕时预热朗读，避免之后的系统朗读没声音 */
 document.addEventListener("touchend",function warm(){document.removeEventListener("touchend",warm);try{if(window.speechSynthesis){var u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u);}}catch(e){}},{passive:true});
+
+try{swInit();}catch(e){}
 </script>
 </body></html>
