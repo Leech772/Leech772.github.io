@@ -3,7 +3,7 @@
    - index.html：网络优先（3 秒超时），超时先用缓存、后台继续下载新版并提示刷新
    - 有道单词发音：第一次播放时顺手缓存（最多 300 个），之后离线也能播
    - legacy.html 及其资源不拦截，照常走网络 */
-const VERSION = "fow1-off6-audit1";   // AUDIT_FIX_V1
+const VERSION = "fow1-off7-audit2";   // AUDIT_FIX_V2
 const CORE = "oxford100-core-" + VERSION;
 const AUDIO = "oxford100-yd-audio-v1";   // 发音缓存跨版本保留
 const MAX_AUDIO = 300;
