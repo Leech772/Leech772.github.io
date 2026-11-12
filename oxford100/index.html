@@ -893,6 +893,7 @@ details.dyd{border-top:1px dashed var(--border);padding:6px 0}details.dyd summar
 .upd-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:999;background:#1f5f3f;color:#fff;border:0;border-radius:20px;padding:10px 18px;font-size:15px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
 </style>
 <script defer src="jessica_audio.js?v=1"></script>
+<script defer src="jessica_w1.js?v=1"></script>
 </head><body>
 <div class="wrap">
 <h1>牛津 Oxford 3000 · A1→B1 全部单词</h1>
@@ -1066,7 +1067,10 @@ function playUrl(src,slow,fallback,ms,onOk){stopAudio();const a=new Audio();_au=
  const tm=setTimeout(fb,ms||3500);a.addEventListener("playing",()=>{done=true;clearTimeout(tm);if(onOk)onOk();});a.addEventListener("error",()=>{clearTimeout(tm);fb();});
  a.src=src;try{a.playbackRate=slow?0.72:1;}catch(e){}const p=a.play();if(p&&p.catch)p.catch(err=>{clearTimeout(tm);if(err&&err.name==="NotAllowedError"){done=true;aMsg("请再点一下 🔊");}else fb();});}
 function speakWord(t,slow){t=String(t||"").trim();if(!t)return;const pack=window.JESSICA_AUDIO;
- if(pack&&(pack[t]||pack[t.toLowerCase()])){playUrl(pack[t]||pack[t.toLowerCase()],slow,()=>tts(t,slow));return;}
+ /* JESSICA_W1：Jessica 真人包优先（第2周 jessica_audio.js + 第1周 jessica_w1.js）；播不了再走有道，最后系统朗读 */
+ if(pack&&(pack[t]||pack[t.toLowerCase()])){playUrl(pack[t]||pack[t.toLowerCase()],slow,()=>ydSpeak(t,slow));return;}
+ ydSpeak(t,slow);}
+function ydSpeak(t,slow){
  if(/[.?!,]/.test(t)||t.split(/\s+/).length>3){stopAudio();tts(t,slow);return;}
  const k=t.toLowerCase(),url=ydUrl(t);
  /* OFFLINE_SW_V1：离线时，没听过（没缓存）的词直接用系统朗读，不等待 */
