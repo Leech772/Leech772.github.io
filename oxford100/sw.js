@@ -3,11 +3,11 @@
    - index.html：网络优先（3 秒超时），超时先用缓存、后台继续下载新版并提示刷新
    - 有道单词发音：第一次播放时顺手缓存（最多 300 个），之后离线也能播
    - legacy.html 及其资源不拦截，照常走网络 */
-const VERSION = "fow1-off8-jw1";   // JESSICA_W1
+const VERSION = "redwhite-studio-v3-20261122";   // TOUHOU_SPELLCARD_V2 + SCROLL_PIN_V1
 const CORE = "oxford100-core-" + VERSION;
 const AUDIO = "oxford100-yd-audio-v1";   // 发音缓存跨版本保留
 const MAX_AUDIO = 300;
-const PRECACHE = ["./index.html", "./manifest.json", "./jessica_audio.js?v=1", "./jessica_w1.js?v=1"];
+const PRECACHE = ["./index.html", "./manifest.json", "./jessica_audio.js?v=1", "./jessica_w1.js?v=1", "./assets/qchars_hd/reimu.webp"];
 const BASE = new URL("./", self.location).pathname;           // "/oxford100/"
 const INDEX_PATHS = [BASE, BASE + "index.html"];
 
@@ -115,6 +115,6 @@ self.addEventListener("fetch", e => {
     if (INDEX_PATHS.includes(url.pathname)) e.respondWith(indexNetworkFirst(e));
     return; // legacy.html 等其他页面：不拦截
   }
-  if (["manifest.json", "jessica_audio.js", "jessica_w1.js"].includes(rel)) { e.respondWith(cacheFirst(req)); return; }
+  if (["manifest.json", "jessica_audio.js", "jessica_w1.js", "assets/qchars_hd/reimu.webp"].includes(rel)) { e.respondWith(cacheFirst(req)); return; }
   // 其他（legacy 的 audio_modules_*.js、assets/ 等）：不拦截
 });
